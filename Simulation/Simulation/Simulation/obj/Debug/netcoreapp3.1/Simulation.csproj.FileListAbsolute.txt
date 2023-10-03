@@ -1,0 +1,13 @@
+C:\Users\sobib\Egyetem\AAU\1_semester\Project\evProject\evConsumptionPredictionAAU\Simulation\Simulation\Simulation\bin\Debug\netcoreapp3.1\Simulation.exe
+C:\Users\sobib\Egyetem\AAU\1_semester\Project\evProject\evConsumptionPredictionAAU\Simulation\Simulation\Simulation\bin\Debug\netcoreapp3.1\Simulation.deps.json
+C:\Users\sobib\Egyetem\AAU\1_semester\Project\evProject\evConsumptionPredictionAAU\Simulation\Simulation\Simulation\bin\Debug\netcoreapp3.1\Simulation.runtimeconfig.json
+C:\Users\sobib\Egyetem\AAU\1_semester\Project\evProject\evConsumptionPredictionAAU\Simulation\Simulation\Simulation\bin\Debug\netcoreapp3.1\Simulation.runtimeconfig.dev.json
+C:\Users\sobib\Egyetem\AAU\1_semester\Project\evProject\evConsumptionPredictionAAU\Simulation\Simulation\Simulation\bin\Debug\netcoreapp3.1\Simulation.dll
+C:\Users\sobib\Egyetem\AAU\1_semester\Project\evProject\evConsumptionPredictionAAU\Simulation\Simulation\Simulation\bin\Debug\netcoreapp3.1\Simulation.pdb
+C:\Users\sobib\Egyetem\AAU\1_semester\Project\evProject\evConsumptionPredictionAAU\Simulation\Simulation\Simulation\obj\Debug\netcoreapp3.1\Simulation.csprojAssemblyReference.cache
+C:\Users\sobib\Egyetem\AAU\1_semester\Project\evProject\evConsumptionPredictionAAU\Simulation\Simulation\Simulation\obj\Debug\netcoreapp3.1\Simulation.AssemblyInfoInputs.cache
+C:\Users\sobib\Egyetem\AAU\1_semester\Project\evProject\evConsumptionPredictionAAU\Simulation\Simulation\Simulation\obj\Debug\netcoreapp3.1\Simulation.AssemblyInfo.cs
+C:\Users\sobib\Egyetem\AAU\1_semester\Project\evProject\evConsumptionPredictionAAU\Simulation\Simulation\Simulation\obj\Debug\netcoreapp3.1\Simulation.csproj.CoreCompileInputs.cache
+C:\Users\sobib\Egyetem\AAU\1_semester\Project\evProject\evConsumptionPredictionAAU\Simulation\Simulation\Simulation\obj\Debug\netcoreapp3.1\Simulation.dll
+C:\Users\sobib\Egyetem\AAU\1_semester\Project\evProject\evConsumptionPredictionAAU\Simulation\Simulation\Simulation\obj\Debug\netcoreapp3.1\Simulation.pdb
+C:\Users\sobib\Egyetem\AAU\1_semester\Project\evProject\evConsumptionPredictionAAU\Simulation\Simulation\Simulation\obj\Debug\netcoreapp3.1\Simulation.genruntimeconfig.cache

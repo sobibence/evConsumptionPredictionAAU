@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "dgSpecHash": "Xuastsxjzsu+hZlhAV76ddJC0u1VcnwqU2JS/7lgm5MOA2ImnMQ7zDM+3Iae7lLRkVpHIR1akECMco82oANMpA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\sobib\\Egyetem\\AAU\\1_semester\\Project\\evProject\\evConsumptionPredictionAAU\\Simulation\\Simulation\\Simulation\\Simulation.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\sobib\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\6.0.0\\microsoft.extensions.logging.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\sobib\\.nuget\\packages\\npgsql\\7.0.6\\npgsql.7.0.6.nupkg.sha512",
+    "C:\\Users\\sobib\\.nuget\\packages\\ssh.net\\2020.0.2\\ssh.net.2020.0.2.nupkg.sha512",
+    "C:\\Users\\sobib\\.nuget\\packages\\sshnet.security.cryptography\\1.3.0\\sshnet.security.cryptography.1.3.0.nupkg.sha512",
+    "C:\\Users\\sobib\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
+    "C:\\Users\\sobib\\.nuget\\packages\\system.diagnostics.diagnosticsource\\6.0.0\\system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512",
+    "C:\\Users\\sobib\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
+    "C:\\Users\\sobib\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
