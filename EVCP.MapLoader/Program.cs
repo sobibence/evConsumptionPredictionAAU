@@ -9,7 +9,7 @@ namespace EVCP.MapLoader
     class MapLoader
     {
         static async Task Main(string[] args){
-            await RequestMap(@"
+            string aalborgRequestString = @"
                 <osm-script>
                 <query into=""road"" type=""way"">
                 <has-kv k=""highway""/>
@@ -17,11 +17,13 @@ namespace EVCP.MapLoader
                 </query>
                 <print from=""road"" geometry=""full"" limit="""" mode=""body""/>
                 </osm-script>
-            ");
+            ";
+            
+            string response = await RequestMap(aalborgRequestString);
 
         }
 
-        static async Task RequestMap(string query)
+        static async Task<string> RequestMap(string query)
         {
         // Encode the query for use in a URL
         string encodedQuery = Uri.EscapeDataString(query);
@@ -43,17 +45,20 @@ namespace EVCP.MapLoader
                         // Read and display the response content
                         string responseBody = await response.Content.ReadAsStringAsync();
                         //Console.WriteLine(responseBody);
-                        Console.WriteLine(responseBody.Length);
+                        Console.WriteLine("Got response, length:" + responseBody.Length);
+                        return responseBody;
                     }
                     else
                     {
                         Console.WriteLine("Error: " + response.StatusCode);
+                        return "";
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error: " + ex.Message);
                 }
+                return "";
             }
         }
     }
