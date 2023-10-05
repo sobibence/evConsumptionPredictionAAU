@@ -5,16 +5,19 @@ namespace EVCP.Simulation
     //Singleton
     class SimulationManager
     {
-        private static SimulationManager instance;
+        private static SimulationManager instance = new SimulationManager();
+        private static SimulationManager Instance{
+            get{
+                if (instance == null){
+                    instance = new SimulationManager();
+                }
+                return instance;
+            }
+        }
 
         private SimulationManager(){}
 
-        public static SimulationManager getInstance(){
-            if (instance == null){
-                instance = new SimulationManager();
-            }
-            return instance;
-        }
+        
         public void InitSimulation()
         {
 
@@ -26,7 +29,7 @@ namespace EVCP.Simulation
         {
             // Display the number of command line arguments.
             Console.WriteLine(args.Length);
-            SimulationManager.getInstance().InitSimulation();
+            SimulationManager.Instance.InitSimulation();
         }
     }
 

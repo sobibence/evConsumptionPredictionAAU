@@ -9,17 +9,26 @@ namespace EVCP.MapLoader
     class MapLoader
     {
         static async Task Main(string[] args){
-            string aalborgRequestString = @"
+            // string aalborgRequestString = @"
+            //     <osm-script>
+            //     <query into=""road"" type=""way"">
+            //     <has-kv k=""highway""/>
+            //     <bbox-query s=""57.0040"" w=""9.8344"" n=""57.0827"" e=""10.0721""/>
+            //     </query>
+            //     <print from=""road"" geometry=""full"" limit="""" mode=""body""/>
+            //     </osm-script>
+            // ";
+            string aauRequestString = @"
                 <osm-script>
                 <query into=""road"" type=""way"">
                 <has-kv k=""highway""/>
-                <bbox-query s=""57.0040"" w=""9.8344"" n=""57.0827"" e=""10.0721""/>
+                <bbox-query s=""57.000"" w=""9.9644"" n=""57.01997"" e=""10.021""/>
                 </query>
                 <print from=""road"" geometry=""full"" limit="""" mode=""body""/>
                 </osm-script>
             ";
             
-            string response = await RequestMap(aalborgRequestString);
+            string response = await RequestMap(aauRequestString);
 
         }
 
