@@ -29,7 +29,7 @@ namespace EVCP.MapLoader
             ";
             
             string response = await RequestMap(aauRequestString);
-
+            OsmXmlParser.ParseXML(response);
         }
 
         static async Task<string> RequestMap(string query)

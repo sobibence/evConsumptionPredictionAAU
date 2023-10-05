@@ -14,7 +14,13 @@ public class Edge
         }
     
         set
-        {StartNode = value;}
+        {
+            if(StartNodeId == 0){
+                StartNodeId = value.NodeIdOsm;
+            }
+
+            StartNode = value;
+        }
     }
     public Node EndNode {
         get{
@@ -25,7 +31,13 @@ public class Edge
             return EndNode;
         }
         set
-        {EndNode = value;}
+        {
+            if(EndNodeId == 0){
+                EndNodeId = value.NodeIdOsm;
+            }
+            EndNode = value;
+            
+        }
     }
     public long OsmWayId{get;set;}
 
@@ -42,5 +54,41 @@ public class Edge
             length = value;
         }
     } // this should be in meters
-    public double SpeedLimit{get;set;}
+    public int SpeedLimit{get;set;}
+
+    private string _streetName = "";
+    public string StreetName{
+        get{
+            return _streetName;
+        }
+        set{
+            if(value is not null){
+                _streetName = value;
+            }
+        }
+    }
+
+    private string _highway = "";
+    public string Highway{
+        get{
+            return _highway;
+        }
+        set{
+            if(value is not null){
+                _highway = value;
+            }
+        }
+    }
+
+    private string _surface = "";
+    public string Surface{
+        get{
+            return _highway;
+        }
+        set{
+            if(value is not null){
+                _highway = value;
+            }
+        }
+    }
 }
