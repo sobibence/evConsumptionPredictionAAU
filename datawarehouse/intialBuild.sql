@@ -1,6 +1,9 @@
-
-
 CREATE TYPE road_type AS ENUM ('asphalt'); -- lets add these as we are introduced to them by the road data?
+
+CREATE TABLE producer (
+	id serial primary key,
+	name varchar(255)
+);
 
 CREATE TABLE vehicle_model (
 	id serial PRIMARY KEY,
@@ -18,16 +21,11 @@ CREATE TABLE vehicle_model (
 	pt_effeciency int
 );
 
-CREATE TABLE producer (
-	id serial primary key,
-	name varchar(255)
-)
-
 CREATE TABLE vehicle_trip_status (
 	id serial PRIMARY KEY,
 	vehicle_model_id int REFERENCES vehicle_model(id),
 	additional_weight_grams int,
-	vehicle_milage_meters int,
+	vehicle_milage_meters int
 	-- driver_aggresiveness int
 );
 
@@ -64,3 +62,24 @@ CREATE TABLE fact_travel(
 	vehicle_id int REFERENCES vehicle(id)
 );
 
+CREATE SCHEMA map;
+SET search_path = map;
+
+CREATE TABLE node(
+	id serial PRIMARY KEY, -- we will have this beside the key from provider to make sure we are able to store data from a different provider in the future
+	latitude float,
+	longitude float,
+	longitude_meters int,
+	osm_node_id int --provider id
+);
+
+CREATE TABLE edge(
+	id serial PRIMARY KEY, -- we will have this beside the key from provider to make sure we are able to store data from a different provider in the future
+	length_meters float,
+	allowed_speed_kmph int,
+	inclination_degress int,
+	start_node_id int REFERENCES node(id),
+	end_node_id int REFERENCES node(id),
+	average_speed_kmph float,
+	osm_way_id int --provider id
+);
