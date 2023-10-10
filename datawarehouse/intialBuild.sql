@@ -6,9 +6,9 @@ CREATE TABLE vehicle_model (
 	id serial PRIMARY KEY,
 	battery_size_kwh int,
 	rolling_resistance int,
-	drag_coefficient int,
-	frontal_size int,
-	weight_gram int,
+	drag_coefficient float,
+	frontal_size float,
+	weight_kilogram int,
 	avg_consumption_wh_km int,
 	"name" varchar(255),
 	ac_power int,
@@ -53,17 +53,12 @@ CREATE TABLE fact_consumption (
 	energy_use_wh float
 );
 
-CREATE TABLE timestamp (
-	id serial PRIMARY KEY,
-	epoch_seconds int
-);
-
 CREATE TABLE fact_travel(
 	speed_km_per_hour float,
 	weather_id int REFERENCES weather(id),
 	edge_id int,
 	edge_percent float,
-	timestamp_id int REFERENCES timestamp(id),
+	time_epoch time,
 	acceleration_metre_per_second_squared float,
 	energy_consumption_Kwh float,
 	vehicle_id int REFERENCES vehicle(id)
