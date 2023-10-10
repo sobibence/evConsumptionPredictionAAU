@@ -41,27 +41,6 @@ CREATE TABLE weather (
 	road_type road_type
 );
 
-CREATE TABLE fact_consumption (
-	id serial PRIMARY KEY,
-	edge_id int,
-	day_in_year smallint,
-	minute_in_day smallint,
-	vehicle_id int REFERENCES vehicle(id),
-	weather_id int REFERENCES weather(id),
-	energy_use_wh float
-);
-
-CREATE TABLE fact_travel(
-	speed_km_per_hour float,
-	weather_id int REFERENCES weather(id),
-	edge_id int,
-	edge_percent float,
-	time_epoch time,
-	acceleration_metre_per_second_squared float,
-	energy_consumption_Kwh float,
-	vehicle_id int REFERENCES vehicle(id)
-);
-
 CREATE SCHEMA map;
 SET search_path = map;
 
@@ -82,4 +61,27 @@ CREATE TABLE edge(
 	end_node_id int REFERENCES node(id),
 	average_speed_kmph float,
 	osm_way_id int --provider id
+);
+
+SET search_path = public;
+
+CREATE TABLE fact_consumption (
+	id serial PRIMARY KEY,
+	edge_id int REFERENCES edge(id),
+	day_in_year smallint,
+	minute_in_day smallint,
+	vehicle_id int REFERENCES vehicle(id),
+	weather_id int REFERENCES weather(id),
+	energy_use_wh float
+);
+
+CREATE TABLE fact_travel(
+	speed_km_per_hour float,
+	weather_id int REFERENCES weather(id),
+	edge_id int REFERENCES edge(id),
+	edge_percent float,
+	time_epoch time,
+	acceleration_metre_per_second_squared float,
+	energy_consumption_Kwh float,
+	vehicle_id int REFERENCES vehicle(id)
 );
