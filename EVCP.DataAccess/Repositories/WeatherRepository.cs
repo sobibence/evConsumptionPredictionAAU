@@ -5,9 +5,9 @@ namespace EVCP.DataAccess.Repositories;
 
 public class WeatherRepository : BaseRepository<Weather>, IWeatherRepository
 {
-    private DbContext _context;
+    private DapperContext _context;
 
-    public WeatherRepository(DbContext context) : base(context)
+    public WeatherRepository(DapperContext context) : base(context)
     {
         _context = context;
     }

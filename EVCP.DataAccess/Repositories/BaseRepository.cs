@@ -4,9 +4,9 @@ namespace EVCP.DataAccess.Repositories;
 
 public class BaseRepository<T> : IBaseRepository<T>
 {
-    private DbContext _context;
+    private DapperContext _context;
 
-    public BaseRepository(DbContext context)
+    public BaseRepository(DapperContext context)
     {
         _context = context;
     }

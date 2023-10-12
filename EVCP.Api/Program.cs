@@ -14,7 +14,7 @@ try
     builder.Host.UseSerilog();
 
     // Add services to the container.
-    builder.Services.AddSingleton<DbContext>();
+    builder.Services.AddSingleton<DapperContext>();
 
     builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
 
