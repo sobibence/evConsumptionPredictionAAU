@@ -1,4 +1,4 @@
-﻿namespace EVCP.DataAccess.Interfaces;
+﻿namespace EVCP.DataAccess.Repositories;
 
 public interface IBaseRepository<T>
 {

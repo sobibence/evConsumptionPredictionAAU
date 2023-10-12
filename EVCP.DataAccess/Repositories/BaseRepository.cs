@@ -1,6 +1,4 @@
-﻿using EVCP.DataAccess.Interfaces;
-
-namespace EVCP.DataAccess.Repositories;
+﻿namespace EVCP.DataAccess.Repositories;
 
 public class BaseRepository<T> : IBaseRepository<T>
 {

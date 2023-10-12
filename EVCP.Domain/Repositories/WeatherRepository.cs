@@ -1,7 +1,6 @@
-﻿using EVCP.DataAccess.Interfaces;
-using EVCP.Domain.Models;
+﻿using EVCP.Domain.Models;
 
-namespace EVCP.DataAccess.Repositories;
+namespace EVCP.Domain.Repositories;
 
 public class WeatherRepository : BaseRepository<Weather>, IWeatherRepository
 {
