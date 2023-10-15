@@ -1,11 +1,11 @@
 ﻿namespace EVCP.Domain.Models;
 
-public enum RoadType
+public enum road_type
 {
     asphalt
 }
 
-public enum WindDirection
+public enum wind_direction
 {
     N,
     NE,

@@ -13,16 +13,31 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
         _table = typeof(T).Name.ToLower();
     }
 
-    public virtual async Task<List<T>> GetAsync()
+    public async Task<bool> Create(T entity)
     {
         // sql query
-        var query = $"SELECT * FROM {_table}";
+        string columns = string.Join(", ", GetPropertyNames(entity));
+        string values = string.Join(",", GetPropertyParameters(entity));
+        var query = $"INSERT INTO {_table} ({columns}) VALUES ({values})";
 
-        // create and open connection to database
+        // create and open database connection
         using var connection = _context.CreateConnection();
         connection.Open();
 
-        // execute query and store result
+        // execute query
+        var result = await connection.ExecuteAsync(query, entity);
+
+        // return number of rows affected
+        return result > 0;
+    }
+
+    public virtual async Task<List<T>> GetAsync()
+    {
+        var query = $"SELECT * FROM {_table}";
+
+        using var connection = _context.CreateConnection();
+        connection.Open();
+
         List<T> result = (await connection.QueryAsync<T>(query)).ToList();
 
         return result;
@@ -30,21 +45,35 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 
     public virtual async Task<T?> GetAsync(int id)
     {
-        // parameters for query
         var parameters = new DynamicParameters();
         parameters.Add("@Id", id);
 
-        // sql query
         var query = $"SELECT * FROM {_table}" +
                     $"WHERE id=@Id";
 
-        // create and open connection to database
         using var connection = _context.CreateConnection();
         connection.Open();
 
-        // execute query and store result
         T? result = await connection.QueryFirstOrDefaultAsync<T>(query, parameters);
 
         return result;
+    }
+
+    private string[] GetPropertyNames(object entity)
+    {
+        return entity.GetType()
+            .GetProperties()
+            .Select(property => property.Name)
+            .Where(property => property != "id")
+            .ToArray();
+    }
+
+    private string[] GetPropertyParameters(object entity)
+    {
+        return entity.GetType()
+            .GetProperties()
+            .Select(property => "@" + property.Name)
+            .Where(property => property != "@id")
+            .ToArray();
     }
 }

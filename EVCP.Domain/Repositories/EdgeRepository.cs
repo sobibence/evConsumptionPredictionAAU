@@ -4,11 +4,11 @@ using EVCP.Domain.Models;
 
 namespace EVCP.Domain.Repositories;
 
-public class WeatherRepository : BaseRepository<Weather>, IWeatherRepository
+public class EdgeRepository : BaseRepository<Edge>, IEdgeRepository
 {
     private readonly DapperContext _context;
 
-    public WeatherRepository(DapperContext context) : base(context)
+    public EdgeRepository(DapperContext context) : base(context)
     {
         _context = context;
     }

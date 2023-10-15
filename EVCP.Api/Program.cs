@@ -13,16 +13,14 @@ try
     builder.Host.UseSerilog();
 
     // add enum mapping
-    //string connectionString = builder.Configuration.GetSection("ConnectionStrings")[ConnectionStrings.EVDataWarehouse] ?? "";
-
-    //var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
-    //dataSourceBuilder.MapEnum<RoadType>("road_type");
-    //dataSourceBuilder.MapEnum<WindDirection>("wind_direction");
-    //await using var dataSource = dataSourceBuilder.Build();
+    //SqlMapper.AddTypeMap(typeof(road_type), DbType.Object);
+    //SqlMapper.AddTypeMap(typeof(wind_direction), DbType.Object);
 
     // Add services to the container.
     builder.Services.AddSingleton<DapperContext>();
 
+    builder.Services.AddTransient<IEdgeRepository, EdgeRepository>();
+    builder.Services.AddTransient<INodeRepository, NodeRepository>();
     builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
 
     builder.Services.AddControllers();
