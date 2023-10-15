@@ -1,5 +1,4 @@
 using EVCP.DataAccess;
-using EVCP.DataAccess.Repositories;
 using EVCP.Domain.Repositories;
 using Serilog;
 
@@ -12,6 +11,14 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     builder.Host.UseSerilog();
+
+    // add enum mapping
+    //string connectionString = builder.Configuration.GetSection("ConnectionStrings")[ConnectionStrings.EVDataWarehouse] ?? "";
+
+    //var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+    //dataSourceBuilder.MapEnum<RoadType>("road_type");
+    //dataSourceBuilder.MapEnum<WindDirection>("wind_direction");
+    //await using var dataSource = dataSourceBuilder.Build();
 
     // Add services to the container.
     builder.Services.AddSingleton<DapperContext>();

@@ -11,7 +11,7 @@ public class DapperContext
     public DapperContext(IConfiguration configuration)
     {
         _configuration = configuration;
-        _connectionString = _configuration.GetSection("ConnectionStrings")["EVDataWarehouse"] ?? "";
+        _connectionString = _configuration.GetSection("ConnectionStrings")[ConnectionStrings.EVDataWarehouse] ?? "";
     }
 
     public NpgsqlConnection CreateConnection()

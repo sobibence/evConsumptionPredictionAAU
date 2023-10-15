@@ -1,28 +1,50 @@
-﻿namespace EVCP.DataAccess.Repositories;
+﻿using Dapper;
 
-public class BaseRepository<T> : IBaseRepository<T>
+namespace EVCP.DataAccess.Repositories;
+
+public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 {
-    private DapperContext _context;
+    private readonly DapperContext _context;
+    private readonly string _table;
 
     public BaseRepository(DapperContext context)
     {
         _context = context;
+        _table = typeof(T).Name.ToLower();
     }
 
     public virtual async Task<List<T>> GetAsync()
     {
-        // query
-        // parameters, dymanic parameters
+        // sql query
+        var query = $"SELECT * FROM {_table}";
 
-        // open connection
-        // get result, query or execute
-        // return result
+        // create and open connection to database
+        using var connection = _context.CreateConnection();
+        connection.Open();
 
-        throw new NotImplementedException();
+        // execute query and store result
+        List<T> result = (await connection.QueryAsync<T>(query)).ToList();
+
+        return result;
     }
 
-    public virtual async Task<T> GetAsync(int id)
+    public virtual async Task<T?> GetAsync(int id)
     {
-        throw new NotImplementedException();
+        // parameters for query
+        var parameters = new DynamicParameters();
+        parameters.Add("@Id", id);
+
+        // sql query
+        var query = $"SELECT * FROM {_table}" +
+                    $"WHERE id=@Id";
+
+        // create and open connection to database
+        using var connection = _context.CreateConnection();
+        connection.Open();
+
+        // execute query and store result
+        T? result = await connection.QueryFirstOrDefaultAsync<T>(query, parameters);
+
+        return result;
     }
 }
