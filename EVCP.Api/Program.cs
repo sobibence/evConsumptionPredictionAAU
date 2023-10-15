@@ -16,9 +16,9 @@ try
     //SqlMapper.AddTypeMap(typeof(road_type), DbType.Object);
     //SqlMapper.AddTypeMap(typeof(wind_direction), DbType.Object);
 
-    // Add services to the container.
     builder.Services.AddSingleton<DapperContext>();
 
+    // Add services to the container.
     builder.Services.AddTransient<IEdgeRepository, EdgeRepository>();
     builder.Services.AddTransient<INodeRepository, NodeRepository>();
     builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
