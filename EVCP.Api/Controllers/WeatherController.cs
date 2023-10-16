@@ -33,8 +33,8 @@ public class WeatherController : ControllerBase
             fog_percent = random.Next(100),
             rain_mm = random.Next(1000),
             temperature_celsius = random.Next(30),
-            //road_type = road_type.asphalt,
-            //wind_direction = wind_direction.SW,
+            road_type = road_type.asphalt.ToString(),
+            wind_direction = wind_direction.SW.ToString(),
         });
 
         return result;

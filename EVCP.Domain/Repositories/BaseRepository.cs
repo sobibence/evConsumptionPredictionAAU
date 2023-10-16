@@ -1,6 +1,10 @@
 ﻿using Dapper;
+using EVCP.DataAccess;
+using EVCP.DataAccess.Repositories;
+using EVCP.Domain.Custom;
+using EVCP.Domain.Models;
 
-namespace EVCP.DataAccess.Repositories;
+namespace EVCP.Domain.Repositories;
 
 public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 {
@@ -63,8 +67,8 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
         return entity.GetType()
             .GetProperties()
+            .Where(property => !Attribute.IsDefined(property, typeof(OnInsertIgnore)))
             .Select(property => property.Name)
-            .Where(property => property != "id")
             .ToArray();
     }
 
@@ -72,8 +76,15 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
         return entity.GetType()
             .GetProperties()
-            .Select(property => "@" + property.Name)
-            .Where(property => property != "@id")
+            .Where(property => !Attribute.IsDefined(property, typeof(OnInsertIgnore)))
+            .Select(property =>
+            {
+                if (Attribute.IsDefined(property, typeof(EnumType)))
+                    return $"'@{property.Name}'";
+                else
+                    return "@" + property.Name;
+            })
+
             .ToArray();
     }
 }

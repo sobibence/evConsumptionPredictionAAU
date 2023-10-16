@@ -12,10 +12,6 @@ try
 
     builder.Host.UseSerilog();
 
-    // add enum mapping
-    //SqlMapper.AddTypeMap(typeof(road_type), DbType.Object);
-    //SqlMapper.AddTypeMap(typeof(wind_direction), DbType.Object);
-
     builder.Services.AddSingleton<DapperContext>();
 
     // Add services to the container.

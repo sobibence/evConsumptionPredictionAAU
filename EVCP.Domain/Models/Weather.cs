@@ -1,4 +1,4 @@
-﻿using EVCP.DataAccess.Repositories;
+﻿using EVCP.Domain.Custom;
 
 namespace EVCP.Domain.Models;
 
@@ -8,8 +8,8 @@ public class Weather : BaseEntity
 
     public float wind_km_ph { get; set; }
 
-    public wind_direction wind_direction { get; set; }
-    //public string wind_direction { get; set; }
+    [EnumType]
+    public string wind_direction { get; set; }
 
     public float fog_percent { get; set; }
 
@@ -19,6 +19,6 @@ public class Weather : BaseEntity
 
     public int road_quality { get; set; }
 
-    public road_type road_type { get; set; }
-    //public string road_type { get; set; }
+    [EnumType]
+    public string road_type { get; set; }
 }

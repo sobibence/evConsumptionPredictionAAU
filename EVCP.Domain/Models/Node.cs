@@ -1,6 +1,4 @@
-﻿using EVCP.DataAccess.Repositories;
-
-namespace EVCP.Domain.Models;
+﻿namespace EVCP.Domain.Models;
 
 public class Node : BaseEntity
 {
