@@ -1,3 +1,5 @@
+using EVCP.DataAccess;
+using EVCP.Domain.Repositories;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -10,7 +12,12 @@ try
 
     builder.Host.UseSerilog();
 
+    builder.Services.AddSingleton<DapperContext>();
+
     // Add services to the container.
+    builder.Services.AddTransient<IEdgeRepository, EdgeRepository>();
+    builder.Services.AddTransient<INodeRepository, NodeRepository>();
+    builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
 
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
