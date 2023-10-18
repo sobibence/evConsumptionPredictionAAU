@@ -9,7 +9,7 @@ public class Weather : BaseEntity
     public float wind_km_ph { get; set; }
 
     [EnumType]
-    public string wind_direction { get; set; }
+    public string? wind_direction { get; set; }
 
     public float fog_percent { get; set; }
 
@@ -20,5 +20,5 @@ public class Weather : BaseEntity
     public int road_quality { get; set; }
 
     [EnumType]
-    public string road_type { get; set; }
+    public string? road_type { get; set; }
 }

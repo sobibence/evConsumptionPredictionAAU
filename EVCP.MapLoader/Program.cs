@@ -8,7 +8,8 @@ namespace EVCP.MapLoader
 {
     class MapLoader
     {
-        static async Task Main(string[] args){
+        static async Task Main(string[] args)
+        {
             // string aalborgRequestString = @"
             //     <osm-script>
             //     <query into=""road"" type=""way"">
@@ -19,23 +20,23 @@ namespace EVCP.MapLoader
             //     </osm-script>
             // ";
             string aauRequestString = @"
-                <osm-script>
-                <query into=""road"" type=""way"">
-                <has-kv k=""highway""/>
-                <bbox-query s=""57.000"" w=""9.9644"" n=""57.01997"" e=""10.021""/>
-                </query>
-                <print from=""road"" geometry=""full"" limit="""" mode=""body""/>
-                </osm-script>
-            ";
-            
-            string response = await RequestMap(aauRequestString);
-            OsmXmlParser.ParseXML(response);
+                [out:json];
+                way
+                [""highway""]
+                (57, 9.9644, 57.01997, 10.021)
+                ->.road;
+                .road out geom;
+                ";
+
+
+            Stream response = await RequestMap(aauRequestString);
+            OsmJsonParser.ParseAndProcess(response);
         }
 
-        static async Task<string> RequestMap(string query)
+        static async Task<Stream> RequestMap(string query)
         {
-        // Encode the query for use in a URL
-        string encodedQuery = Uri.EscapeDataString(query);
+            // Encode the query for use in a URL
+            string encodedQuery = Uri.EscapeDataString(query);
 
             // Set the Overpass API endpoint
             string overpassUrl = "https://overpass-api.de/api/interpreter?data=" + encodedQuery;
@@ -52,7 +53,7 @@ namespace EVCP.MapLoader
                     if (response.IsSuccessStatusCode)
                     {
                         // Read and display the response content
-                        string responseBody = await response.Content.ReadAsStringAsync();
+                        Stream responseBody = await response.Content.ReadAsStreamAsync();
                         //Console.WriteLine(responseBody);
                         Console.WriteLine("Got response, length:" + responseBody.Length);
                         return responseBody;
@@ -60,14 +61,14 @@ namespace EVCP.MapLoader
                     else
                     {
                         Console.WriteLine("Error: " + response.StatusCode);
-                        return "";
+                        
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error: " + ex.Message);
                 }
-                return "";
+                return null;
             }
         }
     }

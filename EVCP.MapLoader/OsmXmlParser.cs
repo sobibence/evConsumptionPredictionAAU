@@ -49,6 +49,8 @@ public class OsmXmlParser
                     node.Latitude = lat;
                     node.Longitude = lon;
                     node.NodeIdOsm = nodeId;
+                    nodeDictionary[nodeId] = node;
+                    wayListOfNodes.Add(nodeDictionary[nodeId]);
                 }
 
             }

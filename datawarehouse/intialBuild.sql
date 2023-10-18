@@ -41,8 +41,8 @@ CREATE TABLE weather (
 	road_type road_type
 );
 
-CREATE SCHEMA map;
-SET search_path = map;
+--CREATE SCHEMA map;
+--SET search_path = map;
 
 CREATE TABLE node(
 	id serial PRIMARY KEY, -- we will have this beside the key from provider to make sure we are able to store data from a different provider in the future
@@ -63,14 +63,14 @@ CREATE TABLE edge(
 	osm_way_id int --provider id
 );
 
-SET search_path = public;
+--SET search_path = public;
 
 CREATE TABLE fact_consumption (
 	id serial PRIMARY KEY,
 	edge_id int REFERENCES edge(id),
 	day_in_year smallint,
 	minute_in_day smallint,
-	vehicle_id int REFERENCES vehicle(id),
+	vehicle_id int REFERENCES vehicle_model(id),
 	weather_id int REFERENCES weather(id),
 	energy_use_wh float
 );
@@ -83,5 +83,5 @@ CREATE TABLE fact_travel(
 	time_epoch time,
 	acceleration_metre_per_second_squared float,
 	energy_consumption_Kwh float,
-	vehicle_id int REFERENCES vehicle(id)
+	vehicle_id int REFERENCES vehicle_model(id)
 );
