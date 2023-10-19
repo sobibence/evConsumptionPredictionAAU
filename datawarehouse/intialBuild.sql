@@ -7,11 +7,11 @@ CREATE TABLE producer (
 
 CREATE TABLE vehicle_model (
 	id serial PRIMARY KEY,
-	battery_size_kwh int,
+	battery_size_wh int,
 	rolling_resistance int,
 	drag_coefficient float,
 	frontal_size float,
-	weight_kilogram int,
+	weight_kg int,
 	avg_consumption_wh_km int,
 	"name" varchar(255),
 	ac_power int,
@@ -24,7 +24,7 @@ CREATE TABLE vehicle_model (
 CREATE TABLE vehicle_trip_status (
 	id serial PRIMARY KEY,
 	vehicle_model_id int REFERENCES vehicle_model(id),
-	additional_weight_grams int,
+	additional_weight_kg int,
 	vehicle_milage_meters int
 	-- driver_aggresiveness int
 );
@@ -33,7 +33,7 @@ CREATE TABLE weather (
 	id serial PRIMARY KEY,
 	temperature_celcius float,
 	wind_km_ph float,
-	wind_direction varchar(2),
+	wind_direction_degrees int, -- 0-360
 	fog_percent float,
 	sunshine_w_m float,
 	rain_mm int,
@@ -41,13 +41,10 @@ CREATE TABLE weather (
 	road_type road_type
 );
 
-CREATE SCHEMA map;
-SET search_path = map;
-
 CREATE TABLE node(
 	id serial PRIMARY KEY, -- we will have this beside the key from provider to make sure we are able to store data from a different provider in the future
-	latitude float,
-	longitude float,
+	latitude double,
+	longitude double,
 	longitude_meters int,
 	osm_node_id int --provider id
 );
@@ -63,25 +60,23 @@ CREATE TABLE edge(
 	osm_way_id int --provider id
 );
 
-SET search_path = public;
-
-CREATE TABLE fact_consumption (
+CREATE TABLE fact_estimated_consumption (
 	id serial PRIMARY KEY,
 	edge_id int REFERENCES edge(id),
 	day_in_year smallint,
 	minute_in_day smallint,
 	vehicle_id int REFERENCES vehicle(id),
 	weather_id int REFERENCES weather(id),
-	energy_use_wh float
+	energy_consumption_wh float
 );
 
-CREATE TABLE fact_travel(
+CREATE TABLE fact_recorded_travel(
 	speed_km_per_hour float,
 	weather_id int REFERENCES weather(id),
 	edge_id int REFERENCES edge(id),
 	edge_percent float,
 	time_epoch time,
 	acceleration_metre_per_second_squared float,
-	energy_consumption_Kwh float,
+	energy_consumption_wh float,
 	vehicle_id int REFERENCES vehicle(id)
 );
