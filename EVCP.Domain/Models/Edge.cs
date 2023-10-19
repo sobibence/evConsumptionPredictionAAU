@@ -3,22 +3,26 @@ namespace EVCP.Domain.Models;
 public class Edge : BaseEntity
 {
 
-    public long StartNodeId {get;set;}
-    public long EndNodeId {get;set;}
+    public long StartNodeId { get; set; }
+    public long EndNodeId { get; set; }
 
     private Node _startNode;
-    public Node StartNode {
-        get{
-            if(_startNode == null){
+    public Node StartNode
+    {
+        get
+        {
+            if (_startNode == null)
+            {
                 //TODO: attempt to get it from db if the id exist
                 throw new NullReferenceException();
             }
             return _startNode;
         }
-    
+
         set
         {
-            if(StartNodeId == 0){
+            if (StartNodeId == 0)
+            {
                 StartNodeId = value.NodeIdOsm;
             }
 
@@ -27,9 +31,12 @@ public class Edge : BaseEntity
     }
 
     private Node _endNode;
-    public Node EndNode {
-        get{
-            if(_endNode == null){
+    public Node EndNode
+    {
+        get
+        {
+            if (_endNode == null)
+            {
                 //TODO: attempt to get it from db if the id exist
                 throw new NullReferenceException();
             }
@@ -37,64 +44,94 @@ public class Edge : BaseEntity
         }
         set
         {
-            if(EndNodeId == 0){
+            if (EndNodeId == 0)
+            {
                 EndNodeId = value.NodeIdOsm;
             }
             _endNode = value;
-            
+
         }
     }
-    public long OsmWayId{get;set;}
+    public long OsmWayId { get; set; }
 
     //if we already calcuted it once then we dont need to do it again
     private double _length;
-    public double Length{
-        get{
-            if (_length == 0){
-                _length = GpsDistanceCalculator.CalculateDistance(StartNode,EndNode);
+    public double Length
+    {
+        get
+        {
+            if (_length == 0)
+            {
+                _length = GpsDistanceCalculator.CalculateDistance(StartNode, EndNode);
             }
             return _length;
         }
-        set{
+        set
+        {
             _length = value;
         }
     } // this should be in meters
-    public int SpeedLimit{get;set;}
+    public int SpeedLimit { get; set; }
 
     private string _streetName = "";
-    public string StreetName{
-        get{
+    public string StreetName
+    {
+        get
+        {
             return _streetName;
         }
-        set{
-            if(value is not null){
+        set
+        {
+            if (value is not null)
+            {
                 _streetName = value;
             }
         }
     }
 
     private string _highway = "";
-    public string Highway{
-        get{
+    public string Highway
+    {
+        get
+        {
             return _highway;
         }
-        set{
-            if(value is not null){
+        set
+        {
+            if (value is not null)
+            {
                 _highway = value;
             }
         }
     }
 
     private string _surface = "";
-    public string Surface{
-        get{
+    public string Surface
+    {
+        get
+        {
             return _surface;
         }
-        set{
-            if(value is not null){
+        set
+        {
+            if (value is not null)
+            {
                 _surface = value;
             }
         }
+    }
+
+    public override string ToString()
+    {
+        return $"Way Info:\n" +
+               $"OsmWayId: {OsmWayId}\n" +
+               $"StartNode: {StartNodeId}\n" +
+               $"EndNode: {EndNodeId}\n" +
+               $"Length: {Length} meters\n" +
+               $"Speed Limit: {SpeedLimit}\n" +
+               $"Street Name: {StreetName}\n" +
+               $"Highway: {Highway}\n" +
+               $"Surface: {Surface}";
     }
 }
 

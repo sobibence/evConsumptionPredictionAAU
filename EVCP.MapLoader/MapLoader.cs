@@ -3,10 +3,9 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-
 namespace EVCP.MapLoader
 {
-    class MapLoader
+    public class MapLoaderClass
     {
         static async Task Main(string[] args)
         {
@@ -27,10 +26,25 @@ namespace EVCP.MapLoader
                 ->.road;
                 .road out geom;
                 ";
+            string aalborgRequestString = @"
+                [out:json];
+                way
+                [""highway""]
+                (57.0040, 9.8344, 57.0827, 10.0721)
+                ->.road;
+                .road out geom;
+                ";
 
 
-            Stream response = await RequestMap(aauRequestString);
+            Stream response = await RequestMap(aalborgRequestString);
             OsmJsonParser.ParseAndProcess(response);
+        }
+
+        public static async Task<Map> RequestAndProcessMap(string query)
+        {
+            Stream response = await RequestMap(query);
+            OsmJsonParser.ParseAndProcess(response);
+            return new Map { Nodes = OsmJsonParser.NodeDictionary.Values.ToList(), Edges = OsmJsonParser.Edges };
         }
 
         static async Task<Stream> RequestMap(string query)
@@ -61,7 +75,7 @@ namespace EVCP.MapLoader
                     else
                     {
                         Console.WriteLine("Error: " + response.StatusCode);
-                        
+
                     }
                 }
                 catch (Exception ex)

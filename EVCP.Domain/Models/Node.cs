@@ -8,4 +8,15 @@ public class Node : BaseEntity
 
     private List<Edge> _listOfConnectedEdges = new();
     public List<Edge> ListOfConnectedEdges { get { return _listOfConnectedEdges; } }
+
+    public override string ToString()
+    {
+        string connectedEdges = string.Join(", ", _listOfConnectedEdges.Select(edge => edge.OsmWayId));
+
+        return $"Node Info:\n" +
+               $"NodeIdOsm: {NodeIdOsm}\n" +
+               $"Latitude: {Latitude}\n" +
+               $"Longitude: {Longitude}\n" +
+               $"Connected Edges: [{connectedEdges}]";
+    }
 }

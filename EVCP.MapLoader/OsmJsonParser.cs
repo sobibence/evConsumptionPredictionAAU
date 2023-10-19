@@ -1,5 +1,6 @@
 ﻿
 using System.Diagnostics;
+using System.Dynamic;
 using System.IO;
 using System.Numerics;
 using System.Text.Json;
@@ -13,6 +14,10 @@ public class OsmJsonParser
 {
     static Dictionary<long, Node> nodeDictionary = new(); // nodeid is the key
     static List<Edge> edges = new(); // 
+
+    public static Dictionary<long, Node> NodeDictionary {get{return nodeDictionary;}}
+
+    public static List<Edge> Edges {get{return edges;}}
 
     private static readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions
     {
