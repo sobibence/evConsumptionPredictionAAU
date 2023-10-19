@@ -2,37 +2,27 @@
 {
     public class WeatherData
     {
-        public WeatherData(DateTime date, List<HourlyWeatherData> hourlyData)
+        public WeatherData(DateTime at, bool isRaining, bool isSnowing, double windSpeed, int windDirection, double fog, double humidity, double temperature, double precipitation)
         {
-            Date = date;
-            HourlyData = hourlyData;
-        }
-
-        public DateTime Date { get; }
-        public List<HourlyWeatherData> HourlyData { get; set; }
-    }
-
-    public class HourlyWeatherData
-    {
-        public HourlyWeatherData(int hour, bool isRaining, bool isSnowing, int windSpeed, int windDirection, int humidity, int temperature, double precipitation)
-        {
-            Hour = hour;
+            At = at;
             IsRaining = isRaining;
             IsSnowing = isSnowing;
             WindSpeed = windSpeed;
             WindDirection = windDirection;
+            Fog = fog;
             Humidity = humidity;
             Temperature = temperature;
             Precipitation = precipitation;
         }
 
-        public int Hour { get; }
+        public DateTime At { get; }
         public bool IsRaining { get; }
         public bool IsSnowing { get; }
-        public int WindSpeed { get; }
+        public double WindSpeed { get; }
         public int WindDirection { get; }
-        public int Humidity { get; }
-        public int Temperature { get; }
+        public double Fog { get; }
+        public double Humidity { get; }
+        public double Temperature { get; }
         public double Precipitation { get; }
     }
 }
