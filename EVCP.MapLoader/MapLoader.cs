@@ -36,14 +36,26 @@ namespace EVCP.MapLoader
                 ";
 
 
-            Stream response = await RequestMap(aalborgRequestString);
-            OsmJsonParser.ParseAndProcess(response);
+            // Stream response = await RequestMap(aalborgRequestString);
+            // OsmJsonParser.ParseAndProcess(response);
+            //await SaveToFile(aalborgRequestString);
+            Stream file = File.OpenRead("/home/sobibence/AAU/1_semester/project/evConsumptionPredictionAAU/tmpJson/map.txt");
+            OsmJsonParser.ParseAndProcess(file);
+            file.Close();
         }
 
         public static async Task<Map> RequestAndProcessMap(string query)
         {
             Stream response = await RequestMap(query);
-            OsmJsonParser.ParseAndProcess(response);
+            OsmJsonParser.ParseAndProcess(response).Wait();
+            return new Map { Nodes = OsmJsonParser.NodeDictionary.Values.ToList(), Edges = OsmJsonParser.Edges };
+        }
+
+        public static async Task<Map> ReadMapFromFile(string filestr = "/home/sobibence/AAU/1_semester/project/evConsumptionPredictionAAU/tmpJson/map.txt"){
+            Stream file = File.OpenRead(filestr);
+            Task jsonTask = OsmJsonParser.ParseAndProcess(file);
+            jsonTask.Wait();
+            file.Close();
             return new Map { Nodes = OsmJsonParser.NodeDictionary.Values.ToList(), Edges = OsmJsonParser.Edges };
         }
 
@@ -84,6 +96,13 @@ namespace EVCP.MapLoader
                 }
                 return null;
             }
+        }
+
+        static async Task SaveToFile(string request){
+            Stream response = await RequestMap(request);
+            FileStream file = File.Create("/home/sobibence/AAU/1_semester/project/evConsumptionPredictionAAU/tmpJson/map.txt");
+            response.CopyTo(file);
+            file.Close();
         }
     }
 }

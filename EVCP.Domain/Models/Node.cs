@@ -9,14 +9,18 @@ public class Node : BaseEntity
     private List<Edge> _listOfConnectedEdges = new();
     public List<Edge> ListOfConnectedEdges { get { return _listOfConnectedEdges; } }
 
+    private List<Node> _listOfConnectedNodes = new();
+    public List<Node> ListOfConnectedNodes { get { return _listOfConnectedNodes; } }
+
+
     public override string ToString()
     {
-        string connectedEdges = string.Join(", ", _listOfConnectedEdges.Select(edge => edge.OsmWayId));
+        string connectedNodes = string.Join(", ", _listOfConnectedNodes.Select(node => node.NodeIdOsm));
 
         return $"Node Info:\n" +
                $"NodeIdOsm: {NodeIdOsm}\n" +
                $"Latitude: {Latitude}\n" +
                $"Longitude: {Longitude}\n" +
-               $"Connected Edges: [{connectedEdges}]";
+               $"Connected Nodes: [{connectedNodes}]";
     }
 }

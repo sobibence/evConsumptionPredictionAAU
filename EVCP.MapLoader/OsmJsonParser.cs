@@ -170,6 +170,8 @@ public class OsmJsonParser
                         newEdge.EndNode = wayListOfNodes[j + 1];
                         wayListOfNodes[j].ListOfConnectedEdges.Add(newEdge);
                         wayListOfNodes[j + 1].ListOfConnectedEdges.Add(newEdge);
+                        wayListOfNodes[j].ListOfConnectedNodes.Add(wayListOfNodes[j+1]);
+                        wayListOfNodes[j+1].ListOfConnectedNodes.Add(wayListOfNodes[j]);
                         newEdge.Highway = element.Tags.Highway;
                         newEdge.Surface = element.Tags.Surface;
                         newEdge.SpeedLimit = int.Parse(element.Tags.Maxspeed);
@@ -192,7 +194,7 @@ public class OsmJsonParser
 
     }
 
-    internal static async void ParseAndProcess(Stream stream)
+    internal static async Task ParseAndProcess(Stream stream)
     {
         OverpassApiResponse? response = await Deserialize(stream);
         ProcessJson(response);
