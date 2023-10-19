@@ -1,6 +1,8 @@
 ﻿
 
 using System.Diagnostics;
+using System.Security.Cryptography;
+using EVCP.Domain.Models;
 
 namespace EVCP.Simulation
 {
@@ -64,11 +66,12 @@ namespace EVCP.Simulation
 
         static void Main(string[] args)
         {
-            // Display the number of command line arguments.
-            Console.WriteLine(args.Length);
             //SimulationManager.Instance.InitSimulation();
             RouteManager routeManager = new RouteManager();
-            routeManager.RequestRoute();
+            List<Edge> edgeList = routeManager.RequestRoute();
+            foreach(Edge edge in edgeList){
+                Console.WriteLine(edge.ToString());
+            }
         }
     }
 

@@ -176,6 +176,7 @@ public class OsmJsonParser
                         newEdge.Surface = element.Tags.Surface;
                         newEdge.SpeedLimit = int.Parse(element.Tags.Maxspeed);
                         newEdge.StreetName = element.Tags.Name;
+                        newEdge.OsmWayId = element.Id;
                         edges.Add(newEdge);
 
                     }

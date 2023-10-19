@@ -35,7 +35,7 @@ public class AStarSearch
             }
         }
 
-        return null; // No path found
+        return new List<Node>(); // No path found
     }
 
     private static List<Node> ReconstructPath(Dictionary<Node, Node> cameFrom, Node current)
