@@ -43,7 +43,7 @@ public class OsmJsonParser
     {
         public long Id { get; set; }
         public string Type { get; set; }
-        public Tags Tags { get; set; }
+        public Tags tags = new Tags();
 
         public List<long> Nodes { get; set; }
         public List<Coordinates> Geometry { get; set; }
@@ -60,7 +60,7 @@ public class OsmJsonParser
     {
         // Define properties for any tags you want to extract from the response
         private string _name;
-        public string Name
+        public string name
         {
             get
             {
@@ -77,7 +77,7 @@ public class OsmJsonParser
         }
 
         private string _highway;
-        public string Highway
+        public string highway
         {
            get
             {
@@ -93,8 +93,8 @@ public class OsmJsonParser
             set { }
         }
 
-        private string _maxspeed;
-        public string Maxspeed
+        public string _maxspeed;
+        public string maxspeed
         {
             get
             {
@@ -110,8 +110,8 @@ public class OsmJsonParser
             set { }
         }
 
-        private string _surface;
-        public string Surface
+        public string _surface;
+        public string surface
         {
             get
             {
@@ -172,10 +172,10 @@ public class OsmJsonParser
                         wayListOfNodes[j + 1].ListOfConnectedEdges.Add(newEdge);
                         wayListOfNodes[j].ListOfConnectedNodes.Add(wayListOfNodes[j+1]);
                         wayListOfNodes[j+1].ListOfConnectedNodes.Add(wayListOfNodes[j]);
-                        newEdge.Highway = element.Tags.Highway;
-                        newEdge.Surface = element.Tags.Surface;
-                        newEdge.SpeedLimit = int.Parse(element.Tags.Maxspeed);
-                        newEdge.StreetName = element.Tags.Name;
+                        newEdge.Highway = element.tags.highway;
+                        newEdge.Surface = element.tags.surface;
+                        newEdge.SpeedLimit = int.Parse(element.tags.maxspeed);
+                        newEdge.StreetName = element.tags.name;
                         newEdge.OsmWayId = element.Id;
                         edges.Add(newEdge);
 
