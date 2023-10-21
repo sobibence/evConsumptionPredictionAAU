@@ -4,16 +4,16 @@ using EVCP.Domain.Models;
 
 namespace EVCP.Domain.Repositories;
 
-public interface IWeatherRepository : IBaseRepository<Weather>
+public interface IProducerRepository : IBaseRepository<Producer>
 {
 
 }
 
-public class WeatherRepository : BaseRepository<Weather>, IWeatherRepository
+public class ProducerRepository : BaseRepository<Producer>, IProducerRepository
 {
     private readonly DapperContext _context;
 
-    public WeatherRepository(DapperContext context) : base(context)
+    public ProducerRepository(DapperContext context) : base(context)
     {
         _context = context;
     }

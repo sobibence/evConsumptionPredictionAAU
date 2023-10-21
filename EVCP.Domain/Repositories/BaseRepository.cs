@@ -2,11 +2,10 @@
 using EVCP.DataAccess;
 using EVCP.DataAccess.Repositories;
 using EVCP.Domain.Helpers;
-using EVCP.Domain.Models;
 
 namespace EVCP.Domain.Repositories;
 
-public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
+public class BaseRepository<T> : IBaseRepository<T>
 {
     private readonly DapperContext _context;
     private readonly string _table;
@@ -19,23 +18,28 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 
     public async Task<bool> Create(T entity)
     {
-        // sql query
-        string columns = string.Join(", ", GetPropertyNames(entity));
-        string values = string.Join(",", GetPropertyParameters(entity));
-        var query = $"INSERT INTO {_table} ({columns}) VALUES ({values})";
+        if (entity != null)
+        {
+            // generate insert sql query
+            string columns = string.Join(", ", GetPropertyNames(entity));
+            string values = string.Join(",", GetPropertyParameters(entity));
+            var query = $"INSERT INTO {_table} ({columns}) VALUES ({values})";
 
-        // create and open database connection
-        using var connection = _context.CreateConnection();
-        connection.Open();
+            // create and open database connection
+            using var connection = _context.CreateConnection();
+            connection.Open();
 
-        // execute query
-        var result = await connection.ExecuteAsync(query, entity);
+            // execute query
+            var result = await connection.ExecuteAsync(query, entity);
 
-        // return number of rows affected
-        return result > 0;
+            // return number of rows affected
+            return result > 0;
+        }
+
+        return false;
     }
 
-    public virtual async Task<List<T>> GetAsync()
+    public virtual async Task<IEnumerable<T>> GetAsync()
     {
         var query = $"SELECT * FROM {_table}";
 
@@ -63,7 +67,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
         return result;
     }
 
-    private string[] GetPropertyNames(object entity)
+    private string[] GetPropertyNames(T entity)
     {
         return entity.GetType()
             .GetProperties()
@@ -72,7 +76,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
             .ToArray();
     }
 
-    private string[] GetPropertyParameters(object entity)
+    private string[] GetPropertyParameters(T entity)
     {
         return entity.GetType()
             .GetProperties()
