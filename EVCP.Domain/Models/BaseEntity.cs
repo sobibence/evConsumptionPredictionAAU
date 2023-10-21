@@ -1,9 +1,9 @@
-﻿using EVCP.Domain.Custom;
+﻿using EVCP.Domain.Helpers;
 
 namespace EVCP.Domain.Models;
 
 public class BaseEntity
 {
     [OnInsertIgnore]
-    public int id { get; set; }
+    public int Id { get; set; }
 }

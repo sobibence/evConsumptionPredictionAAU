@@ -2,11 +2,11 @@
 
 public class Node : BaseEntity
 {
-    public float latitude { get; set; }
+    public float Latitude { get; set; }
 
-    public float longitude { get; set; }
+    public float Longitude { get; set; }
 
-    public int longitude_meters { get; set; }
+    public int LongitudeMeters { get; set; }
 
-    public int osm_node_id { get; set; }
+    public int OsmNodeId { get; set; }
 }

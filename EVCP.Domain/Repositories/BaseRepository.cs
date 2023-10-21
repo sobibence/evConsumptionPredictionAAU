@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using EVCP.DataAccess;
 using EVCP.DataAccess.Repositories;
-using EVCP.Domain.Custom;
+using EVCP.Domain.Helpers;
 using EVCP.Domain.Models;
 
 namespace EVCP.Domain.Repositories;

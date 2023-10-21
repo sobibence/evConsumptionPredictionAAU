@@ -1,4 +1,4 @@
-﻿namespace EVCP.Domain.Custom;
+﻿namespace EVCP.Domain.Helpers;
 
 /// <summary>
 /// Custom attribute in order to be able to ignore certain properties in sql insert queries.

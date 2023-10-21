@@ -12,6 +12,8 @@ try
 
     builder.Host.UseSerilog();
 
+    // dapper config
+    Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
     builder.Services.AddSingleton<DapperContext>();
 
     // Add services to the container.
