@@ -19,5 +19,5 @@ public class Weather : BaseEntity
     public int road_quality { get; set; }
 
     [EnumType]
-    public string road_type { get; set; }
+    public road_type road_type { get; set; }
 }

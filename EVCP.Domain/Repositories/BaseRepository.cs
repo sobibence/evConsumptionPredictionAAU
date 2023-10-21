@@ -17,27 +17,24 @@ public class BaseRepository<T> : IBaseRepository<T>
         _table = GetTableName();
     }
 
-    public async Task<bool> Create(T entity)
+    public virtual async Task<bool> Create(T entity)
     {
-        if (entity != null)
-        {
-            // generate insert sql query
-            string columns = string.Join(", ", GetPropertyNames(entity));
-            string values = string.Join(",", GetPropertyParameters(entity));
-            var query = $"INSERT INTO {_table} ({columns}) VALUES ({values})";
+        if (entity == null) return false;
 
-            // create and open database connection
-            using var connection = _context.CreateConnection();
-            connection.Open();
+        // generate insert sql query
+        string columns = string.Join(", ", GetPropertyNames(entity));
+        string values = string.Join(",", GetPropertyParameters(entity));
+        var query = $"INSERT INTO {_table} ({columns}) VALUES ({values})";
 
-            // execute query
-            var result = await connection.ExecuteAsync(query, entity);
+        // create and open database connection
+        using var connection = _context.CreateConnection();
+        connection.Open();
 
-            // return number of rows affected
-            return result > 0;
-        }
+        // execute query
+        var result = await connection.ExecuteAsync(query, entity);
 
-        return false;
+        // return number of rows affected
+        return result > 0;
     }
 
     public virtual async Task<IEnumerable<T>> GetAsync()
