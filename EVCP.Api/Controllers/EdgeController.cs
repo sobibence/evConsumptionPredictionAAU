@@ -32,9 +32,9 @@ public class EdgeController : ControllerBase
         {
             allowed_speed_kmph = random.Next(200),
             average_speed_kmph = random.Next(200),
-            start_node_id = random.Next(100),
-            end_node_id = random.Next(100),
-            inclination_degrees = random.Next(-90, 90),
+            start_node_id = random.Next(1, 5),
+            end_node_id = random.Next(1, 5),
+            inclination_degress = random.Next(-90, 90),
             length_meters = random.Next(1000),
             osm_way_id = random.Next(1000),
         });

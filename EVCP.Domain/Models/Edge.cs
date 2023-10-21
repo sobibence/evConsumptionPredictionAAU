@@ -2,17 +2,17 @@
 
 public class Edge : BaseEntity
 {
-    public float LengthMeters { get; set; }
+    public float length_meters { get; set; }
 
-    public int AllowedSpeedKmph { get; set; }
+    public int allowed_speed_kmph { get; set; }
 
-    public float InclinationDegrees { get; set; }
+    public float inclination_degress { get; set; }
 
-    public int StartNodeId { get; set; }
+    public int start_node_id { get; set; }
 
-    public int EndNodeId { get; set; }
+    public int end_node_id { get; set; }
 
-    public float AverageSpeedKmph { get; set; }
+    public float average_speed_kmph { get; set; }
 
-    public long OsmWayId { get; set; }
+    public long osm_way_id { get; set; }
 }

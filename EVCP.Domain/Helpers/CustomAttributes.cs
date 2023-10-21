@@ -15,3 +15,14 @@ public class OnInsertIgnore : Attribute
 public class EnumType : Attribute
 {
 }
+
+[AttributeUsage(AttributeTargets.Class)]
+public class TableName : Attribute
+{
+    public string Name { get; }
+
+    public TableName(string name)
+    {
+        Name = name;
+    }
+}

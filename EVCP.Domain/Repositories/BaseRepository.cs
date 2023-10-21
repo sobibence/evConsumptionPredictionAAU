@@ -2,6 +2,7 @@
 using EVCP.DataAccess;
 using EVCP.DataAccess.Repositories;
 using EVCP.Domain.Helpers;
+using System.Reflection;
 
 namespace EVCP.Domain.Repositories;
 
@@ -13,7 +14,7 @@ public class BaseRepository<T> : IBaseRepository<T>
     public BaseRepository(DapperContext context)
     {
         _context = context;
-        _table = typeof(T).Name.ToLower();
+        _table = GetTableName();
     }
 
     public async Task<bool> Create(T entity)
@@ -90,5 +91,20 @@ public class BaseRepository<T> : IBaseRepository<T>
             })
 
             .ToArray();
+    }
+
+    private string GetTableName()
+    {
+        Type type = typeof(T);
+        var result = type.Name.ToLower();
+
+        var attribute = (TableName)type.GetCustomAttribute(typeof(TableName), false);
+
+        if (attribute != null)
+        {
+            result = attribute.Name;
+        }
+
+        return result;
     }
 }

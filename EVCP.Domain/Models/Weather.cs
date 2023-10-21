@@ -4,20 +4,20 @@ namespace EVCP.Domain.Models;
 
 public class Weather : BaseEntity
 {
-    public float TemperatureCelsius { get; set; }
+    public float temperature_celcius { get; set; }
 
-    public float WindKmPh { get; set; }
+    public float wind_km_ph { get; set; }
 
-    public int WindDirectionDegrees { get; set; }
+    public int wind_direction_degrees { get; set; }
 
-    public float FogPercent { get; set; }
+    public float fog_percent { get; set; }
 
-    public float SunshineWM { get; set; }
+    public float sunshine_w_m { get; set; }
 
-    public int RainMm { get; set; }
+    public int rain_mm { get; set; }
 
-    public int RoadQuality { get; set; }
+    public int road_quality { get; set; }
 
     [EnumType]
-    public string RoadType { get; set; }
+    public string road_type { get; set; }
 }

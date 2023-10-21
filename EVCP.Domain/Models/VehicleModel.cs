@@ -1,28 +1,31 @@
-﻿namespace EVCP.Domain.Models;
+﻿using EVCP.Domain.Helpers;
 
+namespace EVCP.Domain.Models;
+
+[TableName("vehicle_model")]
 public class VehicleModel : BaseEntity
 {
-    public int BatterySizeWh { get; set; }
+    public int battery_size_wh { get; set; }
 
-    public float RollingResistance { get; set; }
+    public float rolling_resistance { get; set; }
 
-    public float DragCoefficient { get; set; }
+    public float drag_coefficient { get; set; }
 
-    public float FrontalSize { get; set; }
+    public float frontal_size { get; set; }
 
-    public int WeightKg { get; set; }
+    public int weight_kg { get; set; }
 
-    public float AvgConsumptionWhKm { get; set; }
+    public float avg_consumption_wh_km { get; set; }
 
-    public string Name { get; set; }
+    public string name { get; set; }
 
-    public int AcPower { get; set; }
+    public int ac_power { get; set; }
 
-    public int Power { get; set; }
+    public int power { get; set; }
 
-    public int ProducerId { get; set; }
+    public int producer_id { get; set; }
 
-    public int Year { get; set; }
+    public int year { get; set; }
 
-    public float PtEfficiency { get; set; }
+    public float pt_effeciency { get; set; }
 }

@@ -32,9 +32,12 @@ public class WeatherController : ControllerBase
         {
             fog_percent = random.Next(100),
             rain_mm = random.Next(1000),
-            temperature_celsius = random.Next(30),
+            temperature_celcius = random.Next(30),
             road_type = road_type.asphalt.ToString(),
-            wind_direction = wind_direction.SW.ToString(),
+            road_quality = random.Next(100),
+            sunshine_w_m = random.Next(100),
+            wind_direction_degrees = random.Next(360),
+            wind_km_ph = random.Next(100)
         });
 
         return result;

@@ -1,16 +1,19 @@
-﻿namespace EVCP.Domain.Models;
+﻿using EVCP.Domain.Helpers;
 
+namespace EVCP.Domain.Models;
+
+[TableName("fact_estimated_consumption")]
 public class FactEstimatedConsumption : BaseEntity
 {
-    public int EdgeId { get; set; }
+    public int edge_id { get; set; }
 
-    public int DayInYear { get; set; }
+    public int day_in_year { get; set; }
 
-    public int MinuteInDay { get; set; }
+    public int minute_in_day { get; set; }
 
-    public int VehicleId { get; set; }
+    public int vehicle_id { get; set; }
 
-    public int WeatherId { get; set; }
+    public int weather_id { get; set; }
 
-    public float EnergyConsumptionWh { get; set; }
+    public float energy_consumption_wh { get; set; }
 }
