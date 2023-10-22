@@ -24,7 +24,6 @@ public class WeatherRepository : BaseRepository<Weather>, IWeatherRepository
         if (entity == null) return false;
 
         // generate insert sql query
-        string table = "weather";
         string columns = string.Join(", ", new string[]
         {
             "temperature_celcius", "wind_km_ph", "wind_direction_degrees", "fog_percent",
@@ -35,7 +34,7 @@ public class WeatherRepository : BaseRepository<Weather>, IWeatherRepository
             "@temperature_celcius", "@wind_km_ph", "@wind_direction_degrees", "@fog_percent",
             "@sunshine_w_m", "@rain_mm", "@road_quality", "'asphalt'"
         });
-        var query = $"INSERT INTO {table} ({columns}) VALUES ({values})";
+        var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
 
         using var connection = _context.CreateConnection();
         connection.Open();

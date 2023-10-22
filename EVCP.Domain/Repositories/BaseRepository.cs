@@ -9,12 +9,13 @@ namespace EVCP.Domain.Repositories;
 public class BaseRepository<T> : IBaseRepository<T>
 {
     private readonly DapperContext _context;
-    private readonly string _table;
+
+    public readonly string Table;
 
     public BaseRepository(DapperContext context)
     {
         _context = context;
-        _table = GetTableName();
+        Table = GetTableName();
     }
 
     public virtual async Task<bool> Create(T entity)
@@ -24,7 +25,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         // generate insert sql query
         string columns = string.Join(", ", GetPropertyNames(entity));
         string values = string.Join(",", GetPropertyParameters(entity));
-        var query = $"INSERT INTO {_table} ({columns}) VALUES ({values})";
+        var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
 
         // create and open database connection
         using var connection = _context.CreateConnection();
@@ -39,7 +40,7 @@ public class BaseRepository<T> : IBaseRepository<T>
 
     public virtual async Task<IEnumerable<T>> GetAsync()
     {
-        var query = $"SELECT * FROM {_table}";
+        var query = $"SELECT * FROM {Table}";
 
         using var connection = _context.CreateConnection();
         connection.Open();
@@ -54,7 +55,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         var parameters = new DynamicParameters();
         parameters.Add("@Id", id);
 
-        var query = $"SELECT * FROM {_table}" +
+        var query = $"SELECT * FROM {Table}" +
                     $"WHERE id=@Id";
 
         using var connection = _context.CreateConnection();
