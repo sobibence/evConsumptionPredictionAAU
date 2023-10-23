@@ -21,9 +21,14 @@ CREATE TABLE vehicle_model (
 	pt_effeciency int
 );
 
+CREATE TABLE vehicle (
+	id serial PRIMARY KEY,
+	vehicle_model_id int REFERENCES vehicle_model(id)
+);
+
 CREATE TABLE vehicle_trip_status (
 	id serial PRIMARY KEY,
-	vehicle_model_id int REFERENCES vehicle_model(id),
+	vehicle_id int REFERENCES vehicle(id),
 	additional_weight_kg int,
 	vehicle_milage_meters int
 	-- driver_aggresiveness int
@@ -43,9 +48,9 @@ CREATE TABLE weather (
 
 CREATE TABLE node(
 	id serial PRIMARY KEY, -- we will have this beside the key from provider to make sure we are able to store data from a different provider in the future
-	latitude double,
-	longitude double,
-	longitude_meters int,
+	latitude decimal,
+	longitude decimal,
+	longitude_meters decimal,
 	osm_node_id int --provider id
 );
 
