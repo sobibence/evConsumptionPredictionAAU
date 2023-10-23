@@ -1,5 +1,6 @@
 DROP TABLE producer CASCADE;
 DROP TABLE vehicle_model CASCADE;
+DROP TABLE vehicle CASCADE;
 DROP TABLE vehicle_trip_status CASCADE;
 DROP TABLE weather CASCADE;
 DROP TABLE node CASCADE;
