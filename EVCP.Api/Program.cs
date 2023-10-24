@@ -14,7 +14,7 @@ try
     builder.Host.UseSerilog();
 
     // Dapper config
-    //Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+    Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
     builder.Services.AddSingleton<DapperContext>();
 
     // Add DI for repositories.

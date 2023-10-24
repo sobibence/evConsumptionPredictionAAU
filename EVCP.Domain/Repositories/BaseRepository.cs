@@ -22,9 +22,10 @@ public class BaseRepository<T> : IBaseRepository<T>
     {
         if (entity == null) return false;
 
-        // generate insert sql query
+        // generate insert sql query and dynamic parameters
+        var propertyParameters = GetPropertyParameters(entity);
         string columns = string.Join(", ", GetPropertyNames(entity));
-        string values = string.Join(",", GetPropertyParameters(entity));
+        string values = string.Join(",", propertyParameters.names);
         var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
 
         // create and open database connection
@@ -32,7 +33,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         connection.Open();
 
         // execute query
-        var result = await connection.ExecuteAsync(query, entity);
+        var result = await connection.ExecuteAsync(query, propertyParameters.parameters);
 
         // return number of rows affected
         return result > 0;
@@ -71,24 +72,50 @@ public class BaseRepository<T> : IBaseRepository<T>
         return entity.GetType()
             .GetProperties()
             .Where(property => !Attribute.IsDefined(property, typeof(OnInsertIgnore)))
-            .Select(property => property.Name)
+            .Select(property =>
+            {
+                var result = "";
+
+                var attribute = (ColumnName)property.GetCustomAttribute(typeof(ColumnName), false);
+
+                if (attribute != null)
+                {
+                    result = attribute.Name;
+                }
+
+                return result;
+            })
             .ToArray();
     }
 
-    private string[] GetPropertyParameters(T entity)
+    private (string[] names, DynamicParameters parameters) GetPropertyParameters(T entity)
     {
-        return entity.GetType()
+        var parameterNames = new List<string>();
+        var parameters = new DynamicParameters();
+
+        entity.GetType()
             .GetProperties()
             .Where(property => !Attribute.IsDefined(property, typeof(OnInsertIgnore)))
-            .Select(property =>
+            .ToList()
+            .ForEach(property =>
             {
-                if (Attribute.IsDefined(property, typeof(EnumType)))
-                    return $"'@{property.Name}'";
-                else
-                    return "@" + property.Name;
-            })
+                var name = $"@{property.Name}";
 
-            .ToArray();
+                if (Attribute.IsDefined(property, typeof(EnumType)))
+                {
+                    var attribute = (ColumnName)property.GetCustomAttribute(typeof(ColumnName), false);
+                    var enumName = attribute != null ? attribute.Name : "";
+                    parameterNames.Add($"{name}::{enumName}");
+                    parameters.Add(name, property.GetValue(entity).ToString());
+                }
+                else
+                {
+                    parameterNames.Add(name);
+                    parameters.Add(name, property.GetValue(entity));
+                }
+            });
+
+        return (parameterNames.ToArray(), parameters);
     }
 
     private string GetTableName()

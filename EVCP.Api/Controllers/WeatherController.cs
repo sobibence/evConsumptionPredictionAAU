@@ -30,14 +30,14 @@ public class WeatherController : ControllerBase
 
         var result = await _weatherRepository.Create(new Weather
         {
-            fog_percent = random.Next(100),
-            rain_mm = random.Next(1000),
-            temperature_celcius = random.Next(30),
-            road_type = road_type.asphalt.ToString(),
-            road_quality = random.Next(100),
-            sunshine_w_m = random.Next(100),
-            wind_direction_degrees = random.Next(360),
-            wind_km_ph = random.Next(100)
+            FogPercent = random.Next(100),
+            RainMm = random.Next(1000),
+            TemperatureCelsius = random.Next(30),
+            RoadType = road_type.asphalt,
+            RoadQuality = random.Next(100),
+            SunshineWM = random.Next(100),
+            WindDirectionDegrees = random.Next(360),
+            WindKmPh = random.Next(100)
         });
 
         return result;
