@@ -1,6 +1,6 @@
 ﻿namespace EVCP.Domain.Models;
 
-public enum road_type
+public enum RoadType
 {
     asphalt
 }

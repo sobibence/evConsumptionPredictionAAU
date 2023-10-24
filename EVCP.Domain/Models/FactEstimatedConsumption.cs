@@ -5,15 +5,21 @@ namespace EVCP.Domain.Models;
 [TableName("fact_estimated_consumption")]
 public class FactEstimatedConsumption : BaseEntity
 {
-    public int edge_id { get; set; }
+    [ColumnName("edge_id")]
+    public int EdgeId { get; set; }
 
-    public int day_in_year { get; set; }
+    [ColumnName("day_in_year")]
+    public int DayInYear { get; set; }
 
-    public int minute_in_day { get; set; }
+    [ColumnName("minute_in_day")]
+    public int MinuteInDay { get; set; }
 
-    public int vehicle_id { get; set; }
+    [ColumnName("vehicle_id")]
+    public int VehicleId { get; set; }
 
-    public int weather_id { get; set; }
+    [ColumnName("weather_id")]
+    public int WeatherId { get; set; }
 
-    public float energy_consumption_wh { get; set; }
+    [ColumnName("energy_consumption_wh")]
+    public float EnergyConsumptionWh { get; set; }
 }

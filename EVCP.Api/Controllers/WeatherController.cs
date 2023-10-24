@@ -33,7 +33,7 @@ public class WeatherController : ControllerBase
             FogPercent = random.Next(100),
             RainMm = random.Next(1000),
             TemperatureCelsius = random.Next(30),
-            RoadType = road_type.asphalt,
+            RoadType = RoadType.asphalt,
             RoadQuality = random.Next(100),
             SunshineWM = random.Next(100),
             WindDirectionDegrees = random.Next(360),

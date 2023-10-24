@@ -29,9 +29,9 @@ public class VehicleTripStatusController : ControllerBase
 
         var result = await _vehicleTripStatusRepository.Create(new VehicleTripStatus
         {
-            additional_weight_kg = random.Next(1000),
-            vehicle_milage_meters = random.Next(1000000),
-            vehicle_model_id = random.Next(1, 5)
+            AdditionalWeightKg = random.Next(1000),
+            VehicleMilageMeters = random.Next(1000000),
+            VehicleModelId = random.Next(1, 5)
         });
 
         return result;

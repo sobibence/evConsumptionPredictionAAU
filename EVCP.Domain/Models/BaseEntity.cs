@@ -5,5 +5,6 @@ namespace EVCP.Domain.Models;
 public class BaseEntity
 {
     [OnInsertIgnore]
-    public int id { get; set; }
+    [ColumnName("id")]
+    public int Id { get; set; }
 }

@@ -30,10 +30,10 @@ public class NodeController : ControllerBase
 
         var result = await _nodeRepository.Create(new Node
         {
-            latitude = random.Next(-90, 90),
-            longitude = random.Next(-180, 180),
-            longitude_meters = random.Next(1000),
-            osm_node_id = random.Next(1000),
+            Latitude = random.Next(-90, 90),
+            Longitude = random.Next(-180, 180),
+            LongitudeMeters = random.Next(1000),
+            OsmNodeId = random.Next(1000),
         });
 
         return result;

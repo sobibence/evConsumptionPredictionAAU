@@ -23,9 +23,10 @@ public class BaseRepository<T> : IBaseRepository<T>
         if (entity == null) return false;
 
         // generate insert sql query and dynamic parameters
-        var propertyParameters = GetPropertyParameters(entity);
-        string columns = string.Join(", ", GetPropertyNames(entity));
-        string values = string.Join(",", propertyParameters.names);
+        (var columnArr, var valueArr, var parameters) = GetForInsert(entity);
+
+        string columns = string.Join(", ", columnArr);
+        string values = string.Join(",", valueArr);
         var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
 
         // create and open database connection
@@ -33,7 +34,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         connection.Open();
 
         // execute query
-        var result = await connection.ExecuteAsync(query, propertyParameters.parameters);
+        var result = await connection.ExecuteAsync(query, parameters);
 
         // return number of rows affected
         return result > 0;
@@ -41,7 +42,9 @@ public class BaseRepository<T> : IBaseRepository<T>
 
     public virtual async Task<IEnumerable<T>> GetAsync()
     {
-        var query = $"SELECT * FROM {Table}";
+        var columnArr = GetForSelect();
+        var columns = string.Join(", ", columnArr);
+        var query = $"SELECT {columns} FROM {Table}";
 
         using var connection = _context.CreateConnection();
         connection.Open();
@@ -56,7 +59,9 @@ public class BaseRepository<T> : IBaseRepository<T>
         var parameters = new DynamicParameters();
         parameters.Add("@Id", id);
 
-        var query = $"SELECT * FROM {Table}" +
+        var columnArr = GetForSelect();
+        var columns = string.Join(", ", columnArr);
+        var query = $"SELECT {columns} FROM {Table}" +
                     $"WHERE id=@Id";
 
         using var connection = _context.CreateConnection();
@@ -67,30 +72,10 @@ public class BaseRepository<T> : IBaseRepository<T>
         return result;
     }
 
-    private string[] GetPropertyNames(T entity)
+    private (string[] columns, string[] values, DynamicParameters parameters) GetForInsert(T entity)
     {
-        return entity.GetType()
-            .GetProperties()
-            .Where(property => !Attribute.IsDefined(property, typeof(OnInsertIgnore)))
-            .Select(property =>
-            {
-                var result = "";
-
-                var attribute = (ColumnName)property.GetCustomAttribute(typeof(ColumnName), false);
-
-                if (attribute != null)
-                {
-                    result = attribute.Name;
-                }
-
-                return result;
-            })
-            .ToArray();
-    }
-
-    private (string[] names, DynamicParameters parameters) GetPropertyParameters(T entity)
-    {
-        var parameterNames = new List<string>();
+        var columnNames = new List<string>();
+        var propertyNames = new List<string>();
         var parameters = new DynamicParameters();
 
         entity.GetType()
@@ -99,23 +84,45 @@ public class BaseRepository<T> : IBaseRepository<T>
             .ToList()
             .ForEach(property =>
             {
-                var name = $"@{property.Name}";
+                // add db column name
+                var attribute = (ColumnName)property.GetCustomAttribute(typeof(ColumnName), false);
+                var column = attribute != null ? attribute.Name : "";
+                columnNames.Add(column);
 
+                var propertyName = $"@{property.Name}";
+
+                // add model property names and dynamic parameters
                 if (Attribute.IsDefined(property, typeof(EnumType)))
                 {
-                    var attribute = (ColumnName)property.GetCustomAttribute(typeof(ColumnName), false);
-                    var enumName = attribute != null ? attribute.Name : "";
-                    parameterNames.Add($"{name}::{enumName}");
-                    parameters.Add(name, property.GetValue(entity).ToString());
+                    propertyNames.Add($"{propertyName}::{column}");
+                    parameters.Add(propertyName, property.GetValue(entity).ToString());
                 }
                 else
                 {
-                    parameterNames.Add(name);
-                    parameters.Add(name, property.GetValue(entity));
+                    propertyNames.Add(propertyName);
+                    parameters.Add(propertyName, property.GetValue(entity));
                 }
             });
 
-        return (parameterNames.ToArray(), parameters);
+        return (columnNames.ToArray(), propertyNames.ToArray(), parameters);
+    }
+
+    private string[] GetForSelect()
+    {
+        var columnToProperty = new List<string>();
+
+        typeof(T).GetProperties()
+            .ToList()
+            .ForEach(property =>
+            {
+                var attribute = (ColumnName)property.GetCustomAttribute(typeof(ColumnName), false);
+                var columnName = attribute != null ? attribute.Name : "";
+                var propertyName = property.Name;
+
+                columnToProperty.Add($"{columnName} AS {property.Name}");
+            });
+
+        return columnToProperty.ToArray();
     }
 
     private string GetTableName()

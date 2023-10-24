@@ -27,5 +27,5 @@ public class Weather : BaseEntity
 
     [EnumType]
     [ColumnName("road_type")]
-    public road_type RoadType { get; set; }
+    public RoadType RoadType { get; set; }
 }

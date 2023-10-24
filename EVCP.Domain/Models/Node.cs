@@ -1,12 +1,18 @@
-﻿namespace EVCP.Domain.Models;
+﻿using EVCP.Domain.Helpers;
+
+namespace EVCP.Domain.Models;
 
 public class Node : BaseEntity
 {
-    public float latitude { get; set; }
+    [ColumnName("latitude")]
+    public float Latitude { get; set; }
 
-    public float longitude { get; set; }
+    [ColumnName("longitude")]
+    public float Longitude { get; set; }
 
-    public int longitude_meters { get; set; }
+    [ColumnName("longitude_meters")]
+    public int LongitudeMeters { get; set; }
 
-    public long osm_node_id { get; set; }
+    [ColumnName("osm_node_id")]
+    public long OsmNodeId { get; set; }
 }

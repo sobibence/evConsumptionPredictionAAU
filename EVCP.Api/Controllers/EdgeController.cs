@@ -30,13 +30,13 @@ public class EdgeController : ControllerBase
 
         var result = await _edgeRepository.Create(new Edge
         {
-            allowed_speed_kmph = random.Next(200),
-            average_speed_kmph = random.Next(200),
-            start_node_id = random.Next(1, 5),
-            end_node_id = random.Next(1, 5),
-            inclination_degress = random.Next(-90, 90),
-            length_meters = random.Next(1000),
-            osm_way_id = random.Next(1000),
+            AllowedSpeedKmph = random.Next(200),
+            AverageSpeedKmph = random.Next(200),
+            StartNodeId = random.Next(1, 5),
+            EndNodeId = random.Next(1, 5),
+            InclinationDegrees = random.Next(-90, 90),
+            LengthMeters = random.Next(1000),
+            OsmWayId = random.Next(1000),
         });
 
         return result;

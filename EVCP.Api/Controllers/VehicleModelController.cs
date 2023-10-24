@@ -30,18 +30,18 @@ public class VehicleModelController : ControllerBase
 
         var result = await _vehicleModelRepository.Create(new VehicleModel
         {
-            ac_power = random.Next(100),
-            avg_consumption_wh_km = random.Next(100),
-            battery_size_wh = random.Next(500),
-            drag_coefficient = random.Next(100),
-            frontal_size = random.Next(100),
-            name = Guid.NewGuid().ToString(),
-            power = random.Next(100),
-            producer_id = random.Next(1, 5),
-            pt_effeciency = random.Next(100),
-            rolling_resistance = random.Next(100),
-            weight_kg = random.Next(5000),
-            year = random.Next(2000, 2023)
+            AcPower = random.Next(100),
+            AvgConsumptionWhKm = random.Next(100),
+            BatterySizeWh = random.Next(500),
+            DragCoefficient = random.Next(100),
+            FrontalSize = random.Next(100),
+            Name = Guid.NewGuid().ToString(),
+            Power = random.Next(100),
+            ProducerId = random.Next(1, 5),
+            PtEfficiency = random.Next(100),
+            RollingResistance = random.Next(100),
+            WeightKg = random.Next(5000),
+            Year = random.Next(2000, 2023)
         });
 
         return result;

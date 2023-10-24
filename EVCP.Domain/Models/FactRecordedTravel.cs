@@ -5,19 +5,27 @@ namespace EVCP.Domain.Models;
 [TableName("fact_recorded_travel")]
 public class FactRecordedTravel
 {
-    public float speed_km_per_hour { get; set; }
+    [ColumnName("speed_km_per_hour")]
+    public float SpeedKmph { get; set; }
 
-    public int weather_id { get; set; }
+    [ColumnName("weather_id")]
+    public int WeatherId { get; set; }
 
-    public int edge_id { get; set; }
+    [ColumnName("edge_id")]
+    public int EdgeId { get; set; }
 
-    public float edge_percent { get; set; }
+    [ColumnName("edge_percent")]
+    public float EdgePercent { get; set; }
 
-    public DateTimeOffset time_epoch { get; set; }
+    [ColumnName("time_epoch")]
+    public DateTimeOffset TimeEpoch { get; set; }
 
-    public float acceleration_metre_per_second_squared { get; set; }
+    [ColumnName("acceleration_metre_per_second_squared")]
+    public float AccelerationMeterPerSecondSquared { get; set; }
 
-    public float energy_consumption_wh { get; set; }
+    [ColumnName("energy_consumption_wh")]
+    public float EnergyConsumptionWh { get; set; }
 
-    public int vehicle_id { get; set; }
+    [ColumnName("vehicle_id")]
+    public int VehicleId { get; set; }
 }

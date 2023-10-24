@@ -1,18 +1,27 @@
-﻿namespace EVCP.Domain.Models;
+﻿using EVCP.Domain.Helpers;
+
+namespace EVCP.Domain.Models;
 
 public class Edge : BaseEntity
 {
-    public float length_meters { get; set; }
+    [ColumnName("length_meters")]
+    public float LengthMeters { get; set; }
 
-    public int allowed_speed_kmph { get; set; }
+    [ColumnName("allowed_speed_kmph")]
+    public int AllowedSpeedKmph { get; set; }
 
-    public float inclination_degress { get; set; }
+    [ColumnName("inclination_degress")]
+    public float InclinationDegrees { get; set; }
 
-    public int start_node_id { get; set; }
+    [ColumnName("start_node_id")]
+    public int StartNodeId { get; set; }
 
-    public int end_node_id { get; set; }
+    [ColumnName("end_node_id")]
+    public int EndNodeId { get; set; }
 
-    public float average_speed_kmph { get; set; }
+    [ColumnName("average_speed_kmph")]
+    public float AverageSpeedKmph { get; set; }
 
-    public long osm_way_id { get; set; }
+    [ColumnName("osm_way_id")]
+    public long OsmWayId { get; set; }
 }

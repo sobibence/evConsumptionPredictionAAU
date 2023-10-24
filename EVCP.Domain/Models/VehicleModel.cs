@@ -5,27 +5,39 @@ namespace EVCP.Domain.Models;
 [TableName("vehicle_model")]
 public class VehicleModel : BaseEntity
 {
-    public int battery_size_wh { get; set; }
+    [ColumnName("battery_size_wh")]
+    public int BatterySizeWh { get; set; }
 
-    public float rolling_resistance { get; set; }
+    [ColumnName("rolling_resistance")]
+    public float RollingResistance { get; set; }
 
-    public float drag_coefficient { get; set; }
+    [ColumnName("drag_coefficient")]
+    public float DragCoefficient { get; set; }
 
-    public float frontal_size { get; set; }
+    [ColumnName("frontal_size")]
+    public float FrontalSize { get; set; }
 
-    public int weight_kg { get; set; }
+    [ColumnName("weight_kg")]
+    public int WeightKg { get; set; }
 
-    public float avg_consumption_wh_km { get; set; }
+    [ColumnName("avg_consumption_wh_km")]
+    public float AvgConsumptionWhKm { get; set; }
 
-    public string name { get; set; }
+    [ColumnName("name")]
+    public string Name { get; set; }
 
-    public int ac_power { get; set; }
+    [ColumnName("ac_power")]
+    public int AcPower { get; set; }
 
-    public int power { get; set; }
+    [ColumnName("power")]
+    public int Power { get; set; }
 
-    public int producer_id { get; set; }
+    [ColumnName("producer_id")]
+    public int ProducerId { get; set; }
 
-    public int year { get; set; }
+    [ColumnName("year")]
+    public int Year { get; set; }
 
-    public float pt_effeciency { get; set; }
+    [ColumnName("pt_effeciency")]
+    public float PtEfficiency { get; set; }
 }

@@ -30,12 +30,12 @@ public class FEstConsumptionController : ControllerBase
 
         var result = await _fEstConsumptionRepository.Create(new FactEstimatedConsumption
         {
-            day_in_year = random.Next(365),
-            minute_in_day = random.Next(60),
-            edge_id = random.Next(1, 5),
-            vehicle_id = random.Next(1, 5),
-            weather_id = random.Next(1, 5),
-            energy_consumption_wh = random.Next(100)
+            DayInYear = random.Next(365),
+            MinuteInDay = random.Next(60),
+            EdgeId = random.Next(1, 5),
+            VehicleId = random.Next(1, 5),
+            WeatherId = random.Next(1, 5),
+            EnergyConsumptionWh = random.Next(100)
         });
 
         return result;

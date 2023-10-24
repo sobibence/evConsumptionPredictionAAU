@@ -30,14 +30,14 @@ public class FRecordedTravelController : ControllerBase
 
         var result = await _fRecordedTravelRepository.Create(new FactRecordedTravel
         {
-            acceleration_metre_per_second_squared = random.Next(100),
-            edge_id = random.Next(1, 5),
-            edge_percent = random.Next(100),
-            energy_consumption_wh = random.Next(100),
-            speed_km_per_hour = random.Next(200),
-            time_epoch = DateTimeOffset.UtcNow,
-            vehicle_id = random.Next(1, 5),
-            weather_id = random.Next(1, 5)
+            AccelerationMeterPerSecondSquared = random.Next(100),
+            EdgeId = random.Next(1, 5),
+            EdgePercent = random.Next(100),
+            EnergyConsumptionWh = random.Next(100),
+            SpeedKmph = random.Next(200),
+            TimeEpoch = DateTimeOffset.UtcNow,
+            VehicleId = random.Next(1, 5),
+            WeatherId = random.Next(1, 5)
         });
 
         return result;

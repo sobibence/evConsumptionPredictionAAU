@@ -30,7 +30,7 @@ public class ProducerController : ControllerBase
 
         var result = await _producerRepository.Create(new Producer
         {
-            name = Guid.NewGuid().ToString(),
+            Name = Guid.NewGuid().ToString(),
         });
 
         return result;
