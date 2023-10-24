@@ -23,6 +23,14 @@ public class WeatherController : ControllerBase
         return result;
     }
 
+    [HttpGet("GetBy")]
+    public async Task<IEnumerable<Weather>> GetBy([FromQuery] string propertyName, [FromQuery] RoadType value)
+    {
+        var result = await _weatherRepository.GetByAsync<RoadType>(propertyName, value);
+
+        return result;
+    }
+
     [HttpPost]
     public async Task<bool> Create()
     {

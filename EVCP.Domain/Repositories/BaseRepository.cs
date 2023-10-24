@@ -94,14 +94,55 @@ public class BaseRepository<T> : IBaseRepository<T>
         return result;
     }
 
-    public virtual async Task<T?> GetAsync(int id)
+    /// <summary>
+    /// Get by property of model method.
+    /// </summary>
+    /// <typeparam name="S">type of value</typeparam>
+    /// <param name="propertyName">model property name</param>
+    /// <param name="value">value of property</param>
+    /// <returns>List of models filtered by value of property</returns>
+    public async Task<IEnumerable<T>> GetByAsync<S>(string propertyName, S value)
+    {
+        var property = typeof(T).GetProperty(propertyName);
+
+        if (property is null || value is null) return new List<T>();
+
+        var columnArr = GetForSelect();
+        var columns = string.Join(", ", columnArr);
+        var columnName = GetColumnNameByProperty(property);
+
+        var queryValue = "@Value";
+        var parameters = new DynamicParameters();
+
+        if (Attribute.IsDefined(property, typeof(EnumType)))
+        {
+            queryValue = $"{queryValue}::{columnName}";
+            parameters.Add("@Value", value.ToString());
+        }
+        else
+        {
+            parameters.Add("@Value", value);
+        }
+
+        var query = $"SELECT {columns} FROM {Table} " +
+                    $"WHERE {columnName}={queryValue}";
+
+        using var connection = _context.CreateConnection();
+        connection.Open();
+
+        var result = await connection.QueryAsync<T>(query, parameters);
+
+        return result;
+    }
+
+    public virtual async Task<T?> GetyIdAsync(int id)
     {
         var parameters = new DynamicParameters();
         parameters.Add("@Id", id);
 
         var columnArr = GetForSelect();
         var columns = string.Join(", ", columnArr);
-        var query = $"SELECT {columns} FROM {Table}" +
+        var query = $"SELECT {columns} FROM {Table} " +
                     $"WHERE id=@Id";
 
         using var connection = _context.CreateConnection();
@@ -112,6 +153,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         return result;
     }
 
+    #region Private methods
     private (string[] columns, string[] values, DynamicParameters parameters) GetForInsert(T entity)
     {
         var columnNames = new List<string>();
@@ -125,8 +167,7 @@ public class BaseRepository<T> : IBaseRepository<T>
             .ForEach(property =>
             {
                 // add db column name
-                var attribute = (ColumnName)property.GetCustomAttribute(typeof(ColumnName), false);
-                var column = attribute != null ? attribute.Name : "";
+                var column = GetColumnNameByProperty(property);
                 columnNames.Add(column);
 
                 var propertyName = $"@{property.Name}";
@@ -155,8 +196,7 @@ public class BaseRepository<T> : IBaseRepository<T>
             .ToList()
             .ForEach(property =>
             {
-                var attribute = (ColumnName)property.GetCustomAttribute(typeof(ColumnName), false);
-                var columnName = attribute != null ? attribute.Name : "";
+                var columnName = GetColumnNameByProperty(property);
                 var propertyName = property.Name;
 
                 columnToProperty.Add($"{columnName} AS {property.Name}");
@@ -179,4 +219,13 @@ public class BaseRepository<T> : IBaseRepository<T>
 
         return result;
     }
+
+    private string GetColumnNameByProperty(PropertyInfo property)
+    {
+        var attribute = (ColumnName)property.GetCustomAttribute(typeof(ColumnName), false);
+        var columnName = attribute != null ? attribute.Name : "";
+
+        return columnName;
+    }
+    #endregion
 }
