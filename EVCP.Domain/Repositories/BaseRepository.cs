@@ -2,20 +2,60 @@
 using EVCP.DataAccess;
 using EVCP.DataAccess.Repositories;
 using EVCP.Domain.Helpers;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 
 namespace EVCP.Domain.Repositories;
 
 public class BaseRepository<T> : IBaseRepository<T>
 {
+    private readonly ILogger<BaseRepository<T>> _logger;
     private readonly DapperContext _context;
 
     public readonly string Table;
 
-    public BaseRepository(DapperContext context)
+    public BaseRepository(ILogger<BaseRepository<T>> logger, DapperContext context)
     {
+        _logger = logger;
         _context = context;
         Table = GetTableName();
+    }
+
+    public virtual async Task<bool> Create(List<T> entities)
+    {
+        var result = false;
+
+        using var connection = _context.CreateConnection();
+        connection.Open();
+
+        using (var transaction = connection.BeginTransaction())
+        {
+            try
+            {
+                foreach (var entity in entities)
+                {
+                    if (entity == null) return false;
+
+                    (var columnArr, var valueArr, var parameters) = GetForInsert(entity);
+
+                    string columns = string.Join(", ", columnArr);
+                    string values = string.Join(",", valueArr);
+                    var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
+
+                    await connection.ExecuteAsync(query, parameters);
+                }
+
+                transaction.Commit();
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error: {ex}");
+                transaction.Rollback();
+            }
+        }
+
+        return result;
     }
 
     public virtual async Task<bool> Create(T entity)

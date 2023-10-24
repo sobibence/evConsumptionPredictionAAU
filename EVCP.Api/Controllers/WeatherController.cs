@@ -42,4 +42,49 @@ public class WeatherController : ControllerBase
 
         return result;
     }
+
+    [HttpPost("CreateBulk")]
+    public async Task<bool> CreateBulk()
+    {
+        var random = new Random();
+
+        var result = await _weatherRepository.Create(new List<Weather>()
+        {
+            new Weather
+            {
+                FogPercent = random.Next(100),
+                RainMm = random.Next(1000),
+                TemperatureCelsius = random.Next(30),
+                RoadType = RoadType.asphalt,
+                RoadQuality = random.Next(100),
+                SunshineWM = random.Next(100),
+                WindDirectionDegrees = random.Next(360),
+                WindKmPh = random.Next(100)
+            },
+            new Weather
+            {
+                FogPercent = random.Next(100),
+                RainMm = random.Next(1000),
+                TemperatureCelsius = random.Next(30),
+                RoadType = RoadType.asphalt,
+                RoadQuality = random.Next(100),
+                SunshineWM = random.Next(100),
+                WindDirectionDegrees = random.Next(360),
+                WindKmPh = random.Next(100)
+            },
+            new Weather
+            {
+                FogPercent = random.Next(100),
+                RainMm = random.Next(1000),
+                TemperatureCelsius = random.Next(30),
+                RoadType = RoadType.asphalt,
+                RoadQuality = random.Next(100),
+                SunshineWM = random.Next(100),
+                WindDirectionDegrees = random.Next(360),
+                WindKmPh = random.Next(100)
+            }
+        });
+
+        return result;
+    }
 }

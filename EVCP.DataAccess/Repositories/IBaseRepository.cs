@@ -2,6 +2,8 @@
 
 public interface IBaseRepository<T>
 {
+    public Task<bool> Create(List<T> entities);
+
     public Task<bool> Create(T entity);
 
     public Task<IEnumerable<T>> GetAsync();
