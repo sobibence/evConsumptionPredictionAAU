@@ -10,5 +10,5 @@ public interface IBaseRepository<T>
 
     public Task<IEnumerable<T>> GetByAsync<S>(string propertyName, S value);
 
-    public Task<T?> GetyIdAsync(int id);
+    public Task<T?> GetByIdAsync(int id);
 }

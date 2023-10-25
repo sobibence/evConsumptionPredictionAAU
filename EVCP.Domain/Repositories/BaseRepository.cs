@@ -135,7 +135,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         return result;
     }
 
-    public virtual async Task<T?> GetyIdAsync(int id)
+    public virtual async Task<T?> GetByIdAsync(int id)
     {
         var parameters = new DynamicParameters();
         parameters.Add("@Id", id);
