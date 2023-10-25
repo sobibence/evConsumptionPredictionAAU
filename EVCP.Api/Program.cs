@@ -1,3 +1,5 @@
+using EVCP.DataAccess;
+using EVCP.Domain.Repositories;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -8,12 +10,24 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
+    // Logging
     builder.Host.UseSerilog();
 
-    // Add services to the container.
+    // Dapper config
+    Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+    builder.Services.AddSingleton<DapperContext>();
+
+    // Add DI for repositories.
+    builder.Services.AddTransient<IEdgeRepository, EdgeRepository>();
+    builder.Services.AddTransient<IFEstConsumptionRepository, FEstConsumptionRepository>();
+    builder.Services.AddTransient<IFRecordedTravelRepository, FRecordedTravelRepository>();
+    builder.Services.AddTransient<INodeRepository, NodeRepository>();
+    builder.Services.AddTransient<IProducerRepository, ProducerRepository>();
+    builder.Services.AddTransient<IVehicleModelRepository, VehicleModelRepository>();
+    builder.Services.AddTransient<IVehicleTripStatusRepository, VehicleTripStatusRepository>();
+    builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
 
     builder.Services.AddControllers();
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
