@@ -7,12 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Mappers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EVCP.Domain\EVCP.Domain.csproj" />
+    <ProjectReference Include="..\EVCP.Dtos\EVCP.Dtos.csproj" />
+    <ProjectReference Include="..\OpenWeather\OpenWeather.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,17 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EVCP.Api", "EVCP.Api\EVCP.Api.csproj", "{DC5C4502-0D06-4B9A-B06F-0B1FDF4D08C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EVCP.Api", "EVCP.Api\EVCP.Api.csproj", "{DC5C4502-0D06-4B9A-B06F-0B1FDF4D08C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EVCP.DataAccess", "EVCP.DataAccess\EVCP.DataAccess.csproj", "{1293B397-DBC0-4F81-A7A4-4CDA1137F71D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EVCP.DataAccess", "EVCP.DataAccess\EVCP.DataAccess.csproj", "{1293B397-DBC0-4F81-A7A4-4CDA1137F71D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EVCP.Domain", "EVCP.Domain\EVCP.Domain.csproj", "{B18DC51D-72EE-424C-8890-466EEB462EA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EVCP.Domain", "EVCP.Domain\EVCP.Domain.csproj", "{B18DC51D-72EE-424C-8890-466EEB462EA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EVCP.Dtos", "EVCP.Dtos\EVCP.Dtos.csproj", "{237DED1F-5BB0-401C-AF3F-15AA36AE3B24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EVCP.Dtos", "EVCP.Dtos\EVCP.Dtos.csproj", "{237DED1F-5BB0-401C-AF3F-15AA36AE3B24}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test Projects", "Test Projects", "{69615FBD-42F1-41A2-A968-A5DD856F9298}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EVCP.Api.E2ETests", "EVCP.Api.E2ETests\EVCP.Api.E2ETests.csproj", "{2EDE3AC5-4433-4919-8779-0673694D3AE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EVCP.Api.E2ETests", "EVCP.Api.E2ETests\EVCP.Api.E2ETests.csproj", "{2EDE3AC5-4433-4919-8779-0673694D3AE8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External Sources", "External Sources", "{342E6874-3D05-4D64-A38D-11E2F7CC480D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeather", "OpenWeather\OpenWeather.csproj", "{9D8AB963-BF7B-4028-8F6E-4154EFEEF772}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,12 +45,17 @@ Global
 		{2EDE3AC5-4433-4919-8779-0673694D3AE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EDE3AC5-4433-4919-8779-0673694D3AE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EDE3AC5-4433-4919-8779-0673694D3AE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D8AB963-BF7B-4028-8F6E-4154EFEEF772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D8AB963-BF7B-4028-8F6E-4154EFEEF772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D8AB963-BF7B-4028-8F6E-4154EFEEF772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D8AB963-BF7B-4028-8F6E-4154EFEEF772}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2EDE3AC5-4433-4919-8779-0673694D3AE8} = {69615FBD-42F1-41A2-A968-A5DD856F9298}
+		{9D8AB963-BF7B-4028-8F6E-4154EFEEF772} = {342E6874-3D05-4D64-A38D-11E2F7CC480D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0BA3E969-E64C-45B8-A8C8-13989E63E5F6}
