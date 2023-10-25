@@ -1,6 +1,8 @@
 using EVCP.Domain.Models;
-using EVCP.Domain.Repositories;
+using EVCP.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
+using OpenWeather;
+using Serilog;
 
 namespace EVCP.Api.Controllers;
 
@@ -8,91 +10,32 @@ namespace EVCP.Api.Controllers;
 [Route("api/[controller]")]
 public class WeatherController : ControllerBase
 {
-    private readonly IWeatherRepository _weatherRepository;
 
-    public WeatherController(IWeatherRepository weatherRepository)
+    public WeatherController()
     {
-        _weatherRepository = weatherRepository;
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Weather>> Get()
+    [Route("Generate")]
+    public WeatherData GetWeatherData(DateTime date)
     {
-        var result = await _weatherRepository.GetAsync();
-
-        return result;
+        return WeatherDataGenerator.GenerateWeatherData(date);
     }
 
-    [HttpGet("GetBy")]
-    public async Task<IEnumerable<Weather>> GetBy([FromQuery] string propertyName, [FromQuery] RoadType value)
+    [HttpGet]
+    [Route("OpenWeather")]
+    public async Task<WeatherData> GetWeatherData(double lat, double lon)
     {
-        var result = await _weatherRepository.GetByAsync<RoadType>(propertyName, value);
-
-        return result;
-    }
-
-    [HttpPost]
-    public async Task<bool> Create()
-    {
-        var random = new Random();
-
-        var result = await _weatherRepository.Create(new Weather
+        try
         {
-            FogPercent = random.Next(100),
-            RainMm = random.Next(1000),
-            TemperatureCelsius = random.Next(30),
-            RoadType = RoadType.asphalt,
-            RoadQuality = random.Next(100),
-            SunshineWM = random.Next(100),
-            WindDirectionDegrees = random.Next(360),
-            WindKmPh = random.Next(100)
-        });
-
-        return result;
-    }
-
-    [HttpPost("CreateBulk")]
-    public async Task<bool> CreateBulk()
-    {
-        var random = new Random();
-
-        var result = await _weatherRepository.Create(new List<Weather>()
+            var openWeatherService = new OpenWeatherService();
+            return await openWeatherService.GetWeatherAsync(lat, lon);
+        }
+        catch (Exception ex)
         {
-            new Weather
-            {
-                FogPercent = random.Next(100),
-                RainMm = random.Next(1000),
-                TemperatureCelsius = random.Next(30),
-                RoadType = RoadType.asphalt,
-                RoadQuality = random.Next(100),
-                SunshineWM = random.Next(100),
-                WindDirectionDegrees = random.Next(360),
-                WindKmPh = random.Next(100)
-            },
-            new Weather
-            {
-                FogPercent = random.Next(100),
-                RainMm = random.Next(1000),
-                TemperatureCelsius = random.Next(30),
-                RoadType = RoadType.asphalt,
-                RoadQuality = random.Next(100),
-                SunshineWM = random.Next(100),
-                WindDirectionDegrees = random.Next(360),
-                WindKmPh = random.Next(100)
-            },
-            new Weather
-            {
-                FogPercent = random.Next(100),
-                RainMm = random.Next(1000),
-                TemperatureCelsius = random.Next(30),
-                RoadType = RoadType.asphalt,
-                RoadQuality = random.Next(100),
-                SunshineWM = random.Next(100),
-                WindDirectionDegrees = random.Next(360),
-                WindKmPh = random.Next(100)
-            }
-        });
+            Log.Error(ex, ex.Message);
+        }
 
-        return result;
+        return WeatherDataGenerator.GenerateWeatherData(DateTime.Now);
     }
 }
