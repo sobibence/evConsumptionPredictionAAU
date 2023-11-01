@@ -43,7 +43,7 @@ public class OsmJsonParser
     {
         public long Id { get; set; }
         public string Type { get; set; }
-        public Tags tags = new Tags();
+        public Tags tags {get;set;}
 
         public List<long> Nodes { get; set; }
         public List<Coordinates> Geometry { get; set; }
@@ -73,7 +73,7 @@ public class OsmJsonParser
                     return _name;
                 }
             }
-            set { }
+            set {_name = value; }
         }
 
         private string _highway;
@@ -90,7 +90,7 @@ public class OsmJsonParser
                     return _highway;
                 }
             }
-            set { }
+            set { _highway = value;}
         }
 
         public string _maxspeed;
@@ -107,7 +107,7 @@ public class OsmJsonParser
                     return _maxspeed;
                 }
             }
-            set { }
+            set { _maxspeed =value; }
         }
 
         public string _surface;
@@ -124,7 +124,7 @@ public class OsmJsonParser
                     return _surface;
                 }
             }
-            set { }
+            set {_surface = value; }
         }
 
         // Add more properties as needed
