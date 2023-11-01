@@ -154,10 +154,12 @@ public class OsmJsonParser
                             }
                             else
                             {
-                                Node node = new();
-                                node.Latitude = element.Geometry[i].lat;
-                                node.Longitude = element.Geometry[i].lon;
-                                node.NodeIdOsm = element.Nodes[i];
+                                Node node = new()
+                                {
+                                    Latitude = element.Geometry[i].lat,
+                                    Longitude = element.Geometry[i].lon,
+                                    NodeIdOsm = element.Nodes[i]
+                                };
                                 nodeDictionary[node.NodeIdOsm] = node;
                                 wayListOfNodes.Add(node);
                             }
@@ -165,18 +167,21 @@ public class OsmJsonParser
                     }
                     for (int j = 0; j < wayListOfNodes.Count - 1; j++)
                     {
-                        Edge newEdge = new();
-                        newEdge.StartNode = wayListOfNodes[j];
-                        newEdge.EndNode = wayListOfNodes[j + 1];
+                        Edge newEdge = new()
+                        {
+                            StartNode = wayListOfNodes[j],
+                            EndNode = wayListOfNodes[j + 1],
+                            Highway = element.tags.highway,
+                            Surface = element.tags.surface,
+                            SpeedLimit = int.Parse(element.tags.maxspeed),
+                            StreetName = element.tags.name,
+                            OsmWayId = element.Id
+                        };
                         wayListOfNodes[j].ListOfConnectedEdges.Add(newEdge);
                         wayListOfNodes[j + 1].ListOfConnectedEdges.Add(newEdge);
                         wayListOfNodes[j].ListOfConnectedNodes.Add(wayListOfNodes[j+1]);
                         wayListOfNodes[j+1].ListOfConnectedNodes.Add(wayListOfNodes[j]);
-                        newEdge.Highway = element.tags.highway;
-                        newEdge.Surface = element.tags.surface;
-                        newEdge.SpeedLimit = int.Parse(element.tags.maxspeed);
-                        newEdge.StreetName = element.tags.name;
-                        newEdge.OsmWayId = element.Id;
+                        
                         edges.Add(newEdge);
 
                     }
@@ -186,13 +191,8 @@ public class OsmJsonParser
                 {
                     Console.WriteLine("This should not happen.");
                 }
-
             }
-
-
         }
-
-
     }
 
     internal static async Task ParseAndProcess(Stream stream)

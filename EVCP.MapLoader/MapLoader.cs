@@ -51,7 +51,7 @@ namespace EVCP.MapLoader
             return new Map { Nodes = OsmJsonParser.NodeDictionary.Values.ToList(), Edges = OsmJsonParser.Edges };
         }
 
-        public static async Task<Map> ReadMapFromFile(string filestr = "/home/sobibence/AAU/1_semester/project/evConsumptionPredictionAAU/tmpJson/map.txt"){
+        public static async Task<Map> ReadMapFromFile(string filestr = "/home/sobibence/project/evConsumptionPredictionAAU/tmpJson/map.txt"){
             Stream file = File.OpenRead(filestr);
             Task jsonTask = OsmJsonParser.ParseAndProcess(file);
             jsonTask.Wait();

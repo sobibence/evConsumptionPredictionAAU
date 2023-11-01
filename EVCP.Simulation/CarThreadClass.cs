@@ -1,4 +1,6 @@
 
+using EVCP.Domain.Models;
+
 namespace EVCP.Simulation;
 public class CarThreadClass
 {
@@ -6,38 +8,56 @@ public class CarThreadClass
     private volatile int updateFrequencyMs;
     private volatile int threadWaitFluctuationMs;
     private volatile int carId;
+
+    public int CarId{get{
+        return carId;
+    }}
     private Thread thread;
     private Object lockObject = new();
-    public CarThreadClass(int updateFrequencyMs, int threadWaitFluctuationMs, int id)
+
+    Car car;
+
+    private List<Edge> route;
+    public CarThreadClass(int updateFrequencyMs, int threadWaitFluctuationMs, int id, List<Edge> initRoute)
     {
         this.updateFrequencyMs = updateFrequencyMs;
         this.threadWaitFluctuationMs = threadWaitFluctuationMs;
-        this.carId = id;
-        thread = new Thread(this.MainLoop);
+        carId = id;
+        route = initRoute;
+        thread = new Thread(MainLoop);
+        car = new(initRoute);
     }
 
-    public void startThread(){
+    public void startThread()
+    {
         run = true;
         thread.Start();
     }
 
-    public void stopThread(){
+    public void stopThread()
+    {
         run = false;
         Console.WriteLine($"Car: {carId} stopping...");
     }
 
-    public void stopAndJoin(){
-        run = false; 
+    public void stopAndJoin()
+    {
+        run = false;
         thread.Join();
         Console.WriteLine($"Car: {carId} STOPPED");
     }
 
-    private void MainLoop(){
+    private void MainLoop()
+    {
         Random r = new();
-        int i = 1;
-        while(run){
-            Thread.Sleep(updateFrequencyMs+r.Next(0,threadWaitFluctuationMs));
-            Console.WriteLine($"Hi I am car: {carId} and this is my {i++}. loop.");
+        car = new(route);
+        Console.WriteLine($"Hi I am car: {carId} and I started my main loop...");
+        while (run)
+        {
+            int sleeptime = updateFrequencyMs + r.Next(0, threadWaitFluctuationMs);
+            SimulationManager.Instance.getRouteFromCar(car.getNextCarStatus(sleeptime),this);
+            Thread.Sleep(sleeptime);
+
         }
 
     }

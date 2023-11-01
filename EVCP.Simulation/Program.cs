@@ -2,6 +2,7 @@
 
 using System.Diagnostics;
 using System.Security.Cryptography;
+using EVCP.Domain;
 using EVCP.Domain.Models;
 
 namespace EVCP.Simulation
@@ -32,19 +33,22 @@ namespace EVCP.Simulation
             }
         }
 
+        public RouteManager routeManager { get; private set; }
+
         private SimulationManager() { }
 
 
         public void InitSimulation()
         {
-
+            routeManager = new RouteManager();
             for (int i = 0; i < conCurrentCars; i++)
             {
-                CarThreadClass carThread = new CarThreadClass(updateFrequencyMs, threadWaitFluctuationMs, i);
+                CarThreadClass carThread = new CarThreadClass(updateFrequencyMs, threadWaitFluctuationMs, i, routeManager.RequestRoute());
                 carsThreads.Add(carThread);
+                Console.WriteLine($"Init {i}. car.");
             }
             startSimulation();
-            Thread.Sleep(10000);
+            Thread.Sleep(600000);
             stopAllThreads();
         }
 
@@ -66,11 +70,20 @@ namespace EVCP.Simulation
 
         static void Main(string[] args)
         {
-            //SimulationManager.Instance.InitSimulation();
-            RouteManager routeManager = new RouteManager();
-            List<Edge> edgeList = routeManager.RequestRoute();
-            foreach(Edge edge in edgeList){
-                Console.WriteLine(edge.ToString());
+            SimulationManager.Instance.InitSimulation();
+            //RouteManager routeManager = new RouteManager();
+            // List<Edge> edgeList = routeManager.RequestRoute();
+            // foreach(Edge edge in edgeList){
+            //     Console.WriteLine(edge.ToString());
+            // }
+
+        }
+
+        internal void getRouteFromCar(List<TripData> tripDatas, CarThreadClass carThreadClass)
+        {
+            Console.WriteLine($"Recieved TripData fromCar {carThreadClass.CarId}:");
+            foreach(TripData tripData in tripDatas){
+                Console.WriteLine(tripData);
             }
         }
     }
