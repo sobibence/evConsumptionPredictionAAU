@@ -25,7 +25,7 @@ public class CarThreadClass
         carId = id;
         route = initRoute;
         thread = new Thread(MainLoop);
-        car = new(initRoute);
+        car = new(initRoute,this);
     }
 
     public void startThread()
@@ -47,17 +47,21 @@ public class CarThreadClass
         Console.WriteLine($"Car: {carId} STOPPED");
     }
 
+    public void RequestNewRouteForCar(Car car){
+        car.Reset(SimulationManager.Instance.routeManager.RequestRoute());
+        Console.WriteLine($"Hi I am car: {carId} and I finished and requested new route...");
+    }
+
     private void MainLoop()
     {
         Random r = new();
-        car = new(route);
         Console.WriteLine($"Hi I am car: {carId} and I started my main loop...");
         while (run)
         {
             int sleeptime = updateFrequencyMs + r.Next(0, threadWaitFluctuationMs);
             SimulationManager.Instance.getRouteFromCar(car.getNextCarStatus(sleeptime),this);
             Thread.Sleep(sleeptime);
-
+            Console.WriteLine($"car: {carId} vel: {car.CurrentSpeed} acc: {car.CurrentAccel}"); 
         }
 
     }

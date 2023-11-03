@@ -11,7 +11,7 @@ namespace EVCP.Simulation
     class SimulationManager
     {
         private int updateFrequencyMs = 1000;
-        private int conCurrentCars = 10;
+        private int conCurrentCars = 1;
         private int threadWaitFluctuationMs = 100;
         private List<CarThreadClass> carsThreads = new();
 
