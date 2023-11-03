@@ -3,15 +3,11 @@ import os
 
 import tensorflow as tf
 from tensorflow import keras
-
+from tensorflow.keras import models as models
 
 from models import models as models
 from utils import losses as losses
 from utils import utils as utils
-
-import numpy as np
-from IPython import embed
-
 
 
 if __name__ == '__main__':
@@ -115,7 +111,7 @@ if __name__ == '__main__':
         "adam_decay_001" : keras.optimizers.Adam(decay=0.01),
         "adam_decay_005" : keras.optimizers.Adam(decay=0.05),
         "adam_decay_0025" : keras.optimizers.Adam(decay=0.025),
-        "custom_adam" : keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0),
+        "custom_adam" : keras.optimizers.Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0),
         "sgd_nesterov" : keras.optimizers.SGD(learning_rate=0.001, momentum=0.9, decay=0.01, nesterov=True),
     }
     optimizer = optimizer_map.get(ARG_OPTIMIZER_NAME)

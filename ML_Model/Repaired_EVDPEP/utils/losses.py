@@ -1,9 +1,8 @@
 import tensorflow as tf
 import tensorflow_probability as tfp
 tfd = tfp.distributions
-from keras import backend as K
+from tensorflow.keras import backend as K
 import numpy as np
-from IPython import embed
 
 
 def gaussian_nll(ytrue, ypreds):

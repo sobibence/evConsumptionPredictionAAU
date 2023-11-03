@@ -1,8 +1,6 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import datetime
-from IPython import embed
 
 
 def get_for_plot(X, y):
@@ -41,7 +39,22 @@ def get_dat(dataset, dataset_y, input_dim, idxs, ids, is_summed, n_timesteps):
         tmp_id = np.argwhere(ids == id)
         tmp_x = dataset[tmp_id,:]
         tmp_n = len(tmp_id)
-        M_x[i, (n_timesteps-tmp_n):(n_timesteps),:] = tmp_x[:,0,]
+        
+#---- Bences modification        
+        for j in range(n_timesteps - tmp_n, n_timesteps):
+            # Check if the value can be converted to a float
+            try:
+                value = float(tmp_x[j - (n_timesteps - tmp_n), 0])
+            except (ValueError, TypeError):
+                # Handle non-numeric values here
+                # For now, I'll replace non-numeric values with 0
+                value = 0
+
+            M_x[i, j, 0] = value
+
+
+#----
+        #M_x[i, (n_timesteps-tmp_n):(n_timesteps),:] = tmp_x[:,0,]
         if is_summed:        
             M_y[i, 0] = np.sum(dataset_y[tmp_id.flatten()])
         else:
