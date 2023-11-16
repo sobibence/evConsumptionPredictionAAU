@@ -7,4 +7,5 @@ public class BaseEntity
     [OnInsertIgnore]
     [ColumnName("id")]
     public int Id { get; set; }
+
 }

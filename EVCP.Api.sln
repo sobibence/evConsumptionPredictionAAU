@@ -19,6 +19,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External Sources", "Externa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeather", "OpenWeather\OpenWeather.csproj", "{9D8AB963-BF7B-4028-8F6E-4154EFEEF772}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EVCP.Simulation", "EVCP.Simulation\EVCP.Simulation.csproj", "{38EC2CAE-45E0-4C2D-8995-CA8497400576}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EVCP.MapLoader", "EVCP.MapLoader\EVCP.MapLoader.csproj", "{904D64F9-D7C4-4E29-8B12-B3CDAA141092}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{2EDE3AC5-4433-4919-8779-0673694D3AE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EDE3AC5-4433-4919-8779-0673694D3AE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EDE3AC5-4433-4919-8779-0673694D3AE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38EC2CAE-45E0-4C2D-8995-CA8497400576}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38EC2CAE-45E0-4C2D-8995-CA8497400576}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38EC2CAE-45E0-4C2D-8995-CA8497400576}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38EC2CAE-45E0-4C2D-8995-CA8497400576}.Release|Any CPU.Build.0 = Release|Any CPU
+		{904D64F9-D7C4-4E29-8B12-B3CDAA141092}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{904D64F9-D7C4-4E29-8B12-B3CDAA141092}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{904D64F9-D7C4-4E29-8B12-B3CDAA141092}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{904D64F9-D7C4-4E29-8B12-B3CDAA141092}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9D8AB963-BF7B-4028-8F6E-4154EFEEF772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9D8AB963-BF7B-4028-8F6E-4154EFEEF772}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D8AB963-BF7B-4028-8F6E-4154EFEEF772}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -61,3 +73,5 @@ Global
 		SolutionGuid = {0BA3E969-E64C-45B8-A8C8-13989E63E5F6}
 	EndGlobalSection
 EndGlobal
+
+
