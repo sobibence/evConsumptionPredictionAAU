@@ -1,4 +1,5 @@
 ﻿using EVCP.Domain.Custom;
+﻿using EVCP.Domain.Helpers;
 
 namespace EVCP.Domain.Models;
 
@@ -19,6 +20,4 @@ public class Weather : BaseEntity
 
     public int road_quality { get; set; }
 
-    [EnumType]
-    public string? road_type { get; set; }
 }

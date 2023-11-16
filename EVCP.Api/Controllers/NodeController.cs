@@ -32,7 +32,6 @@ public class NodeController : ControllerBase
         {
             Latitude = random.Next(-90, 90),
             Longitude = random.Next(-180, 180),
-            //longitude_meters = random.Next(1000),
             NodeIdOsm = random.Next(1000),
         });
 

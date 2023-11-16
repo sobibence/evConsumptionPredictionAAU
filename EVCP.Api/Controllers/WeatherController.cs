@@ -1,6 +1,9 @@
 using EVCP.Domain.Models;
-using EVCP.Domain.Repositories;
+using EVCP.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
+using OpenWeather;
+using Serilog;
+
 
 namespace EVCP.Api.Controllers;
 
@@ -8,35 +11,32 @@ namespace EVCP.Api.Controllers;
 [Route("api/[controller]")]
 public class WeatherController : ControllerBase
 {
-    private readonly IWeatherRepository _weatherRepository;
 
-    public WeatherController(IWeatherRepository weatherRepository)
+    public WeatherController()
     {
-        _weatherRepository = weatherRepository;
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Weather>> Get()
+    [Route("Generate")]
+    public WeatherData GetWeatherData(DateTime date)
     {
-        var result = await _weatherRepository.GetAsync();
-
-        return result;
+        return WeatherDataGenerator.GenerateWeatherData(date);
     }
 
-    [HttpPost]
-    public async Task<bool> Create()
+    [HttpGet]
+    [Route("OpenWeather")]
+    public async Task<WeatherData> GetWeatherData(double lat, double lon)
     {
-        var random = new Random();
-
-        var result = await _weatherRepository.Create(new Weather
+        try
         {
-            fog_percent = random.Next(100),
-            rain_mm = random.Next(1000),
-            temperature_celsius = random.Next(30),
-            road_type = road_type.asphalt.ToString(),
-            wind_direction = wind_direction.SW.ToString(),
-        });
+            var openWeatherService = new OpenWeatherService();
+            return await openWeatherService.GetWeatherAsync(lat, lon);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+        }
 
-        return result;
+        return WeatherDataGenerator.GenerateWeatherData(DateTime.Now);
     }
 }

@@ -1,4 +1,7 @@
+
 ﻿namespace EVCP.Domain.Models;
+﻿using EVCP.Domain.Helpers;
+
 
 public class Node : BaseEntity
 {

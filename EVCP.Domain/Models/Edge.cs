@@ -1,4 +1,5 @@
-﻿
+using EVCP.Domain.Helpers;
+
 namespace EVCP.Domain.Models;
 public class Edge : BaseEntity
 {
@@ -160,3 +161,4 @@ public class GpsDistanceCalculator
         return distance;
     }
 }
+
