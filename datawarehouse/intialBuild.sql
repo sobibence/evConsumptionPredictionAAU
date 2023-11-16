@@ -1,4 +1,69 @@
-CREATE TYPE road_type AS ENUM ('asphalt'); -- lets add these as we are introduced to them by the road data?
+CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION IF NOT EXISTS timescaledb;
+
+CREATE TYPE estimation_type AS ENUM ('ml','function_fit','record');
+
+CREATE TYPE osm_surface_type AS ENUM (
+    'paved',
+    'asphalt',
+    'concrete',
+    'concrete:plates',
+    'sett',
+    'unpaved',
+    'compacted',
+    'fine_gravel',
+    'gravel',
+    'pebblestone',
+    'ground',
+    'dirt',
+    'earth',
+    'grass',
+    'grass_paver',
+    'gravel_turf',
+    'mud',
+    'sand',
+    'paving_stones',
+    'cobblestone',
+    'metal',
+    'wood',
+    'woodchips',
+    'compacted_snow',
+    'ice',
+    'salt',
+    'grasscrete',
+    'asphalt;concrete',
+    'concrete;grass',
+    'concrete;gravel',
+    'concrete;asphalt',
+    'unpaved;grass'
+);
+
+CREATE TYPE osm_highway_type AS ENUM (
+    'motorway',
+    'trunk',
+    'primary',
+    'secondary',
+    'tertiary',
+    'unclassified',
+    'residential',
+    'service',
+    'track',
+    'path',
+    'pedestrian',
+    'footway',
+    'bridleway',
+    'cycleway',
+    'steps',
+    'living_street',
+    'road',
+    'construction',
+    'bus_guideway',
+    'escape',
+    'raceway',
+    'services',
+    'rest_area'
+);
+
 
 
 CREATE TABLE producer (
@@ -42,9 +107,7 @@ CREATE TABLE weather (
 	wind_direction_degrees smallint, -- 0-360
 	fog_percent float,
 	sunshine_w_m float,
-	rain_mm int,
-	road_quality int, -- TODO we need to define a range or something here, if it does not exists
-	road_type road_type
+	rain_mm int
 );
 
 CREATE TABLE node(
@@ -55,15 +118,22 @@ CREATE TABLE node(
 	osm_node_id bigint --provider id this should be 64 bit
 );
 
-CREATE TABLE edge(
+CREATE TABLE edge_info(
 	id serial PRIMARY KEY, -- we will have this beside the key from provider to make sure we are able to store data from a different provider in the future
-	length_meters float,
-	allowed_speed_kmph int,
+	speed_limit_kmph int,
 	inclination_degress float,
+	average_speed_kmph float,
+	osm_way_id bigint, --provider id
+	street_name varchar(32),
+	surface osm_surface_type,
+	highway osm_highway_type
+);
+
+CREATE TABLE edge(
+	id serial PRIMARY KEY,
 	start_node_id int REFERENCES node(id),
 	end_node_id int REFERENCES node(id),
-	average_speed_kmph float,
-	osm_way_id bigint --provider id
+	edge_into_id int REFERENCES edge_info(id)
 );
 
 CREATE TABLE fact_estimated_consumption (
@@ -73,13 +143,15 @@ CREATE TABLE fact_estimated_consumption (
 	minute_in_day smallint,
 	vehicle_id int REFERENCES vehicle_model(id),
 	weather_id int REFERENCES weather(id),
-	energy_consumption_wh float
+	estimated_consumption_wh float,
+	estimation_type estimation_type
 );
 
 CREATE TABLE fact_recorded_travel(
 	speed_km_per_hour float,
 	weather_id int REFERENCES weather(id),
 	edge_id int REFERENCES edge(id),
+	trip_id int, 
 	edge_percent float,
 	time_epoch timestamp, --this is timestamp, time only records the time of day.
 	acceleration_metre_per_second_squared float, -- we might not need this
