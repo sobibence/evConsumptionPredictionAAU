@@ -112,8 +112,7 @@ CREATE TABLE weather (
 
 CREATE TABLE node(
 	id serial PRIMARY KEY, -- we will have this beside the key from provider to make sure we are able to store data from a different provider in the future
-	latitude float8,
-	longitude float8,
+	gps_coords geometry,
 	longitude_meters float8, 
 	osm_node_id bigint --provider id this should be 64 bit
 );
