@@ -1,68 +1,70 @@
-﻿
-
-using System.Diagnostics;
-using System.Security.Cryptography;
+using EVCP.DataPublisher;
 using EVCP.Domain;
-using EVCP.Domain.Models;
 
 namespace EVCP.Simulation
 {
     //Singleton
-    class SimulationManager
+    public class SimulationManager
     {
-        private int updateFrequencyMs = 1000;
-        private int conCurrentCars = 1;
-        private int threadWaitFluctuationMs = 100;
+        private readonly int updateFrequencyMs = 1000;
+        private readonly int conCurrentCars = 1;
+        private readonly int threadWaitFluctuationMs = 100;
         private List<CarThreadClass> carsThreads = new();
 
-        private static readonly object Instancelock = new object();
+        private static readonly object Instancelock = new();
 
-        private static SimulationManager instance = new SimulationManager();
+        private static SimulationManager instance = new();
         public static SimulationManager Instance
         {
             get
             {
                 lock (Instancelock)
                 {
-                    if (instance == null)
-                    {
-                        instance = new SimulationManager();
-                    }
+                    instance ??= new SimulationManager();
                 }
                 return instance;
             }
         }
 
-        public RouteManager routeManager { get; private set; }
+        public RouteManager RouteManager { get; private set; }
 
         private SimulationManager() { }
 
+        private ITripDataPublisher _tripDataPublisher;
 
         public void InitSimulation()
         {
-            routeManager = new RouteManager();
+            var bus = Bootstrapper.RegisterBus();
+            _tripDataPublisher = new TripDataPublisher(bus);
+
+            RouteManager = new RouteManager();
             for (int i = 0; i < conCurrentCars; i++)
             {
-                CarThreadClass carThread = new CarThreadClass(updateFrequencyMs, threadWaitFluctuationMs, i, routeManager.RequestRoute());
+                CarThreadClass carThread = new(updateFrequencyMs, threadWaitFluctuationMs, i, RouteManager.RequestRoute());
                 carsThreads.Add(carThread);
                 Console.WriteLine($"Init {i}. car.");
             }
-            startSimulation();
+            StartSimulation();
             Thread.Sleep(600000);
-            stopAllThreads();
+            StopAllThreads();
         }
 
-        void startSimulation(){
-            foreach(CarThreadClass car in carsThreads){
+        void StartSimulation()
+        {
+            foreach (CarThreadClass car in carsThreads)
+            {
                 car.startThread();
             }
         }
 
-        void stopAllThreads(){
-            foreach(CarThreadClass car in carsThreads){
+        void StopAllThreads()
+        {
+            foreach (CarThreadClass car in carsThreads)
+            {
                 car.stopThread();
             }
-            foreach(CarThreadClass car in carsThreads){
+            foreach (CarThreadClass car in carsThreads)
+            {
                 car.stopAndJoin();
             }
         }
@@ -70,7 +72,7 @@ namespace EVCP.Simulation
 
         static void Main(string[] args)
         {
-            SimulationManager.Instance.InitSimulation();
+            Instance.InitSimulation();
             //RouteManager routeManager = new RouteManager();
             // List<Edge> edgeList = routeManager.RequestRoute();
             // foreach(Edge edge in edgeList){
@@ -79,15 +81,13 @@ namespace EVCP.Simulation
 
         }
 
-        internal void getRouteFromCar(List<TripData> tripDatas, CarThreadClass carThreadClass)
+        internal void GetRouteFromCar(List<TripData> tripDatas, CarThreadClass carThreadClass)
         {
             Console.WriteLine($"Recieved TripData fromCar {carThreadClass.CarId}:");
-            foreach(TripData tripData in tripDatas){
+            foreach (TripData tripData in tripDatas)
+            {
                 Console.WriteLine(tripData);
             }
         }
     }
-
-
-
 }

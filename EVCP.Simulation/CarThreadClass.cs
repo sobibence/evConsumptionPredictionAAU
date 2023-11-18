@@ -48,7 +48,7 @@ public class CarThreadClass
     }
 
     public void RequestNewRouteForCar(Car car){
-        car.Reset(SimulationManager.Instance.routeManager.RequestRoute());
+        car.Reset(SimulationManager.Instance.RouteManager.RequestRoute());
         Console.WriteLine($"Hi I am car: {carId} and I finished and requested new route...");
     }
 
@@ -59,7 +59,7 @@ public class CarThreadClass
         while (run)
         {
             int sleeptime = updateFrequencyMs + r.Next(0, threadWaitFluctuationMs);
-            SimulationManager.Instance.getRouteFromCar(car.getNextCarStatus(sleeptime),this);
+            SimulationManager.Instance.GetRouteFromCar(car.getNextCarStatus(sleeptime),this);
             Thread.Sleep(sleeptime);
             Console.WriteLine($"car: {carId} vel: {car.CurrentSpeed} acc: {car.CurrentAccel}"); 
         }

@@ -2,9 +2,9 @@
 {
     public class Worker : IWorker
     {
-        private readonly IMessagePublisher _messagePublisher;
+        private readonly IEVDataPublisher _messagePublisher;
 
-        public Worker(IMessagePublisher messagePublisher)
+        public Worker(IEVDataPublisher messagePublisher)
         {
             _messagePublisher = messagePublisher ?? throw new ArgumentNullException(nameof(messagePublisher));
         }

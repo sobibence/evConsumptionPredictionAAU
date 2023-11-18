@@ -2,7 +2,7 @@
 
 namespace EVCP.DataExtractor
 {
-    public class EVDataPublisher : IMessagePublisher
+    public class EVDataPublisher : IEVDataPublisher
     {
         private readonly IBus _bus;
 
@@ -17,7 +17,7 @@ namespace EVCP.DataExtractor
         }
     }
 
-    public interface IMessagePublisher
+    public interface IEVDataPublisher
     {
         public Task Publish(EVData message);
     }
