@@ -1,4 +1,4 @@
-using EVCP.DataPublisher;
+﻿using EVCP.DataPublisher;
 using EVCP.Domain;
 
 namespace EVCP.Simulation
@@ -88,6 +88,8 @@ namespace EVCP.Simulation
             {
                 Console.WriteLine(tripData);
             }
+
+            _tripDataPublisher.Publish(tripDatas.ToArray());
         }
     }
 }
