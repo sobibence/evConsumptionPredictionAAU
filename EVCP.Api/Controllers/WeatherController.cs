@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using OpenWeather;
 using Serilog;
 
+
 namespace EVCP.Api.Controllers;
 
 [ApiController]

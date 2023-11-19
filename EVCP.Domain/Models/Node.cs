@@ -1,18 +1,29 @@
+
+﻿namespace EVCP.Domain.Models;
 ﻿using EVCP.Domain.Helpers;
 
-namespace EVCP.Domain.Models;
 
 public class Node : BaseEntity
 {
-    [ColumnName("latitude")]
-    public float Latitude { get; set; }
+    public long NodeIdOsm { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
 
-    [ColumnName("longitude")]
-    public float Longitude { get; set; }
+    private List<Edge> _listOfConnectedEdges = new();
+    public List<Edge> ListOfConnectedEdges { get { return _listOfConnectedEdges; } }
 
-    [ColumnName("longitude_meters")]
-    public int LongitudeMeters { get; set; }
+    private List<Node> _listOfConnectedNodes = new();
+    public List<Node> ListOfConnectedNodes { get { return _listOfConnectedNodes; } }
 
-    [ColumnName("osm_node_id")]
-    public long OsmNodeId { get; set; }
+
+    public override string ToString()
+    {
+        string connectedNodes = string.Join(", ", _listOfConnectedNodes.Select(node => node.NodeIdOsm));
+
+        return $"Node Info:\n" +
+               $"NodeIdOsm: {NodeIdOsm}\n" +
+               $"Latitude: {Latitude}\n" +
+               $"Longitude: {Longitude}\n" +
+               $"Connected Nodes: [{connectedNodes}]";
+    }
 }

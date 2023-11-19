@@ -1,0 +1,25 @@
+Traceback (most recent call last):                                                                                                                                                                     
+  File "./main.py", line 137, in <module>                                                                                                                                                              
+    train_dataset = tf.data.Dataset.from_tensor_slices((data_train, y_train))                                                                                                                          
+  File "/home/sobibence/project/evConsumptionPredictionAAU/ML_Model/Repaired_EVDPEP/ml_env/lib/python3.8/site-packages/tensorflow/python/data/ops/dataset_ops.py", line 760, in from_tensor_slices     
+    return TensorSliceDataset(tensors)                                                                                                                                                                 
+  File "/home/sobibence/project/evConsumptionPredictionAAU/ML_Model/Repaired_EVDPEP/ml_env/lib/python3.8/site-packages/tensorflow/python/data/ops/dataset_ops.py", line 3320, in __init__              
+    element = structure.normalize_element(element)                                                                                                                                                     
+  File "/home/sobibence/project/evConsumptionPredictionAAU/ML_Model/Repaired_EVDPEP/ml_env/lib/python3.8/site-packages/tensorflow/python/data/util/structure.py", line 129, in normalize_element       
+    ops.convert_to_tensor(t, name="component_%d" % i, dtype=dtype))                                                                                                                                    
+  File "/home/sobibence/project/evConsumptionPredictionAAU/ML_Model/Repaired_EVDPEP/ml_env/lib/python3.8/site-packages/tensorflow/python/profiler/trace.py", line 163, in wrapped                      
+    return func(*args, **kwargs)                                                                                                                                                                       
+  File "/home/sobibence/project/evConsumptionPredictionAAU/ML_Model/Repaired_EVDPEP/ml_env/lib/python3.8/site-packages/tensorflow/python/framework/ops.py", line 1566, in convert_to_tensor            
+    ret = conversion_func(value, dtype=dtype, name=name, as_ref=as_ref)                                                                                                                                
+  File "/home/sobibence/project/evConsumptionPredictionAAU/ML_Model/Repaired_EVDPEP/ml_env/lib/python3.8/site-packages/tensorflow/python/framework/tensor_conversion_registry.py", line 52, in _default
+_conversion_function
+    return constant_op.constant(value, dtype, name=name)
+  File "/home/sobibence/project/evConsumptionPredictionAAU/ML_Model/Repaired_EVDPEP/ml_env/lib/python3.8/site-packages/tensorflow/python/framework/constant_op.py", line 264, in constant
+    return _constant_impl(value, dtype, shape, name, verify_shape=False,
+  File "/home/sobibence/project/evConsumptionPredictionAAU/ML_Model/Repaired_EVDPEP/ml_env/lib/python3.8/site-packages/tensorflow/python/framework/constant_op.py", line 276, in _constant_impl
+    return _constant_eager_impl(ctx, value, dtype, shape, verify_shape)
+  File "/home/sobibence/project/evConsumptionPredictionAAU/ML_Model/Repaired_EVDPEP/ml_env/lib/python3.8/site-packages/tensorflow/python/framework/constant_op.py", line 301, in _constant_eager_impl
+    t = convert_to_eager_tensor(value, ctx, dtype)
+  File "/home/sobibence/project/evConsumptionPredictionAAU/ML_Model/Repaired_EVDPEP/ml_env/lib/python3.8/site-packages/tensorflow/python/framework/constant_op.py", line 98, in convert_to_eager_tensor
+    return ops.EagerTensor(value, ctx.device_name, dtype)
+ValueError: Failed to convert a NumPy array to a Tensor (Unsupported object type float).
