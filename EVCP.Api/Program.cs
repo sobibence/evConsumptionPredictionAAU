@@ -1,5 +1,6 @@
 using EVCP.DataAccess;
 using EVCP.Domain.Repositories;
+using MachineLearningModelClient;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -26,6 +27,7 @@ try
     builder.Services.AddTransient<IVehicleModelRepository, VehicleModelRepository>();
     builder.Services.AddTransient<IVehicleTripStatusRepository, VehicleTripStatusRepository>();
     builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
+    builder.Services.AddTransient<IMachineLearningModelService, MachineLearningModelService>();
 
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
