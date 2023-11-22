@@ -37,3 +37,6 @@ uvicorn endpoint:app --host 0.0.0.0 --port 8000 --reload
 dont forget to build the model and replace the path in the endpoint to you .h5 path
 build the model command:
 python ./main.py --model lstm --datadir al --epochs 400 --lossfunc mse --optimizer adam --batchsize 128 --summed 0 --outputdir output --name final --speedprofile speed_limit
+
+this is and example json object that i tested it on:
+{"driving_data": [    [0.5, 0.3, 0.1, 0.2, 0.9,0.5, 0.3, 0.1, 0.2, 0.9,0.5, 0.3, 0.1, 0.2, 0.9,0.5, 0.3, 0.1, 0.2, 0.9,0.5, 0.3, 0.1, 0.2, 0.9,0.5, 0.3, 0.1, 0.2, 0.9],     [0.2, 0.7, 0.4, 0.1, 0.2, 0.6, 0.5, 0.3, 0.1, 0.2, 0.9,0.5, 0.3, 0.1, 0.2, 0.9,0.5, 0.3, 0.1, 0.2, 0.9,0.5, 0.3, 0.1, 0.2, 0.9,0.5, 0.3, 0.1, 0.9]   ]}
