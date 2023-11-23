@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EVCP.Simulation", "EVCP.Sim
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EVCP.MapLoader", "EVCP.MapLoader\EVCP.MapLoader.csproj", "{904D64F9-D7C4-4E29-8B12-B3CDAA141092}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EVCP.RouteFInding", "EVCP.RouteFInding\EVCP.RouteFInding.csproj", "{EA8D7729-1F5E-4D44-B641-8ADC6FDD1ECD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{9D8AB963-BF7B-4028-8F6E-4154EFEEF772}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D8AB963-BF7B-4028-8F6E-4154EFEEF772}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D8AB963-BF7B-4028-8F6E-4154EFEEF772}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA8D7729-1F5E-4D44-B641-8ADC6FDD1ECD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA8D7729-1F5E-4D44-B641-8ADC6FDD1ECD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA8D7729-1F5E-4D44-B641-8ADC6FDD1ECD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA8D7729-1F5E-4D44-B641-8ADC6FDD1ECD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,5 +79,3 @@ Global
 		SolutionGuid = {0BA3E969-E64C-45B8-A8C8-13989E63E5F6}
 	EndGlobalSection
 EndGlobal
-
-
