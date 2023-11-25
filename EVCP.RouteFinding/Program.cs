@@ -4,6 +4,7 @@ using EVCP.DataAccess;
 using EVCP.Domain;
 using EVCP.Domain.Models;
 using EVCP.Domain.Repositories;
+using EVCP.RouteFinding;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -11,16 +12,15 @@ using Microsoft.Extensions.Logging.Configuration;
 
 class Program
 {
-    private readonly IVehicleTripStatusRepository _vehicleTripStatusRepo;
+    private readonly IDataBaseConnector dataBase;
     private readonly ILogger<Program> _logger;
 
-    public Program(ILogger<Program> logger, IVehicleTripStatusRepository vehicleTripStatusRepository)
+    public Program(ILogger<Program> logger, IDataBaseConnector dataBaseConnector)
     {
-        _vehicleTripStatusRepo = vehicleTripStatusRepository;
+        dataBase = dataBaseConnector;
         _logger = logger;
     }
 
-    IHost Host { get; set; }
     public static async Task Main(string[] args)
     {
         HostApplicationBuilder builder = Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder(args);
@@ -39,7 +39,9 @@ class Program
         builder.Services.AddTransient<IVehicleModelRepository, VehicleModelRepository>();
         builder.Services.AddTransient<IVehicleTripStatusRepository, VehicleTripStatusRepository>();
         builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
+        builder.Services.AddSingleton<IDataBaseConnector, DataBaseConnector>();
         builder.Services.AddSingleton<Program>();
+        
         IHost host = builder.Build();
 
         Program program = host.Services.GetService<Program>();
@@ -50,7 +52,6 @@ class Program
         }
         else
         {
-            program.Host = host;
             await program.Start();
         }
 
@@ -60,28 +61,7 @@ class Program
     async Task Start()
     {
         _logger.LogInformation("Starting program");
-        Node node = new Node();
-        VehicleTripStatus trip = new VehicleTripStatus
-        {
-            AdditionalWeightKg = 0,
-            VehicleMilageMeters = 0,
-            VehicleId = 1
-        };
-        List<VehicleTripStatus> list = new()
-        {
-            trip
-        };
-
-        var repo = _vehicleTripStatusRepo;
-        if (repo is null)
-        {
-            _logger.LogInformation("repo is null");
-        }
-        else
-        {
-            await repo.Create(list);
-            var asd = await repo.GetByIdAsync(0);
-        }
+        dataBase.TestDb();
 
     }
 

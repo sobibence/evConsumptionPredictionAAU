@@ -13,7 +13,7 @@ public class Edge : BaseEntity
 
     
     private double _length;
-
+    [NotMapped]
     public double Length
     {
         get
@@ -78,7 +78,7 @@ public class Edge : BaseEntity
 
         }
     }
-
+    [ColumnName("edge_into_id")]
     public int EdgeInfoId{get;set;}
 
     private EdgeInfo _edgeInfo;
