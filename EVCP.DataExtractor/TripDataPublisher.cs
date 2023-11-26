@@ -1,5 +1,7 @@
 ﻿using EasyNetQ;
 using EVCP.Domain;
+using EVCP.Domain.Models;
+using EVCP.Domain.Services;
 using EVCP.Dtos;
 
 namespace EVCP.DataPublisher
@@ -26,7 +28,34 @@ namespace EVCP.DataPublisher
                 );
 
         private static TripDataItemDto Map(TripData tripData) =>
-            new(tripData.EdgePercent, tripData.TripId, tripData.Speed, tripData.Acceleration, tripData.Time);
+            new(tripData.EdgePercent,
+                tripData.TripId,
+                tripData.Speed,
+                tripData.Acceleration,
+                tripData.Time,
+                Map(WeatherDataGenerator.GenerateWeatherData(tripData.Time)),
+                Map(tripData.Edge));
+
+        private static WeatherDto Map(WeatherData weatherData) =>
+            new(
+                temperatureCelsius: weatherData.Temperature,
+                windKph: weatherData.WindSpeed,
+                windDirection: weatherData.WindDirection,
+                fogPercent: weatherData.Fog,
+                rainMm: weatherData.Precipitation
+                );
+
+        private static EdgeDto Map(Edge edge) =>
+            new(
+                startNodeId: edge.StartNodeId,
+                endNodeId: edge.EndNodeId,
+                osmWayId: edge.EdgeInfo.OsmWayId,
+                length: edge.Length,
+                speedLimit: edge.EdgeInfo.SpeedLimit,
+                streetName: edge.EdgeInfo.StreetName,
+                highway: edge.EdgeInfo.Highway,
+                surface: edge.EdgeInfo.Surface
+                );
     }
 
     public interface ITripDataPublisher
