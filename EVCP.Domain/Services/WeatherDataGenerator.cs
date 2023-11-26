@@ -18,7 +18,7 @@ namespace EVCP.Domain.Services
                 fog: random.Next(0, 10), // Fog percentage (0% to 20%)
                 humidity: random.Next(20, 80), // Humidity percentage (20% to 80%)
                 temperature: random.Next(-10, 40), // Temperature in Celsius (-10°C to 40°C)
-                precipitation: random.Next(0, 10) / 10.0 // Precipitation in mm (0 to 1.0 mm)
+                precipitation: random.Next(0, 10) // Precipitation in mm (0 to 1.0 mm)
             );
         }
     }
