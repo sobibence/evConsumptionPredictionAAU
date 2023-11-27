@@ -1,5 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS postgis;
-CREATE EXTENSION IF NOT EXISTS timescaledb;
+--CREATE EXTENSION IF NOT EXISTS timescaledb;
 
 CREATE TYPE estimation_type AS ENUM ('ml','function_fit','record');
 
@@ -96,7 +96,8 @@ CREATE TABLE vehicle_trip_status (
 	id serial PRIMARY KEY,
 	vehicle_id int REFERENCES vehicle(id),
 	additional_weight_kg int,
-	vehicle_milage_meters int
+	vehicle_milage_meters int,
+	finished boolean
 	-- driver_aggresiveness int
 );
 
@@ -112,8 +113,7 @@ CREATE TABLE weather (
 
 CREATE TABLE node(
 	id serial PRIMARY KEY, -- we will have this beside the key from provider to make sure we are able to store data from a different provider in the future
-	latitude float8,
-	longitude float8,
+	gps_coords geometry,
 	longitude_meters float8, 
 	osm_node_id bigint --provider id this should be 64 bit
 );
@@ -151,7 +151,7 @@ CREATE TABLE fact_recorded_travel(
 	speed_km_per_hour float,
 	weather_id int REFERENCES weather(id),
 	edge_id int REFERENCES edge(id),
-	trip_id int, 
+	trip_id int REFERENCES vehicle_trip_status(id), 
 	edge_percent float,
 	time_epoch timestamp, --this is timestamp, time only records the time of day.
 	acceleration_metre_per_second_squared float, -- we might not need this

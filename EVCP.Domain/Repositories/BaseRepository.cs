@@ -3,6 +3,7 @@ using EVCP.DataAccess;
 using EVCP.DataAccess.Repositories;
 using EVCP.Domain.Helpers;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
 namespace EVCP.Domain.Repositories;
@@ -193,6 +194,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         var columnToProperty = new List<string>();
 
         typeof(T).GetProperties()
+            .Where(property => !Attribute.IsDefined(property, typeof(NotMappedAttribute)))
             .ToList()
             .ForEach(property =>
             {
