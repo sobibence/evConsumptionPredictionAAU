@@ -5,10 +5,12 @@ namespace EVCP.DataConsumer.Consumer;
 public class ConsumeWorker : IWorker
 {
     private readonly IEVDataConsumer _consumer;
+    private readonly string name;
 
-    public ConsumeWorker(IEVDataConsumer consumer)
+    public ConsumeWorker(IEVDataConsumer consumer, string name)
     {
         _consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
+        this.name = name ?? "n/a";
     }
 
     public async Task Run()
@@ -23,8 +25,8 @@ public class ConsumeWorker : IWorker
 
     void MessageHandler(IEVDataDto<IEVItemDto> message)
     {
-        Console.WriteLine(message.SourceTimestamp);
-        message.Data.ToList().ForEach(m => Console.WriteLine($"Message: {m.Name}"));
-        Console.WriteLine(new string('-', 20));
+        //Console.WriteLine(message.SourceTimestamp);
+        message.Data.ToList().ForEach(m => Console.WriteLine($"$Consumer: {name}\tMessage: {m.Name}"));
+        //Console.WriteLine(new string('-', 20));
     }
 }

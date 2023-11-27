@@ -6,12 +6,14 @@ public class PublishWorker : IWorker
 {
     private readonly IEVDataPublisher _publisher;
 
-    public static int NoOfMessages = 10;
-    public static int NoOfElementsInMessage = 60;
+    private readonly int _noOfMessages;
+    private readonly int _noOfElementsInMessage;
 
-    public PublishWorker(IEVDataPublisher publisher)
+    public PublishWorker(IEVDataPublisher publisher, int noOfMessages = 10, int noOfElementsInMessage = 60)
     {
         _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
+        _noOfMessages = noOfMessages;
+        _noOfElementsInMessage += noOfElementsInMessage;
     }
 
     public async Task Run()
@@ -27,9 +29,9 @@ public class PublishWorker : IWorker
         await Task.WhenAll(publishTasks);
     }
 
-    private static IEnumerable<IEVItemDto> GenerateMessage()
-        => Enumerable.Range(0, NoOfElementsInMessage).Select(i => new EVItemDto($"test {i}")).ToArray();
+    private IEnumerable<IEVItemDto> GenerateMessage()
+        => Enumerable.Range(0, _noOfElementsInMessage).Select(i => new EVItemDto($"test {i}")).ToArray();
 
-    private static IEnumerable<IEVDataDto<IEVItemDto>> GenerateMessages()
-        => Enumerable.Range(0, NoOfMessages).Select(_ => new EVDataDto<IEVItemDto>(DateTime.Now, GenerateMessage())).ToArray();
+    private IEnumerable<IEVDataDto<IEVItemDto>> GenerateMessages()
+        => Enumerable.Range(0, _noOfMessages).Select(_ => new EVDataDto<IEVItemDto>(DateTime.Now, GenerateMessage())).ToArray();
 }

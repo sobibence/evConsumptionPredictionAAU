@@ -13,4 +13,9 @@ public static class Bootstrapper
 
         return RabbitHutch.CreateBus(configuration["RabbitMQConnectionString"]);
     }
+
+    public static void RegisterServices()
+    {
+        // add DI for repositories
+    }
 }
