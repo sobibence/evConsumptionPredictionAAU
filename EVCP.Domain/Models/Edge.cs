@@ -1,13 +1,37 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using EVCP.Domain.Helpers;
 
 namespace EVCP.Domain.Models;
+
+[TableName("edge")]
 public class Edge : BaseEntity
 {
-
+    [ColumnName("start_node_id")]
     public long StartNodeId { get; set; }
+    [ColumnName("end_node_id")]
     public long EndNodeId { get; set; }
 
+    
+    private double _length;
+    [NotMapped]
+    public double Length
+    {
+        get
+        {
+            if (_length == 0)
+            {
+                _length = GpsDistanceCalculator.CalculateDistance(StartNode, EndNode);
+            }
+            return _length;
+        }
+        set
+        {
+            _length = value;
+        }
+    } // this should be in meters
+
     private Node _startNode;
+    [NotMapped]
     public Node StartNode
     {
         get
@@ -32,6 +56,7 @@ public class Edge : BaseEntity
     }
 
     private Node _endNode;
+    [NotMapped]
     public Node EndNode
     {
         get
@@ -53,86 +78,28 @@ public class Edge : BaseEntity
 
         }
     }
-    public long OsmWayId { get; set; }
+    [ColumnName("edge_into_id")]
+    public int EdgeInfoId{get;set;}
 
-    //if we already calcuted it once then we dont need to do it again
-    private double _length;
-    public double Length
+    private EdgeInfo _edgeInfo;
+    [NotMapped]
+    public EdgeInfo EdgeInfo
     {
-        get
-        {
-            if (_length == 0)
-            {
-                _length = GpsDistanceCalculator.CalculateDistance(StartNode, EndNode);
-            }
-            return _length;
-        }
+        get { return _edgeInfo;}
         set
         {
-            _length = value;
-        }
-    } // this should be in meters
-    public int SpeedLimit { get; set; }
-
-    private string _streetName = "";
-    public string StreetName
-    {
-        get
-        {
-            return _streetName;
-        }
-        set
-        {
-            if (value is not null)
-            {
-                _streetName = value;
-            }
+            _edgeInfo = value;
         }
     }
-
-    private string _highway = "";
-    public string Highway
-    {
-        get
-        {
-            return _highway;
-        }
-        set
-        {
-            if (value is not null)
-            {
-                _highway = value;
-            }
-        }
-    }
-
-    private string _surface = "";
-    public string Surface
-    {
-        get
-        {
-            return _surface;
-        }
-        set
-        {
-            if (value is not null)
-            {
-                _surface = value;
-            }
-        }
-    }
-
     public override string ToString()
     {
         return $"Way Info:\n" +
-               $"OsmWayId: {OsmWayId}\n" +
-               $"StartNode: {StartNodeId}\n" +
-               $"EndNode: {EndNodeId}\n" +
-               $"Length: {Length} meters\n" +
-               $"Speed Limit: {SpeedLimit}\n" +
-               $"Street Name: {StreetName}\n" +
-               $"Highway: {Highway}\n" +
-               $"Surface: {Surface}";
+               $"StartNodeId: {StartNodeId}\n" + 
+               $"EndNodeId: {EndNodeId}\n" +
+               $"Speed Limit: {EdgeInfo.SpeedLimit}\n" +
+               $"Street Name: {EdgeInfo.StreetName}\n" +
+               $"Highway: {EdgeInfo.Highway}\n" +
+               $"Surface: {EdgeInfo.Surface}";
     }
 }
 
