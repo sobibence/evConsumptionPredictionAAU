@@ -3,7 +3,7 @@
 // TODO delete this before merge
 namespace Playground
 {
-    public class program
+    public class Program
     {
         public async void main(String[] args)
         {

@@ -1,6 +1,6 @@
 using EVCP.DataAccess;
 using EVCP.Domain.Repositories;
-using MachineLearningModelClient;
+using EVCP.MachineLearningModelClient;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
