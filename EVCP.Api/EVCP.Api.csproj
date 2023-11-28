@@ -21,6 +21,7 @@
     <ProjectReference Include="..\EVCP.DataAccess\EVCP.DataAccess.csproj" />
     <ProjectReference Include="..\EVCP.Domain\EVCP.Domain.csproj" />
     <ProjectReference Include="..\EVCP.Dtos\EVCP.Dtos.csproj" />
+    <ProjectReference Include="..\EVCP.MachineLearningModelClient\EVCP.MachineLearningModelClient.csproj" />
 
     <ProjectReference Include="..\OpenWeather\OpenWeather.csproj" />
   </ItemGroup>

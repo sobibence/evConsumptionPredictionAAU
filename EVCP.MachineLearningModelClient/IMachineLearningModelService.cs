@@ -1,8 +1,8 @@
 ﻿
-namespace MachineLearningModelClient
+namespace EVCP.MachineLearningModelClient
 {
     public interface IMachineLearningModelService
     {
-        Task<decimal> Predict();
+        Task<List<decimal>> Predict(List<ModelInput> modelInputs);
     }
 }

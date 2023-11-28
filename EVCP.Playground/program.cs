@@ -1,4 +1,4 @@
-﻿using MachineLearningModelClient;
+﻿using EVCP.MachineLearningModelClient;
 
 // TODO delete this before merge
 namespace Playground
@@ -7,10 +7,11 @@ namespace Playground
     {
         public async void main(String[] args)
         {
+            //var app = SetupServices(args);
             var client = new MachineLearningModelService();
             Console.WriteLine("getting prediction...");
-            var result = await client.Predict();
-            Console.WriteLine(result);
+            //var result = await client.Predict();
+            //Console.WriteLine(result);
             Console.ReadKey();
         }
     }
