@@ -1,7 +1,6 @@
 ﻿using EVCP.Domain.Helpers;
-using EVCP.Domain.Models;
 
-namespace EVCP.Domain;
+namespace EVCP.Domain.Models;
 
 
 [TableName("edge_info")]
@@ -11,11 +10,11 @@ public class EdgeInfo : BaseEntity
     [ColumnName("osm_way_id")]
     public long OsmWayId { get; set; }
     
-    [ColumnName("speed_limit")]
+    [ColumnName("speed_limit_kmph")]
     public int SpeedLimit { get; set; }
 
     private string _streetName = "";
-    [ColumnName("steet_name")]
+    [ColumnName("street_name")]
     public string StreetName
     {
         get
@@ -34,6 +33,7 @@ public class EdgeInfo : BaseEntity
     
     private string _highway = "";
     [ColumnName("highway")]
+    [EnumType]
     public string Highway
     {
         get
@@ -51,6 +51,7 @@ public class EdgeInfo : BaseEntity
 
     private string _surface = "";
     [ColumnName("surface")]
+    [EnumType]
     public string Surface
     {
         get

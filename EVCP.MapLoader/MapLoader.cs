@@ -39,16 +39,17 @@ namespace EVCP.MapLoader
             // Stream response = await RequestMap(aalborgRequestString);
             // OsmJsonParser.ParseAndProcess(response);
             //await SaveToFile(aalborgRequestString);
-            Stream file = File.OpenRead("/home/sobibence/AAU/1_semester/project/evConsumptionPredictionAAU/tmpJson/map.txt");
-            OsmJsonParser.ParseAndProcess(file);
-            file.Close();
+            // Stream file = File.OpenRead("/home/sobibence/project/evConsumptionPredictionAAU/tmpJson/map.txt");
+            // OsmJsonParser.ParseAndProcess(file);
+            // file.Close();
+            Map map = await ReadMapFromFile();
         }
 
         public static async Task<Map> RequestAndProcessMap(string query)
         {
             Stream response = await RequestMap(query);
             OsmJsonParser.ParseAndProcess(response).Wait();
-            return new Map { Nodes = OsmJsonParser.NodeDictionary.Values.ToList(), Edges = OsmJsonParser.Edges };
+            return new Map { Nodes = OsmJsonParser.NodeDictionary.Values.ToList(), Edges = OsmJsonParser.Edges , EdgeInfos = OsmJsonParser.EdgeInfos};
         }
 
         public static async Task<Map> ReadMapFromFile(string filestr = "/home/sobibence/project/evConsumptionPredictionAAU/tmpJson/map.txt"){
@@ -56,7 +57,7 @@ namespace EVCP.MapLoader
             Task jsonTask = OsmJsonParser.ParseAndProcess(file);
             jsonTask.Wait();
             file.Close();
-            return new Map { Nodes = OsmJsonParser.NodeDictionary.Values.ToList(), Edges = OsmJsonParser.Edges };
+            return new Map { Nodes = OsmJsonParser.NodeDictionary.Values.ToList(), Edges = OsmJsonParser.Edges , EdgeInfos = OsmJsonParser.EdgeInfos};
         }
 
         static async Task<Stream> RequestMap(string query)
