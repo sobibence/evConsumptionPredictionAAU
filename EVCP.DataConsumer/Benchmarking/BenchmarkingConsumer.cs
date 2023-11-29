@@ -6,15 +6,14 @@ using EVCP.DataConsumer.Publisher;
 
 namespace EVCP.DataConsumer.Benchmarking;
 
-//[MemoryDiagnoser]
-[SimpleJob(iterationCount: 3)]
+[MemoryDiagnoser]
 [MinColumn, MaxColumn, MeanColumn, MedianColumn]
 public class BenchmarkingConsumer
 {
-    [Params(5, 10)]
+    [Params(10, 100, 1000, 10000)]
     public int NoOfMessages { get; set; }
 
-    [Params(3)]
+    [Params(60)]
     public int NoOfElementsInMessage { get; set; }
 
     //public int ConsumerCount { get; set; }
@@ -66,21 +65,6 @@ public class BenchmarkingConsumer
         // print status information
         Console.WriteLine(new string('-', 30));
         Console.WriteLine($"Message Count (setup): {NoOfMessages}");
-        Console.WriteLine($"Queue: {queue}");
-        Console.WriteLine($"Messages in Queue: {QueueInfo(queue).MessagesCount}");
-        Console.WriteLine(new string('-', 30));
-    }
-
-    [IterationCleanup]
-    public void IterationCleanup()
-    {
-        Console.WriteLine($"IterationCleanup ({iterationCounter})");
-
-        var routingKey = $"{launchCounter}_{iterationCounter}";
-        var queue = $"queue_{routingKey}";
-
-        // print status information
-        Console.WriteLine(new string('-', 30));
         Console.WriteLine($"Queue: {queue}");
         Console.WriteLine($"Messages in Queue: {QueueInfo(queue).MessagesCount}");
         Console.WriteLine(new string('-', 30));
