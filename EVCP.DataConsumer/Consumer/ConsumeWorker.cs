@@ -20,7 +20,7 @@ public class ConsumeWorker : IWorker
 
     private async Task ProcessFile()
     {
-        await _consumer.Subscribe<IEVDataDto<IEVItemDto>>(MessageHandler);
+        await _consumer.Subscribe<IEVItemDto>(MessageHandler);
     }
 
     void MessageHandler(IEVDataDto<IEVItemDto> message)

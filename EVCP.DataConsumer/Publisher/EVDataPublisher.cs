@@ -1,24 +1,35 @@
 ﻿using EasyNetQ;
+using EasyNetQ.Topology;
 using EVCP.DataConsumer.Dtos;
 
 namespace EVCP.DataConsumer.Publisher;
 
 public interface IEVDataPublisher
 {
-    public Task Publish<T>(IEVDataDto<T> message);
+    public Exchange Exchange { get; set; }
+
+    public Task Publish<T>(IEVDataDto<T> data, string routingKey);
 }
 
 public class EVDataPublisher : IEVDataPublisher
 {
-    private readonly IBus _bus;
+    public Exchange Exchange { get; set; }
 
-    public EVDataPublisher(IBus bus)
+    private readonly IAdvancedBus _bus;
+    public EVDataPublisher(IBus bus, string exchangeName)
     {
-        _bus = bus ?? throw new ArgumentNullException(nameof(bus));
+        _bus = bus.Advanced ?? throw new ArgumentNullException(nameof(bus));
+        Exchange = CreateExchange(exchangeName);
     }
 
-    public async Task Publish<T>(IEVDataDto<T> message)
+    public async Task Publish<T>(IEVDataDto<T> data, string routingKey)
     {
-        await _bus.PubSub.PublishAsync(message);
+        var message = new Message<IEVDataDto<T>>(data);
+        await _bus.PublishAsync(Exchange, routingKey, false, message);
+    }
+
+    private Exchange CreateExchange(string name)
+    {
+        return _bus.ExchangeDeclare(name, ExchangeType.Direct);
     }
 }
