@@ -28,7 +28,7 @@ public class NodeRepository : BaseRepository<Node>, INodeRepository
     {
         var columnArr = GetForSelect();
         var columns = string.Join(", ", columnArr);
-        double distanceInRad = GpsDistanceCalculator.CalculateDistanceInRadians(node1, node2) * (1 + bufferfactor);
+        double distanceInRad = GpsDistanceCalculator.CalculateDistance(node1, node2) * (1 + bufferfactor);
 
         double Latitude = node1.Latitude + node2.Latitude / 2;
         double Longitude = node2.Longitude + node2.Longitude / 2;
