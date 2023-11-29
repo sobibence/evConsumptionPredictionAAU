@@ -27,15 +27,12 @@ public class EVDataConsumer : IEVDataConsumer
     {
         _bus.Consume<IEVDataDto<T>>(_queue, async (msg, info) =>
         {
-            //msg.Body.Data.ToList().ForEach(ele => handler.BeginInvoke(ele, null, null));
-
             await Task.Run(() =>
             {
-                handler.Invoke(msg.Body);
-                Console.WriteLine(new string('-', 30));
-                Console.WriteLine($"Queue: {_queue.Name}");
-                Console.WriteLine($"Consumed Messages Count: {++_consumedMessagesCount}");
-                Console.WriteLine(new string('-', 30));
+                //handler.Invoke(msg.Body);
+                _consumedMessagesCount++;
+                Console.WriteLine($"Queue: {_queue.Name}\n" +
+                                  $"Consumed Messages Count: {_consumedMessagesCount}");
             });
         });
     }
@@ -48,10 +45,5 @@ public class EVDataConsumer : IEVDataConsumer
     private void BindQueues(Exchange exchange, string routingKey)
     {
         _bus.Bind(exchange, _queue, routingKey);
-    }
-
-    public static QueueStats QueueInfo(IBus bus, string name)
-    {
-        return bus.Advanced.GetQueueStats(name);
     }
 }

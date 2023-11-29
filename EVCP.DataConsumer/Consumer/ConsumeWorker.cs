@@ -25,8 +25,6 @@ public class ConsumeWorker : IWorker
 
     void MessageHandler(IEVDataDto<IEVItemDto> message)
     {
-        //Console.WriteLine(message.SourceTimestamp);
         message.Data.ToList().ForEach(m => Console.WriteLine($"$Consumer: {name}\tMessage: {m.Name}"));
-        //Console.WriteLine(new string('-', 20));
     }
 }
