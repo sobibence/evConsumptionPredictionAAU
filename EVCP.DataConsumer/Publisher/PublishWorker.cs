@@ -6,7 +6,6 @@ public class PublishWorker : IWorker
 {
     private readonly IEVDataPublisher _publisher;
     private readonly string _routingKey;
-
     private readonly int _noOfMessages;
     private readonly int _noOfElementsInMessage;
 
@@ -15,7 +14,7 @@ public class PublishWorker : IWorker
         _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
         _routingKey = routingKey;
         _noOfMessages = noOfMessages;
-        _noOfElementsInMessage += noOfElementsInMessage;
+        _noOfElementsInMessage = noOfElementsInMessage;
     }
 
     public async Task Run()
@@ -28,8 +27,10 @@ public class PublishWorker : IWorker
         var messages = GenerateMessages();
         var publishTasks = messages.Select(item => _publisher.Publish<IEVItemDto>(item, _routingKey));
 
-        Console.WriteLine($"Published: {publishTasks.Count()} to {_routingKey}");
         await Task.WhenAll(publishTasks);
+
+        Console.WriteLine($"Message to be published count: {messages.Count()}");
+        Console.WriteLine($"Published: {publishTasks.Count()} to {_routingKey}");
     }
 
     private IEnumerable<IEVItemDto> GenerateMessage()

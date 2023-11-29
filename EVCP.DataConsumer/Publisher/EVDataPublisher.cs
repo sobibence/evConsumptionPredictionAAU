@@ -16,6 +16,7 @@ public class EVDataPublisher : IEVDataPublisher
     public Exchange Exchange { get; set; }
 
     private readonly IAdvancedBus _bus;
+
     public EVDataPublisher(IBus bus, string exchangeName)
     {
         _bus = bus.Advanced ?? throw new ArgumentNullException(nameof(bus));
