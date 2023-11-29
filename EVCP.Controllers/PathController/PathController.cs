@@ -1,4 +1,5 @@
-﻿using EVCP.Domain.Repositories;
+﻿using EVCP.Domain.Models;
+using EVCP.Domain.Repositories;
 using EVCP.Domain.Services;
 using EVCP.MachineLearningModelClient;
 using System.Security.Cryptography.X509Certificates;
@@ -27,7 +28,11 @@ namespace EVCP.Controllers.PathController
             List<int> wantedEdgeIds = new List<int>() { 1, 2, 3, 4 };
 
             var vehicleTripStatus = await vehicleTripStatusRepository.GetByIdAsync(vehicleTripStatusId);
-            var edges = await edgeRepository.GetByAsync("id", wantedEdgeIds);
+            List<Edge> edges = new List<Edge>();
+            foreach (var currEdgeId in wantedEdgeIds)
+            {
+                edges.Add(await edgeRepository.GetByIdAsync(currEdgeId)); //TODO probably transform this into a single query
+            }
 
             List<ModelInput> modelInputs = new List<ModelInput>();
 
