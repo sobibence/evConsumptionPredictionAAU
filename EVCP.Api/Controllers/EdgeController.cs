@@ -23,22 +23,4 @@ public class EdgeController : ControllerBase
         return result;
     }
 
-    [HttpPost]
-    public async Task<bool> Create()
-    {
-        var random = new Random();
-
-        var result = await _edgeRepository.Create(new Edge
-        {
-            AllowedSpeedKmph = random.Next(200),
-            AverageSpeedKmph = random.Next(200),
-            StartNodeId = random.Next(1, 5),
-            EndNodeId = random.Next(1, 5),
-            InclinationDegrees = random.Next(-90, 90),
-            LengthMeters = random.Next(1000),
-            OsmWayId = random.Next(1000),
-        });
-
-        return result;
-    }
 }
