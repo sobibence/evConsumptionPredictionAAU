@@ -25,12 +25,8 @@ public class PublishWorker : IWorker
     private async Task ProcessFile()
     {
         var messages = GenerateMessages();
-        var publishTasks = messages.Select(item => _publisher.Publish<IEVItemDto>(item, _routingKey));
 
-        await Task.WhenAll(publishTasks);
-
-        Console.WriteLine($"Message to be published count: {messages.Count()}");
-        Console.WriteLine($"Published: {publishTasks.Count()} to {_routingKey}");
+        messages.ToList().ForEach(async data => await _publisher.Publish(data, _routingKey));
     }
 
     private IEnumerable<IEVItemDto> GenerateMessage()
