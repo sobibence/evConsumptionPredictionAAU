@@ -68,17 +68,7 @@ public class DataBaseConnector : IDataBaseConnector
         {
             node
         };
-        QueryAndInsertMapToDb();
-        // var repo = nodeRepository;
-        // if (repo is null)
-        // {
-        //     _logger.LogError("repo is null");
-        // }
-        // else
-        // {
-        //     await repo.Create(list);
-        //     var asd = await repo.GetByIdAsync(0);
-        // }
+        
     }
 
 
@@ -138,4 +128,9 @@ public class DataBaseConnector : IDataBaseConnector
 
 
     }
+
+    
+
+
+
 }
