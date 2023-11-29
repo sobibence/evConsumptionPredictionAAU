@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using EasyNetQ;
+using EasyNetQ.Management.Client;
 using EVCP.DataConsumer.Consumer;
 using EVCP.DataConsumer.Publisher;
 
@@ -10,27 +11,36 @@ namespace EVCP.DataConsumer.Benchmarking;
 [MinColumn, MaxColumn, MeanColumn, MedianColumn]
 public class BenchmarkingConsumer
 {
-    [Params(10, 20)]
+    [Params(5, 10)]
     public int NoOfMessages { get; set; }
 
-    [Params(5)]
+    [Params(3)]
     public int NoOfElementsInMessage { get; set; }
 
-    public int ConsumerCount { get; set; }
+    //public int ConsumerCount { get; set; }
 
-    private IBus _bus;
+    private IBus _bus = Bootstrapper.RegisterBus();
     private IEVDataPublisher _publisher;
     private IWorker _consumeWorker;
 
-    private int launchCounter;
-    private int iterationCounter;
+    private static int launchCounter = 0;
+    private int iterationCounter = 0;
 
     [GlobalSetup]
     public void GlobalSetup()
     {
-        _bus = Bootstrapper.RegisterBus();
-
         launchCounter++;
+        Console.WriteLine($"GlobalSetup ({launchCounter})");
+
+        var client = Bootstrapper.RegisterManagementClient();
+        // delete all queues
+        var queues = client.GetQueues();
+        foreach (var queue in queues)
+        {
+            client.DeleteQueue(queue);
+        }
+
+        // create publisher
         var exchangeId = launchCounter.ToString();
         _publisher = new EVDataPublisher(_bus, $"ev_trip_data_{exchangeId}");
     }
@@ -41,45 +51,52 @@ public class BenchmarkingConsumer
         iterationCounter++;
         Console.WriteLine($"IterationSetup ({iterationCounter})");
 
+        // create consumer
         var routingKey = $"{launchCounter}_{iterationCounter}";
         var queue = $"queue_{routingKey}";
-
-        _bus.Advanced.QueueDelete(queue);
         var consumer = new EVDataConsumer(_bus, queue, _publisher.Exchange, routingKey);
-
-        var publishWorker = new PublishWorker(_publisher, routingKey, NoOfMessages, NoOfElementsInMessage);
         _consumeWorker = new ConsumeWorker(consumer, $"consumer {launchCounter} {iterationCounter}");
 
-        // fill queue with defined number of messages = NoOfMessages
+        // create publish worker & publish no. of messages to specified queue
+        var publishWorker = new PublishWorker(_publisher, routingKey, NoOfMessages, NoOfElementsInMessage);
         publishWorker.Run().Wait();
 
-        Task.Run(() =>
-        {
-            Console.WriteLine(new string('-', 30));
-            Console.WriteLine($"Message Count (setup): {NoOfMessages}");
-            Console.WriteLine($"Queue: {queue}");
-            Console.WriteLine($"Messages in Queue: {EVDataConsumer.QueueInfo(_bus, queue).MessagesCount}");
-            Console.WriteLine(new string('-', 30));
-        });
+        Thread.Sleep(1000);
+
+        // print status information
+        Console.WriteLine(new string('-', 30));
+        Console.WriteLine($"Message Count (setup): {NoOfMessages}");
+        Console.WriteLine($"Queue: {queue}");
+        Console.WriteLine($"Messages in Queue: {QueueInfo(queue).MessagesCount}");
+        Console.WriteLine(new string('-', 30));
     }
 
     [IterationCleanup]
     public void IterationCleanup()
     {
-        Task.Run(() =>
-        {
-            var routingKey = $"{launchCounter}_{iterationCounter}";
-            var queue = $"queue_{routingKey}";
+        Console.WriteLine($"IterationCleanup ({iterationCounter})");
 
-            Console.WriteLine($"Queue: {queue}");
-            Console.WriteLine($"Messages in Queue: {EVDataConsumer.QueueInfo(_bus, queue).MessagesCount}");
-        });
+        var routingKey = $"{launchCounter}_{iterationCounter}";
+        var queue = $"queue_{routingKey}";
+
+        // print status information
+        Console.WriteLine(new string('-', 30));
+        Console.WriteLine($"Queue: {queue}");
+        Console.WriteLine($"Messages in Queue: {QueueInfo(queue).MessagesCount}");
+        Console.WriteLine(new string('-', 30));
     }
 
     [Benchmark]
     public void Benchmark()
     {
-        // consume message from queue and measure how long does it take
+        // consume all messages from queue
         _consumeWorker.Run().Wait();
+    }
+
+    private QueueStats QueueInfo(string queueName)
+    {
+        var advancedBus = _bus.Advanced;
+
+        return advancedBus.GetQueueStats(queueName);
     }
 }

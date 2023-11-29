@@ -27,10 +27,12 @@ public class EVDataConsumer : IEVDataConsumer
     {
         _bus.Consume<IEVDataDto<T>>(_queue, async (msg, info) =>
         {
+            _consumedMessagesCount++;
+
+            // handle message
             await Task.Run(() =>
             {
                 //handler.Invoke(msg.Body);
-                _consumedMessagesCount++;
                 Console.WriteLine($"Queue: {_queue.Name}\n" +
                                   $"Consumed Messages Count: {_consumedMessagesCount}");
             });
