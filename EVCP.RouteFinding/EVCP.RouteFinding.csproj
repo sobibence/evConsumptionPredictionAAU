@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EVCP.DataAccess\EVCP.DataAccess.csproj" />
     <ProjectReference Include="..\EVCP.Domain\EVCP.Domain.csproj" />
+    <ProjectReference Include="..\EVCP.MapLoader\EVCP.MapLoader.csproj" />
   </ItemGroup>
 
   <ItemGroup>
