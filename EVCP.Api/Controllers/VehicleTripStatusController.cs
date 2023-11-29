@@ -31,7 +31,7 @@ public class VehicleTripStatusController : ControllerBase
         {
             AdditionalWeightKg = random.Next(1000),
             VehicleMilageMeters = random.Next(1000000),
-            VehicleModelId = random.Next(1, 5)
+            VehicleId = random.Next(1, 5)
         });
 
         return result;

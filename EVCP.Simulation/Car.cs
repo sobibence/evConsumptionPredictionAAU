@@ -217,9 +217,9 @@ public class Car
     private float getGoalSpeedinMeterPerS()
     {
         float goalspeed = 50 / 3.6f;
-        if (route[currentEdgeIdx].SpeedLimit != 0)
+        if (route[currentEdgeIdx].EdgeInfo.SpeedLimit != 0)
         {
-            goalspeed = route[currentEdgeIdx].SpeedLimit / 3.6f;
+            goalspeed = route[currentEdgeIdx].EdgeInfo.SpeedLimit / 3.6f;
         }
         return goalspeed;
     }
