@@ -1,3 +1,4 @@
+using EVCP.Controllers.PathController;
 using EVCP.DataAccess;
 using EVCP.Domain.Repositories;
 using EVCP.MachineLearningModelClient;
@@ -28,6 +29,7 @@ try
     builder.Services.AddTransient<IVehicleTripStatusRepository, VehicleTripStatusRepository>();
     builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
     builder.Services.AddTransient<IMachineLearningModelService, MachineLearningModelService>();
+    builder.Services.AddTransient<IPathController, PathController>();
 
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();

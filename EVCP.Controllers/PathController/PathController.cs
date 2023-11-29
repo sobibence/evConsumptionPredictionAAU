@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace EVCP.Controllers.PathController
 {
-    public class PathController
+    public class PathController : IPathController
     {
         private IEdgeRepository edgeRepository;
         private IVehicleTripStatusRepository vehicleTripStatusRepository;
@@ -19,18 +19,19 @@ namespace EVCP.Controllers.PathController
             this.machineLearningService = machineLearningService;
         }
 
-        public async Task<Path> GetBestPathAsync(int vehicleTripStatusId, int startingNodeId, int destinationNodeId) {
+        public async Task<Path> GetBestPathAsync(int vehicleTripStatusId, int startingNodeId, int destinationNodeId)
+        {
             // TODO add some information about the car
             // TODO actually query some paths from database accoring to startingNode and destinationNode
             // TODO fill out information from weatherAPI and others if neccessary
-            List<int> wantedEdgeIds = new List<int>(){ 1, 2, 3, 4 };
+            List<int> wantedEdgeIds = new List<int>() { 1, 2, 3, 4 };
 
             var vehicleTripStatus = await vehicleTripStatusRepository.GetByIdAsync(vehicleTripStatusId);
             var edges = await edgeRepository.GetByAsync("id", wantedEdgeIds);
 
             List<ModelInput> modelInputs = new List<ModelInput>();
 
-            foreach(var currEdge in edges)
+            foreach (var currEdge in edges)
             {
                 // TODO Alot of these data is just made up, maybe we could do some clean or accept that its a limitation we do
                 var weatherAtEdge = WeatherDataGenerator.GenerateWeatherData(DateTime.Now); //TODO is this what we want to do?
@@ -78,7 +79,7 @@ namespace EVCP.Controllers.PathController
 
             var edgeIdToCost = new Dictionary<int, decimal>();
 
-            for(int i = 0; i < wantedEdgeIds.Count; i++)
+            for (int i = 0; i < wantedEdgeIds.Count; i++)
             {
                 edgeIdToCost.Add(wantedEdgeIds[i], predictedEstimations[i]);
             }
