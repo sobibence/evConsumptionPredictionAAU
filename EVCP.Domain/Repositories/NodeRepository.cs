@@ -48,6 +48,26 @@ public class NodeRepository : BaseRepository<Node>, INodeRepository
     }
 
 
+    //Doesnt work
+    public async Task<Node> GetClosestNodeToCoords(double Longitude, double Latitude){
+        var columnArr = GetForSelect();
+        var columns = string.Join(", ", columnArr);
+        
+        DynamicParameters parameters = new DynamicParameters();
+        parameters.Add("@Latitude", Latitude);
+        parameters.Add("@Longitude", Longitude);
+
+        var query = $"SELECT {columns} FROM {Table} " +
+                    $"WHERE ST_ClosestPoint({Table}.gps_coords, ST_POINT(@Latitude, @Longitude, 4326)) = {Table}.gps_coords;";
+
+        using var connection = _context.CreateConnection();
+        connection.Open();
+        return await connection.QueryFirstAsync<Node>(query, parameters);
+
+
+    }
+
+
 
 
 }

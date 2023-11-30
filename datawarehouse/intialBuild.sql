@@ -173,6 +173,3 @@ CREATE TABLE fact_recorded_travel(
 	energy_consumption_wh float,
 	vehicle_id int REFERENCES vehicle_model(id)
 );
-
-CREATE INDEX idx_edge_info_osm_way_id on edge_info(osm_way_id);
-CREATE INDEX idx_node_osm_node_id on node(osm_node_id);
