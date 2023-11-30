@@ -40,7 +40,9 @@ class Program
         builder.Services.AddTransient<IVehicleTripStatusRepository, VehicleTripStatusRepository>();
         builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
         builder.Services.AddTransient<IEdgeInfoRepository, EdgeInfoRepository>();
+        builder.Services.AddTransient<IMapConstructionRepository, MapConstructionRepository>();
         builder.Services.AddSingleton<IDataBaseConnector, DataBaseConnector>();
+
         builder.Services.AddSingleton<Program>();
         
         IHost host = builder.Build();

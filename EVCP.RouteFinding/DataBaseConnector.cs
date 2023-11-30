@@ -1,5 +1,6 @@
 ﻿using System.Dynamic;
 using System.Reflection.Metadata;
+using System.Security.Cryptography.X509Certificates;
 using EVCP.DataAccess;
 using EVCP.Domain.Models;
 using EVCP.Domain.Repositories;
@@ -30,6 +31,8 @@ public class DataBaseConnector : IDataBaseConnector
     private readonly IVehicleTripStatusRepository vehicleTripStatusRepository;
     private readonly IWeatherRepository weatherRepository;
     private readonly IEdgeInfoRepository edgeInfoRepository;
+
+    private readonly IMapConstructionRepository mapConstructionRepository;
     public DataBaseConnector(
         ILogger<DataBaseConnector> logger,
         IEdgeRepository edgeRepository,
@@ -40,7 +43,8 @@ public class DataBaseConnector : IDataBaseConnector
         IVehicleModelRepository vehicleModelRepository,
         IVehicleTripStatusRepository vehicleTripStatusRepository,
         IWeatherRepository weatherRepository,
-        IEdgeInfoRepository edgeInfoRepository
+        IEdgeInfoRepository edgeInfoRepository,
+        IMapConstructionRepository mapConstructionRepository
     )
     {
         _logger = logger;
@@ -53,22 +57,24 @@ public class DataBaseConnector : IDataBaseConnector
         this.vehicleTripStatusRepository = vehicleTripStatusRepository;
         this.weatherRepository = weatherRepository;
         this.edgeInfoRepository = edgeInfoRepository;
+        this.mapConstructionRepository = mapConstructionRepository;
     }
 
     public async void TestDb()
     {
-        Node node = new Node();
-        // VehicleTripStatus trip = new VehicleTripStatus
+        // Node node = new Node();
+        // // VehicleTripStatus trip = new VehicleTripStatus
+        // // {
+        // //     AdditionalWeightKg = 0,
+        // //     VehicleMilageMeters = 0,
+        // //     VehicleId = 1
+        // // };
+        // List<Node> list = new()
         // {
-        //     AdditionalWeightKg = 0,
-        //     VehicleMilageMeters = 0,
-        //     VehicleId = 1
+        //     node
         // };
-        List<Node> list = new()
-        {
-            node
-        };
-        
+        List<Edge> edges = (List<Edge>)await mapConstructionRepository.GetConstructedSubGraphASync(new Node(), new Node());
+        _logger.LogInformation("Edge Count: "+ edges.Count.ToString());
     }
 
 
@@ -129,6 +135,12 @@ public class DataBaseConnector : IDataBaseConnector
 
     }
 
+    public async void QueryAndBuildSubGraph(Node start, Node finish){
+        List<Node> nodeList = (List<Node>)await nodeRepository.GetSubGraphAsync(start, finish);
+        Dictionary<long, Node> nodeDict = nodeList.ToDictionary(x => x.NodeIdOsm, x => x); //dict key is the nodeid for faster lookup
+        // List<Edge> edgeList = (List<Edge>)
+
+    }
     
 
 

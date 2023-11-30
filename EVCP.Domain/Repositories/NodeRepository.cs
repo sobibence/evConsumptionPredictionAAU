@@ -9,7 +9,7 @@ namespace EVCP.Domain.Repositories;
 
 public interface INodeRepository : IBaseRepository<Node>
 {
-
+    public Task<IEnumerable<Node>> GetSubGraphAsync(Node node1, Node node2, double bufferfactor = 0.2);
 }
 
 public class NodeRepository : BaseRepository<Node>, INodeRepository
