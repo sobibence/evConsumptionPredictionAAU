@@ -9,3 +9,5 @@ tensorflow~=2.5.0
 protobuf >= 3.19 , <= 3.20
 tensorflow_probability==0.12.2
 matplotlib
+fastapi
+uvicorn
