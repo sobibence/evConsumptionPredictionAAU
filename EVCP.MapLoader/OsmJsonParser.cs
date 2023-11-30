@@ -15,9 +15,13 @@ public class OsmJsonParser
     static Dictionary<long, Node> nodeDictionary = new(); // nodeid is the key
     static List<Edge> edges = new(); // 
 
-    public static Dictionary<long, Node> NodeDictionary {get{return nodeDictionary;}}
+    static List<EdgeInfo> edgeInfos = new();
 
-    public static List<Edge> Edges {get{return edges;}}
+    public static Dictionary<long, Node> NodeDictionary { get { return nodeDictionary; } }
+
+    public static List<Edge> Edges { get { return edges; } }
+
+    public static List<EdgeInfo> EdgeInfos { get { return edgeInfos; } }
 
     private static readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions
     {
@@ -43,7 +47,7 @@ public class OsmJsonParser
     {
         public long Id { get; set; }
         public string Type { get; set; }
-        public Tags tags {get;set;}
+        public Tags tags { get; set; }
 
         public List<long> Nodes { get; set; }
         public List<Coordinates> Geometry { get; set; }
@@ -73,13 +77,13 @@ public class OsmJsonParser
                     return _name;
                 }
             }
-            set {_name = value; }
+            set { _name = value; }
         }
 
         private string _highway;
         public string highway
         {
-           get
+            get
             {
                 if (_highway == null)
                 {
@@ -90,7 +94,7 @@ public class OsmJsonParser
                     return _highway;
                 }
             }
-            set { _highway = value;}
+            set { _highway = value; }
         }
 
         public string _maxspeed;
@@ -107,7 +111,7 @@ public class OsmJsonParser
                     return _maxspeed;
                 }
             }
-            set { _maxspeed =value; }
+            set { _maxspeed = value; }
         }
 
         public string _surface;
@@ -124,7 +128,7 @@ public class OsmJsonParser
                     return _surface;
                 }
             }
-            set {_surface = value; }
+            set { _surface = value; }
         }
 
         // Add more properties as needed
@@ -132,7 +136,7 @@ public class OsmJsonParser
 
     public static void ProcessJson(OverpassApiResponse? apiResponse)
     {
-        if(apiResponse is null)
+        if (apiResponse is null)
         {
             return;
         }
@@ -165,27 +169,38 @@ public class OsmJsonParser
                             }
                         }
                     }
+                    EdgeInfo edgeInfo = new()
+                    {
+                        Highway = element.tags.highway,
+                        Surface = element.tags.surface,
+                        SpeedLimit = int.Parse(element.tags.maxspeed),
+                        StreetName = element.tags.name,
+                        OsmWayId = element.Id
+                    };
                     for (int j = 0; j < wayListOfNodes.Count - 1; j++)
                     {
                         Edge newEdge = new()
                         {
                             StartNode = wayListOfNodes[j],
                             EndNode = wayListOfNodes[j + 1],
-                            Highway = element.tags.highway,
-                            Surface = element.tags.surface,
-                            SpeedLimit = int.Parse(element.tags.maxspeed),
-                            StreetName = element.tags.name,
-                            OsmWayId = element.Id
+                            EdgeInfo = edgeInfo
+                        };
+                        Edge alternateEdge = new()
+                        {
+                            EndNode = wayListOfNodes[j],
+                            StartNode = wayListOfNodes[j + 1],
+                            EdgeInfo = edgeInfo
                         };
                         wayListOfNodes[j].ListOfConnectedEdges.Add(newEdge);
                         wayListOfNodes[j + 1].ListOfConnectedEdges.Add(newEdge);
-                        wayListOfNodes[j].ListOfConnectedNodes.Add(wayListOfNodes[j+1]);
-                        wayListOfNodes[j+1].ListOfConnectedNodes.Add(wayListOfNodes[j]);
-                        
+                        wayListOfNodes[j].ListOfConnectedNodes.Add(wayListOfNodes[j + 1]);
+                        wayListOfNodes[j + 1].ListOfConnectedNodes.Add(wayListOfNodes[j]);
+
                         edges.Add(newEdge);
+                        edges.Add(alternateEdge);
 
                     }
-
+                    edgeInfos.Add(edgeInfo);
                 }
                 else
                 {

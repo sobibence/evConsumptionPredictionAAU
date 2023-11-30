@@ -16,4 +16,8 @@
     <ProjectReference Include="..\EVCP.DataAccess\EVCP.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Npgsql.NetTopologySuite" Version="7.0.6" />
+  </ItemGroup>
+
 </Project>

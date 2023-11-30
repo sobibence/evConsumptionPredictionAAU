@@ -9,6 +9,9 @@ DROP TABLE IF EXISTS fact_estimated_consumption CASCADE;
 DROP TABLE IF EXISTS fact_recorded_travel CASCADE;
 DROP TABLE IF EXISTS edge CASCADE;
 DROP TABLE IF EXISTS edge_info CASCADE;
-DROP TYPE IF EXISTS osm_highway_type CASCADE;
-DROP TYPE IF EXISTS osm_surface_type CASCADE;
+DROP TYPE IF EXISTS highway CASCADE;
+DROP TYPE IF EXISTS surface CASCADE;
 DROP TYPE IF EXISTS estimation_type CASCADE;
+
+DROP INDEX IF EXISTS idx_edge_info_osm_way_id CASCADE;
+DROP INDEX IF EXISTS idx_node_osm_node_id CASCADE;

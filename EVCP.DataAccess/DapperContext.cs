@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Npgsql;
+using NetTopologySuite.Geometries;
 
 namespace EVCP.DataAccess;
 
@@ -14,6 +15,9 @@ public class DapperContext
         _connectionString = _configuration.GetSection("ConnectionStrings")[ConnectionStrings.EVDataWarehouse] ?? "";
     }
 
-    public NpgsqlConnection CreateConnection()
-        => new NpgsqlConnection(_connectionString);
+    public NpgsqlConnection CreateConnection(){
+        var dataSourceBuilder = new NpgsqlDataSourceBuilder(_connectionString);
+        dataSourceBuilder.UseNetTopologySuite();
+        return dataSourceBuilder.Build().CreateConnection();
+    }
 }

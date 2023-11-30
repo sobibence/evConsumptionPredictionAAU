@@ -1,6 +1,9 @@
-﻿using EVCP.DataAccess;
+﻿using System.Dynamic;
+using System.Reflection.Metadata;
+using EVCP.DataAccess;
 using EVCP.Domain.Models;
 using EVCP.Domain.Repositories;
+using EVCP.MapLoader;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -26,6 +29,7 @@ public class DataBaseConnector : IDataBaseConnector
     private readonly IVehicleModelRepository vehicleModelRepository;
     private readonly IVehicleTripStatusRepository vehicleTripStatusRepository;
     private readonly IWeatherRepository weatherRepository;
+    private readonly IEdgeInfoRepository edgeInfoRepository;
     public DataBaseConnector(
         ILogger<DataBaseConnector> logger,
         IEdgeRepository edgeRepository,
@@ -35,7 +39,8 @@ public class DataBaseConnector : IDataBaseConnector
         IProducerRepository producerRepository,
         IVehicleModelRepository vehicleModelRepository,
         IVehicleTripStatusRepository vehicleTripStatusRepository,
-        IWeatherRepository weatherRepository
+        IWeatherRepository weatherRepository,
+        IEdgeInfoRepository edgeInfoRepository
     )
     {
         _logger = logger;
@@ -47,6 +52,7 @@ public class DataBaseConnector : IDataBaseConnector
         this.vehicleModelRepository = vehicleModelRepository;
         this.vehicleTripStatusRepository = vehicleTripStatusRepository;
         this.weatherRepository = weatherRepository;
+        this.edgeInfoRepository = edgeInfoRepository;
     }
 
     public async void TestDb()
@@ -62,16 +68,74 @@ public class DataBaseConnector : IDataBaseConnector
         {
             node
         };
+        QueryAndInsertMapToDb();
+        // var repo = nodeRepository;
+        // if (repo is null)
+        // {
+        //     _logger.LogError("repo is null");
+        // }
+        // else
+        // {
+        //     await repo.Create(list);
+        //     var asd = await repo.GetByIdAsync(0);
+        // }
+    }
 
-        var repo = nodeRepository;
-        if (repo is null)
+
+    public async void QueryAndInsertMapToDb()
+    {
+        // string aalborgRequestString = @"
+        //         [out:json];
+        //         way
+        //         [""highway""]
+        //         (57.0040, 9.8344, 57.0827, 10.0721)
+        //         ->.road;
+        //         .road out geom;
+        //         ";
+        // Map map = await MapLoaderClass.RequestAndProcessMap(aalborgRequestString);
+        Map map = await MapLoaderClass.ReadMapFromFile();
+        // HashSet<String> surface = new();
+        // foreach (EdgeInfo edgeInfo in map.EdgeInfos){
+        //     surface.Add(edgeInfo.Highway);
+
+        // }
+
+        // foreach(String surfacestr in surface){
+        //     Console.WriteLine($"'{surfacestr}',");
+        // }
+        bool successful = await edgeInfoRepository.Create(map.EdgeInfos);
+
+        if (successful)
         {
-            _logger.LogInformation("repo is null");
+            _logger.LogInformation("Edge Info insert Success!" + DateTime.Now.ToString() +"."+DateTime.Now.Millisecond.ToString());
+            bool successfulb = await nodeRepository.Create(map.Nodes);
+
+            if (successfulb)
+            {
+                _logger.LogInformation("Node insert Success!"+ DateTime.Now.ToString() +"."+DateTime.Now.Millisecond.ToString());
+                bool successfulc = await edgeRepository.Create(map.Edges);
+
+                if (successfulc)
+                {
+                    _logger.LogInformation("Edge insert Success!"+ DateTime.Now.ToString() +"."+DateTime.Now.Millisecond.ToString());
+                }
+                else
+                {
+                    _logger.LogWarning("Edge Insert Fail....");
+                }
+            }
+            else
+            {
+                _logger.LogWarning("Node Insert Fail....");
+            }
         }
         else
         {
-            await repo.Create(list);
-            var asd = await repo.GetByIdAsync(0);
+            _logger.LogWarning("EdgeInfo Insert Fail....");
         }
+
+
+
+
     }
 }

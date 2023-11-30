@@ -39,6 +39,7 @@ class Program
         builder.Services.AddTransient<IVehicleModelRepository, VehicleModelRepository>();
         builder.Services.AddTransient<IVehicleTripStatusRepository, VehicleTripStatusRepository>();
         builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
+        builder.Services.AddTransient<IEdgeInfoRepository, EdgeInfoRepository>();
         builder.Services.AddSingleton<IDataBaseConnector, DataBaseConnector>();
         builder.Services.AddSingleton<Program>();
         
@@ -60,7 +61,7 @@ class Program
     }
     async Task Start()
     {
-        _logger.LogInformation("Starting program");
+        _logger.LogInformation("Starting program" + DateTime.Now.ToString() +"."+DateTime.Now.Millisecond.ToString());
         dataBase.TestDb();
 
     }

@@ -164,6 +164,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         entity.GetType()
             .GetProperties()
             .Where(property => !Attribute.IsDefined(property, typeof(OnInsertIgnore)))
+            .Where(property => !Attribute.IsDefined(property, typeof(NotMappedAttribute)))
             .ToList()
             .ForEach(property =>
             {
@@ -189,7 +190,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         return (columnNames.ToArray(), propertyNames.ToArray(), parameters);
     }
 
-    private string[] GetForSelect()
+    protected string[] GetForSelect()
     {
         var columnToProperty = new List<string>();
 
@@ -207,7 +208,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         return columnToProperty.ToArray();
     }
 
-    private string GetTableName()
+    protected string GetTableName()
     {
         Type type = typeof(T);
         var result = type.Name.ToLower();

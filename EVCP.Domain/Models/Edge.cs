@@ -11,7 +11,8 @@ public class Edge : BaseEntity
     [ColumnName("end_node_id")]
     public long EndNodeId { get; set; }
 
-    
+
+    [NotMapped]
     private double _length;
     [NotMapped]
     public double Length
@@ -30,7 +31,8 @@ public class Edge : BaseEntity
         }
     } // this should be in meters
 
-    private Node _startNode;
+    [NotMapped]
+    private Node? _startNode;
     [NotMapped]
     public Node StartNode
     {
@@ -55,7 +57,8 @@ public class Edge : BaseEntity
         }
     }
 
-    private Node _endNode;
+    [NotMapped]
+    private Node? _endNode;
     [NotMapped]
     public Node EndNode
     {
@@ -78,23 +81,44 @@ public class Edge : BaseEntity
 
         }
     }
-    [ColumnName("edge_into_id")]
-    public int EdgeInfoId{get;set;}
 
-    private EdgeInfo _edgeInfo;
+    private long _edgeInfoId; 
+    [ColumnName("edge_info_id")]
+    public long EdgeInfoId { get{
+        if(_edgeInfoId == 0 && _edgeInfo is not null){
+            _edgeInfoId = EdgeInfo.OsmWayId;
+        }
+        return _edgeInfoId;
+    } set{
+        _edgeInfoId = value;
+
+    } }
+
+    private EdgeInfo? _edgeInfo;
     [NotMapped]
     public EdgeInfo EdgeInfo
     {
-        get { return _edgeInfo;}
+        get
+        {
+            if (_edgeInfo == null)
+            {
+                //TODO: attempt to get it from db if the id exist
+                throw new NullReferenceException();
+            }
+            return _edgeInfo;
+        }
         set
         {
+            if(EdgeInfoId == 0){
+                EdgeInfoId = value.OsmWayId;
+            }
             _edgeInfo = value;
         }
     }
     public override string ToString()
     {
         return $"Way Info:\n" +
-               $"StartNodeId: {StartNodeId}\n" + 
+               $"StartNodeId: {StartNodeId}\n" +
                $"EndNodeId: {EndNodeId}\n" +
                $"Speed Limit: {EdgeInfo.SpeedLimit}\n" +
                $"Street Name: {EdgeInfo.StreetName}\n" +
@@ -110,6 +134,13 @@ public class GpsDistanceCalculator
     {
         double earthRadius = 6371000; // Earth's radius in meters 
 
+        double distance = earthRadius * CalculateDistanceInRadians(point1,point2);
+
+        return distance;
+    }
+
+    public static double CalculateDistanceInRadians(Node point1, Node point2)
+    {
         double lat1Rad = Math.PI * point1.Latitude / 180;
         double lon1Rad = Math.PI * point1.Longitude / 180;
         double lat2Rad = Math.PI * point2.Latitude / 180;
@@ -123,9 +154,7 @@ public class GpsDistanceCalculator
                    Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
         double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
 
-        double distance = earthRadius * c;
-
-        return distance;
+        return c;
     }
 }
 

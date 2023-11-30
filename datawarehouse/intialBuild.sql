@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 
 CREATE TYPE estimation_type AS ENUM ('ml','function_fit','record');
 
-CREATE TYPE osm_surface_type AS ENUM (
+CREATE TYPE surface AS ENUM (
     'paved',
     'asphalt',
     'concrete',
@@ -35,11 +35,22 @@ CREATE TYPE osm_surface_type AS ENUM (
     'concrete;grass',
     'concrete;gravel',
     'concrete;asphalt',
-    'unpaved;grass'
+    'unpaved;grass',
+	'rock',	
+	'stone',
+	'unhewn_cobblestone',
+	'metal_grid',
+	'stepping_stones',
+	''
 );
 
-CREATE TYPE osm_highway_type AS ENUM (
-    'motorway',
+CREATE TYPE highway AS ENUM (
+    'motorway_link',
+    'trunk_link',
+    'primary_link',
+    'secondary_link',
+    'tertiary_link',
+	'motorway',
     'trunk',
     'primary',
     'secondary',
@@ -56,12 +67,16 @@ CREATE TYPE osm_highway_type AS ENUM (
     'steps',
     'living_street',
     'road',
+	'platform',
     'construction',
     'bus_guideway',
     'escape',
     'raceway',
     'services',
-    'rest_area'
+    'rest_area',
+	'proposed',
+	'planned',
+	''
 );
 
 
@@ -113,9 +128,9 @@ CREATE TABLE weather (
 
 CREATE TABLE node(
 	id serial PRIMARY KEY, -- we will have this beside the key from provider to make sure we are able to store data from a different provider in the future
-	gps_coords geometry,
+	gps_coords geography(Point,4326),
 	longitude_meters float8, 
-	osm_node_id bigint --provider id this should be 64 bit
+	osm_node_id bigint UNIQUE--provider id this should be 64 bit
 );
 
 CREATE TABLE edge_info(
@@ -123,17 +138,17 @@ CREATE TABLE edge_info(
 	speed_limit_kmph int,
 	inclination_degress float,
 	average_speed_kmph float,
-	osm_way_id bigint, --provider id
+	osm_way_id bigint UNIQUE, --provider id
 	street_name varchar(32),
-	surface osm_surface_type,
-	highway osm_highway_type
+	surface surface,
+	highway highway
 );
 
 CREATE TABLE edge(
 	id serial PRIMARY KEY,
-	start_node_id int REFERENCES node(id),
-	end_node_id int REFERENCES node(id),
-	edge_into_id int REFERENCES edge_info(id)
+	start_node_id bigint REFERENCES node(osm_node_id),
+	end_node_id bigint REFERENCES node(osm_node_id),
+	edge_info_id bigint REFERENCES edge_info(osm_way_id)
 );
 
 CREATE TABLE fact_estimated_consumption (
@@ -158,3 +173,6 @@ CREATE TABLE fact_recorded_travel(
 	energy_consumption_wh float,
 	vehicle_id int REFERENCES vehicle_model(id)
 );
+
+CREATE INDEX idx_edge_info_osm_way_id on edge_info(osm_way_id);
+CREATE INDEX idx_node_osm_node_id on node(osm_node_id);
