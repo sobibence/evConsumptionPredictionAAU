@@ -73,7 +73,7 @@ public class DataBaseConnector : IDataBaseConnector
         // {
         //     node
         // };
-        List<Edge> edges = (List<Edge>)await mapConstructionRepository.GetConstructedSubGraphASync(new Node(), new Node());
+        List<Edge> edges = (List<Edge>)await mapConstructionRepository.GetConstructedSubGraphASync(new Node(){Latitude = 9.87565930975794, Longitude =57.03479744484892}, new Node());
         _logger.LogInformation("Edge Count: "+ edges.Count.ToString());
     }
 

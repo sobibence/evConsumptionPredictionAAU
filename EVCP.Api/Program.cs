@@ -1,7 +1,9 @@
 using EVCP.Controllers.PathController;
 using EVCP.DataAccess;
+using EVCP.Domain.Models;
 using EVCP.Domain.Repositories;
 using EVCP.MachineLearningModelClient;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -28,8 +30,10 @@ try
     builder.Services.AddTransient<IVehicleModelRepository, VehicleModelRepository>();
     builder.Services.AddTransient<IVehicleTripStatusRepository, VehicleTripStatusRepository>();
     builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
+    builder.Services.AddTransient<IMapConstructionRepository, MapConstructionRepository>();
     builder.Services.AddTransient<IMachineLearningModelService, MachineLearningModelService>();
     builder.Services.AddTransient<IPathController, PathController>();
+    
 
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
@@ -43,13 +47,13 @@ try
         app.UseSwagger();
         app.UseSwaggerUI();
     }
-
+    
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
 
     app.MapControllers();
-
+    await app.Services.GetService<IPathController>().GetBestPathAsync(0, 29653, 3112);
     app.Run();
 }
 catch (Exception ex)

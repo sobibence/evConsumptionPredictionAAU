@@ -36,6 +36,7 @@ namespace EVCP.Playground
                 builder.Services.AddTransient<IVehicleTripStatusRepository, VehicleTripStatusRepository>();
                 builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
                 builder.Services.AddTransient<IMachineLearningModelService, MachineLearningModelService>();
+                builder.Services.AddTransient<IMapConstructionRepository, MapConstructionRepository>();
 
                 builder.Services.AddControllers();
                 builder.Services.AddEndpointsApiExplorer();

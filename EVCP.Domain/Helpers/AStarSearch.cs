@@ -54,4 +54,19 @@ public class AStarSearch
         return path;
     }
 
+    public static List<Edge> ConvertNodeListToEdgeList(List<Node> nodeList)
+    {
+        int count = nodeList.Count;
+        List<Edge> edgeList = new();
+        if (count < 2){
+            return edgeList;
+        }
+        for (int i = 0; i < count - 1; i++)
+        {
+            edgeList.Add(nodeList[i].ListOfConnectedEdges.First(edge => 
+                edge.StartNodeId == nodeList[i+1].NodeIdOsm || edge.EndNodeId == nodeList[i+1].NodeIdOsm));
+        }
+        return edgeList;
+    }
+
 }
