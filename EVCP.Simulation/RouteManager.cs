@@ -26,8 +26,8 @@ public class RouteManager
                 .road out geom;
                 ";
 
-        //map = await MapLoaderClass.RequestAndProcessMap(aalborgRequestString);
-        map = await MapLoaderClass.ReadMapFromFile();
+        map = await MapLoaderClass.RequestAndProcessMap(aalborgRequestString);
+        //map = await MapLoaderClass.ReadMapFromFile();
     }
 
     private List<Edge> TryGeneratingOneRoute()

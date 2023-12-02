@@ -1,11 +1,11 @@
-﻿using EVCP.Domain.Models;
+using EVCP.Domain.Models;
 
 namespace EVCP.Domain;
 
 public class TripData : BaseEntity
 {
-    public Weather Weather {get;set;}
-    public Edge Edge{get;set;}
+    public Weather Weather {get;set; }
+    public Edge Edge { get; set; }
 
     public float EdgePercent{get;set;}
 

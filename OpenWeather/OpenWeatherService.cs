@@ -37,7 +37,7 @@ namespace OpenWeather
                     fog: CalculateFog(openWeatherResponse.Visibility, openWeatherResponse.Weather.Select(w => w.Id).ToArray()),
                     humidity: openWeatherResponse.Main.Humidity,
                     temperature: (int)openWeatherResponse.Main.Temp,
-                    precipitation: openWeatherResponse.Rain?.ThreeHours ?? 0
+                    precipitation: (int)(openWeatherResponse.Rain?.ThreeHours ?? 0)
                 );
         }
 
