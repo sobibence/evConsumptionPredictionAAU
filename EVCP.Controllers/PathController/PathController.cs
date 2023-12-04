@@ -39,7 +39,7 @@ namespace EVCP.Controllers.PathController
             foreach (var currEdge in edges)
             {
                 // TODO Alot of these data is just made up, maybe we could do some clean or accept that its a limitation we do
-                var weatherAtEdge = WeatherDataGenerator.GenerateWeatherData(DateTime.Now); //TODO is this what we want to do?
+                var weatherAtEdge = WeatherDataGenerator.GenerateWeatherData(DateTime.Now); //TODO use actual API when we have the key
                 modelInputs.Add(new ModelInput
                 {
                     speed = 50, // TODO we need the speedlimit here. currEdge.speedLimmit
