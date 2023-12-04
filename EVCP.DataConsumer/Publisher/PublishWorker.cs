@@ -1,4 +1,4 @@
-﻿using EVCP.DataConsumer.Dtos;
+﻿using EVCP.Dtos;
 
 namespace EVCP.DataConsumer.Publisher;
 
@@ -6,15 +6,14 @@ public class PublishWorker : IWorker
 {
     private readonly IEVDataPublisher _publisher;
     private readonly string _routingKey;
-    private readonly int _noOfMessages;
-    private readonly int _noOfElementsInMessage;
 
-    public PublishWorker(IEVDataPublisher publisher, string routingKey, int noOfMessages = 10, int noOfElementsInMessage = 60)
+    private readonly Func<IEnumerable<ITripDataDto>> _generateMessages;
+
+    public PublishWorker(IEVDataPublisher publisher, string routingKey, Func<IEnumerable<ITripDataDto>> generateMessages)
     {
         _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
         _routingKey = routingKey;
-        _noOfMessages = noOfMessages;
-        _noOfElementsInMessage = noOfElementsInMessage;
+        _generateMessages = generateMessages;
     }
 
     public async Task Run()
@@ -24,14 +23,8 @@ public class PublishWorker : IWorker
 
     private async Task ProcessFile()
     {
-        var messages = GenerateMessages();
+        var messages = _generateMessages();
 
         messages.ToList().ForEach(async data => await _publisher.Publish(data, _routingKey));
     }
-
-    private IEnumerable<IEVItemDto> GenerateMessage()
-        => Enumerable.Range(0, _noOfElementsInMessage).Select(i => new EVItemDto($"test {i + 1}")).ToArray();
-
-    private IEnumerable<IEVDataDto<IEVItemDto>> GenerateMessages()
-        => Enumerable.Range(0, _noOfMessages).Select(_ => new EVDataDto<IEVItemDto>(DateTime.Now, GenerateMessage())).ToArray();
 }
