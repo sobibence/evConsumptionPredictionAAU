@@ -1,6 +1,9 @@
 ﻿using EasyNetQ;
 using EasyNetQ.Management.Client;
+using EVCP.DataAccess;
+using EVCP.Domain.Repositories;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EVCP.DataConsumer;
 
@@ -8,24 +11,27 @@ public static class Bootstrapper
 {
     public static IBus RegisterBus()
     {
-        var configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
+        var configuration = GetConfiguration();
 
         return RabbitHutch.CreateBus(configuration["RabbitMQConnectionString"]);
     }
 
     public static ManagementClient RegisterManagementClient()
-    {
-        var configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
+        => new ManagementClient(new Uri("http://localhost:15672"), "guest", "guest");
 
-        return new ManagementClient(new Uri("http://localhost:15672"), "guest", "guest");
+    public static ServiceProvider RegisterServices()
+    {
+        var serviceProvider = new ServiceCollection()
+            .AddLogging()
+            .AddSingleton(provider => new DapperContext(GetConfiguration()))
+            .AddScoped<IFEstConsumptionRepository, FEstConsumptionRepository>()
+            .AddScoped<IFRecordedTravelRepository, FRecordedTravelRepository>()
+            .AddScoped<IWeatherRepository, WeatherRepository>()
+            .BuildServiceProvider();
+
+        return serviceProvider;
     }
 
-    public static void RegisterServices()
-    {
-        // add DI for repositories
-    }
+    private static IConfiguration GetConfiguration()
+    => new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 }
