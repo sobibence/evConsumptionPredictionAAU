@@ -10,7 +10,7 @@ namespace EVCP.MachineLearningModelClient
     public class MachineLearningModelService : IMachineLearningModelService
     {
         // TODO we are just hardcoding these here, but might want appsettings injection
-        private static readonly string API_URL = "localhost:8080"; 
+        private static readonly string API_URL = "http://localhost:8000"; 
         private static readonly string PREDICT_ENDPOINT = "predict";
         private HttpClient httpClient;
 

@@ -46,7 +46,7 @@ namespace EVCP.Controllers.PathController
             logger.LogInformation(startNode.ToString());
             logger.LogInformation(endNode.ToString());
             
-            Dictionary<long, Node> subGraph = await nodeRepository.GetConstructedSubGraphASyncNodeDict(startNode, endNode);
+            Dictionary<long, Node> subGraph = await mapConstructionRepository.GetConstructedSubGraphASyncNodeDict(startNode, endNode);
             
             //logger.LogInformation("Subgraph size: " + edgeList.Count);
             //Dictionary<long, Node> subGraph = ConstructNodeDictionary(edgeList);

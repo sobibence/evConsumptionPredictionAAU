@@ -113,13 +113,13 @@ public class MapConstructionRepository : IMapConstructionRepository
         parameters.Add("@Distance", distanceInRad);
         string queryString = @"
             SELECT  e.id, e.start_node_id, e.end_node_id, e.edge_info_id, 
-                    node.id, node.gps_coords, node.osm_node_id,
-                    ei.id, ei.speed_limit_kmph, ei.average_speed_kmph, ei.osm_way_id, ei.street_name, ei.surface, ei.highway
+                    node.id, node.gps_coords Point, node.osm_node_id NodeIdOsm,
+                    ei.id, ei.speed_limit_kmph SpeedLimit, ei.average_speed_kmph, ei.osm_way_id, ei.street_name, ei.surface, ei.highway
 	            FROM edge e INNER JOIN node node
 	            	ON e.start_node_id = node.osm_node_id 
 	            		INNER JOIN edge_info ei 
 	            		ON e.edge_info_id = ei.osm_way_id
-	            WHERE ST_DWITHIN(node.gps_coords, ST_SETSRID(ST_MAKEPOINT(@Longitude, @Latitude), 4326), @Distance) LIMIT 100;
+	            WHERE ST_DWITHIN(node.gps_coords, ST_SETSRID(ST_MAKEPOINT(@Longitude, @Latitude), 4326), @Distance);
 	        ; 
         ";
         var nodeLookup = new Dictionary<long, Node>();//NodeIdOsm
@@ -127,7 +127,6 @@ public class MapConstructionRepository : IMapConstructionRepository
         var edges =  connection.QueryAsync< Edge, Node,EdgeInfo, Edge>(queryString, 
             ( edge, node, edgeinfo) => {
                 Node nodeStart;
-                Console.WriteLine(node.ToString());
                 if(!nodeLookup.TryGetValue(node.NodeIdOsm, out nodeStart)){
                     nodeLookup.Add(node.NodeIdOsm, nodeStart = node );
                 }
@@ -139,7 +138,7 @@ public class MapConstructionRepository : IMapConstructionRepository
                 edge1.EdgeInfo = edgeinfo1;
                 edge1.StartNode = nodeStart;
                 return edge1;
-        },parameters);
+        },parameters,splitOn:"id,id");
         
         //adding endnodes
         List<Edge> edgeList =  (List<Edge>)await edges;
