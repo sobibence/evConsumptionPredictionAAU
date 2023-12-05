@@ -46,10 +46,10 @@ namespace EVCP.Controllers.PathController
             logger.LogInformation(startNode.ToString());
             logger.LogInformation(endNode.ToString());
             
-            List<Edge> edgeList = (List<Edge>) await mapConstructionRepository.GetConstructedSubGraphASync(startNode, endNode);
+            Dictionary<long, Node> subGraph = await nodeRepository.GetConstructedSubGraphASyncNodeDict(startNode, endNode);
             
-            logger.LogInformation("Subgraph size: " + edgeList.Count);
-            Dictionary<long, Node> subGraph = ConstructNodeDictionary(edgeList);
+            //logger.LogInformation("Subgraph size: " + edgeList.Count);
+            //Dictionary<long, Node> subGraph = ConstructNodeDictionary(edgeList);
             
             logger.LogInformation("Subgraph size: " + subGraph.Count);
             List<Node> nodeList = AStarSearch.FindPath(subGraph[startNode.NodeIdOsm], subGraph[endNode.NodeIdOsm]);
@@ -131,16 +131,16 @@ namespace EVCP.Controllers.PathController
             };
         }
 
-        private Dictionary<long, Node> ConstructNodeDictionary(List<Edge> edgeList)
-        {
-            Dictionary<long, Node> dict = new();
-            foreach(Edge edge in edgeList){
-                dict.Add(edge.StartNode.Id, edge.StartNode);
-                dict.Add(edge.EndNode.Id, edge.EndNode);
-            }
+        // private Dictionary<long, Node> ConstructNodeDictionary(List<Edge> edgeList)
+        // {
+        //     Dictionary<long, Node> dict = new();
+        //     foreach(Edge edge in edgeList){
+        //         dict.Add(edge.StartNode.Id, edge.StartNode);
+        //         dict.Add(edge.EndNode.Id, edge.EndNode);
+        //     }
 
 
-            return dict;
-        }
+        //     return dict;
+        // }
     }
 }
