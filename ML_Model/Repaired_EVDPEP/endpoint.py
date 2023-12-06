@@ -5,6 +5,7 @@ from utils import losses
 import tensorflow as tf
 import numpy as np
 import json
+import traceback
 
 preloaded_model = None
 
@@ -39,15 +40,19 @@ async def predict(data: dict, model: tf.keras.Model = Depends(get_model)):
         input_data = preprocess_data(data)
         # print("1")
         # Make predictions
-        predictions = model.predict(input_data)
-        
-        return {"predictions": predictions.tolist()}
+        predictions = model.predict(input_data).flatten()
+        print(predictions)
+        return predictions.tolist()
 
     except Exception as e:
+        print(Exception, e)
+        print(traceback.format_exc())
         raise HTTPException(status_code=500, detail="Prediction error")
+
 
 def preprocess_data(data):
     #jsonData = json.load(data)
+    # print(data)
     matrix = data['driving_data']
     matrix_np = np.array(matrix)
     reshaped = np.expand_dims(matrix_np, axis =0)

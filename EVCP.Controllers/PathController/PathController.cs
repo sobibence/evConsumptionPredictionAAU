@@ -117,7 +117,7 @@ namespace EVCP.Controllers.PathController
                 logger.LogInformation(estimation.ToString());
 
             }
-            var edgeIdToCost = new Dictionary<int, decimal>();
+            var edgeIdToCost = new Dictionary<int, double>();
 
             for (int i = 0; i < pathToTravel.Count; i++)
             {

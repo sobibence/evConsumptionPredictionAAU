@@ -21,10 +21,15 @@ namespace EVCP.MachineLearningModelClient
 
         // TODO choose precision. If this is to be used as weights for the edges, we would like a very precise value (decimal)
         // or should it still be float
-        public async Task<List<decimal>> Predict(List<ModelInput> inputs)
+        public async Task<List<double>> Predict(List<ModelInput> inputs)
         {
             string url = API_URL + "/" + PREDICT_ENDPOINT;
-            string bodyContent = JsonConvert.SerializeObject(buildJsonArrays(inputs));
+            Dictionary<string,dynamic[][]> dict = new Dictionary<string, dynamic[][]>
+            {
+                { "driving_data", buildJsonArrays(inputs) }
+            };
+
+            string bodyContent = JsonConvert.SerializeObject(dict);
             var body = new StringContent(bodyContent, Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = await httpClient.PostAsync(url, body);
@@ -34,7 +39,7 @@ namespace EVCP.MachineLearningModelClient
                 var responseContent = await response.Content.ReadAsStringAsync();
                 try
                 {
-                    return JsonConvert.DeserializeObject<List<decimal>>(responseContent);
+                    return JsonConvert.DeserializeObject<List<double>>(responseContent);
                 }
                 catch
                 {
@@ -56,12 +61,7 @@ namespace EVCP.MachineLearningModelClient
             {
                 var array = new dynamic[35];
                 array = [
-                    inputs[i].speed,
                     inputs[i].speed_limit,
-                    inputs[i].speed_avg_week,
-                    inputs[i].speed_avg_time,
-                    inputs[i].speed_avg_week_time,
-                    inputs[i].speed_avg,
                     inputs[i].seconds,
                     inputs[i].air_temperature,
                     inputs[i].wind_direction,

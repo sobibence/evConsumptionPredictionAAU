@@ -8,6 +8,6 @@ namespace EVCP.Controllers.PathController
 {
     public class Path
     {
-        public Dictionary<int, decimal> edgeIdToCost = new Dictionary<int, decimal>();
+        public Dictionary<int, double> edgeIdToCost = new Dictionary<int, double>();
     }
 }
