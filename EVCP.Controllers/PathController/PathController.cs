@@ -59,7 +59,7 @@ namespace EVCP.Controllers.PathController
             // TODO fill out information from weatherAPI and others if neccessary
             //List<int> wantedEdgeIds = new List<int>() { 1, 2, 3, 4 };
 
-            var vehicleTripStatus = await vehicleTripStatusRepository.GetByIdAsync(vehicleTripStatusId);
+            //var vehicleTripStatus = await vehicleTripStatusRepository.GetByIdAsync(vehicleTripStatusId);
             // List<Edge> edges = new List<Edge>();
             // foreach (var currEdgeId in wantedEdgeIds)
             // {

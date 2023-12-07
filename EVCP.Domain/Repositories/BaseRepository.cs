@@ -149,7 +149,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         connection.Open();
 
         T? result = await connection.QueryFirstOrDefaultAsync<T>(query, parameters);
-
+        connection.Close();
         return result;
     }
 
