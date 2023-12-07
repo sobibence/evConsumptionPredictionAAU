@@ -27,8 +27,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         var result = false;
 
         using var connection = _context.CreateConnection();
-        connection.Open();
-
+        
         using (var transaction = connection.BeginTransaction())
         {
             try

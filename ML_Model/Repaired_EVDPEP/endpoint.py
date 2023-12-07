@@ -52,9 +52,9 @@ async def predict(data: dict, model: tf.keras.Model = Depends(get_model)):
 
 def preprocess_data(data):
     #jsonData = json.load(data)
-    # print(data)
+    print(data)
     matrix = data['driving_data']
     matrix_np = np.array(matrix)
     reshaped = np.expand_dims(matrix_np, axis =0)
-    
+    print(reshaped)
     return reshaped

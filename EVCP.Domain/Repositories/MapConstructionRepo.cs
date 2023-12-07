@@ -154,7 +154,8 @@ public class MapConstructionRepository : IMapConstructionRepository
 
         }
 
-        
+        connection.Close();
         return nodeLookup;
+
      }
 }

@@ -53,7 +53,6 @@ try
     app.UseAuthorization();
 
     app.MapControllers();
-    await app.Services.GetService<IPathController>().GetBestPathAsync(0, 29653, 3112);
     app.Run();
 }
 catch (Exception ex)

@@ -14,7 +14,7 @@ namespace EVCP.RouteFinding;
 
 public interface IDataBaseConnector
 {
-    void TestDb();
+    void QueryAndInsertMapToDb();
 }
 
 
@@ -60,22 +60,6 @@ public class DataBaseConnector : IDataBaseConnector
         this.mapConstructionRepository = mapConstructionRepository;
     }
 
-    public async void TestDb()
-    {
-        // Node node = new Node();
-        // // VehicleTripStatus trip = new VehicleTripStatus
-        // // {
-        // //     AdditionalWeightKg = 0,
-        // //     VehicleMilageMeters = 0,
-        // //     VehicleId = 1
-        // // };
-        // List<Node> list = new()
-        // {
-        //     node
-        // };
-        List<Edge> edges = (List<Edge>)await mapConstructionRepository.GetConstructedSubGraphASync(new Node(){Latitude = 9.87565930975794, Longitude =57.03479744484892}, new Node());
-        _logger.LogInformation("Edge Count: "+ edges.Count.ToString());
-    }
 
 
     public async void QueryAndInsertMapToDb()
@@ -135,12 +119,6 @@ public class DataBaseConnector : IDataBaseConnector
 
     }
 
-    public async void QueryAndBuildSubGraph(Node start, Node finish){
-        List<Node> nodeList = (List<Node>)await nodeRepository.GetSubGraphAsync(start, finish);
-        Dictionary<long, Node> nodeDict = nodeList.ToDictionary(x => x.NodeIdOsm, x => x); //dict key is the nodeid for faster lookup
-        // List<Edge> edgeList = (List<Edge>)
-
-    }
     
 
 
