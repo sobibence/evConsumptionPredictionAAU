@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\EVCP.DataExtractor\EVCP.DataPublisher.csproj" />
     <ProjectReference Include="..\EVCP.MapLoader\EVCP.MapLoader.csproj" />
   </ItemGroup>
 

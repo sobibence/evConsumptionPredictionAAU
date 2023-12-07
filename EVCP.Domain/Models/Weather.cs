@@ -1,5 +1,4 @@
-﻿
-﻿using EVCP.Domain.Helpers;
+using EVCP.Domain.Helpers;
 
 namespace EVCP.Domain.Models;
 

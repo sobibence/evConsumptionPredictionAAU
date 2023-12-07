@@ -2,7 +2,7 @@
 {
     public class WeatherData
     {
-        public WeatherData(DateTime at, bool isRaining, bool isSnowing, double windSpeed, int windDirection, double fog, double humidity, double temperature, double precipitation)
+        public WeatherData(DateTime at, bool isRaining, bool isSnowing, float windSpeed, int windDirection, float fog, float humidity, float temperature, int precipitation)
         {
             At = at;
             IsRaining = isRaining;
@@ -18,11 +18,11 @@
         public DateTime At { get; }
         public bool IsRaining { get; }
         public bool IsSnowing { get; }
-        public double WindSpeed { get; }
+        public float WindSpeed { get; }
         public int WindDirection { get; }
-        public double Fog { get; }
-        public double Humidity { get; }
-        public double Temperature { get; }
-        public double Precipitation { get; }
+        public float Fog { get; }
+        public float Humidity { get; }
+        public float Temperature { get; }
+        public int Precipitation { get; }
     }
 }
