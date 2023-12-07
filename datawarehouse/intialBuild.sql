@@ -41,6 +41,7 @@ CREATE TYPE surface AS ENUM (
 	'unhewn_cobblestone',
 	'metal_grid',
 	'stepping_stones',
+	'chipseal',
 	''
 );
 

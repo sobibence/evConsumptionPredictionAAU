@@ -20,7 +20,7 @@ class Program
     private readonly IDataBaseConnector dataBase;
     private readonly ILogger<Program> _logger;
 
-    public static ServiceProvider ?service;
+    public static ServiceProvider? service;
 
     public Program(ILogger<Program> logger, IDataBaseConnector dataBaseConnector)
     {
@@ -36,12 +36,17 @@ class Program
 
     public static ServiceProvider RegisterServices()
     {
-        if(service is not null){
+        if (service is not null)
+        {
             return service;
         }
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         var serviceProvider = new ServiceCollection()
-            .AddLogging()
+            .AddLogging(logging =>
+                {
+                    logging.AddConsole();
+                    logging.AddDebug();
+                })
             .AddSingleton(provider => new DapperContext(GetConfiguration()))
             .AddTransient<IFEstConsumptionRepository, FEstConsumptionRepository>()
             .AddTransient<IEdgeInfoRepository, EdgeInfoRepository>()

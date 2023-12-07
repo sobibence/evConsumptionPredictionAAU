@@ -1,39 +1,37 @@
 ﻿
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
+using EVCP.DataAccess;
+using EVCP.Domain.Repositories;
+using Microsoft.Extensions.Configuration;
+
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EVCP.MapLoader
 {
     public class MapLoaderClass
     {
+
+
+        public static ServiceProvider? service;
         static async Task Main(string[] args)
         {
+            // string aauRequestString = @"
+            //     [out:json];
+            //     way
+            //     [""highway""]
+            //     (57, 9.9644, 57.01997, 10.021)
+            //     ->.road;
+            //     .road out geom;
+            //     ";
             // string aalborgRequestString = @"
-            //     <osm-script>
-            //     <query into=""road"" type=""way"">
-            //     <has-kv k=""highway""/>
-            //     <bbox-query s=""57.0040"" w=""9.8344"" n=""57.0827"" e=""10.0721""/>
-            //     </query>
-            //     <print from=""road"" geometry=""full"" limit="""" mode=""body""/>
-            //     </osm-script>
-            // ";
-            string aauRequestString = @"
-                [out:json];
-                way
-                [""highway""]
-                (57, 9.9644, 57.01997, 10.021)
-                ->.road;
-                .road out geom;
-                ";
-            string aalborgRequestString = @"
-                [out:json];
-                way
-                [""highway""]
-                (57.0040, 9.8344, 57.0827, 10.0721)
-                ->.road;
-                .road out geom;
-                ";
+            //     [out:json];
+            //     way
+            //     [""highway""]
+            //     (57.0040, 9.8344, 57.0827, 10.0721)
+            //     ->.road;
+            //     .road out geom;
+            //     ";
 
 
             // Stream response = await RequestMap(aalborgRequestString);
@@ -42,22 +40,53 @@ namespace EVCP.MapLoader
             // Stream file = File.OpenRead("/home/sobibence/project/evConsumptionPredictionAAU/tmpJson/map.txt");
             // OsmJsonParser.ParseAndProcess(file);
             // file.Close();
-            Map map = await ReadMapFromFile();
+
+            service = RegisterServices();
+            IDbConnectorService? dbconnector = service.GetService<IDbConnectorService>();
+            if(dbconnector is null){
+                throw new NullReferenceException("dbconnector");
+            }
+            dbconnector.QueryAndInsertMapToDb().Wait();
+        }
+
+
+
+        public static ServiceProvider RegisterServices()
+        {
+            if (service is not null)
+            {
+                return service;
+            }
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            var serviceProvider = new ServiceCollection()
+                .AddSingleton(provider => new DapperContext(GetConfiguration()))
+                .AddLogging(logging =>
+                {
+                    logging.AddConsole();
+                })
+                .AddTransient<IEdgeInfoRepository, EdgeInfoRepository>()
+                .AddTransient<INodeRepository, NodeRepository>()
+                .AddTransient<IEdgeRepository, EdgeRepository>()
+                .AddScoped<IDbConnectorService, DbConnectorService>()
+                .BuildServiceProvider();
+            service = serviceProvider;
+            return serviceProvider;
         }
 
         public static async Task<Map> RequestAndProcessMap(string query)
         {
             Stream response = await RequestMap(query);
             OsmJsonParser.ParseAndProcess(response).Wait();
-            return new Map { Nodes = OsmJsonParser.NodeDictionary.Values.ToList(), Edges = OsmJsonParser.Edges , EdgeInfos = OsmJsonParser.EdgeInfos};
+            return new Map { Nodes = OsmJsonParser.NodeDictionary.Values.ToList(), Edges = OsmJsonParser.Edges, EdgeInfos = OsmJsonParser.EdgeInfos };
         }
 
-        public static async Task<Map> ReadMapFromFile(string filestr = "/home/sobibence/project/evConsumptionPredictionAAU/tmpJson/map.txt"){
+        public static async Task<Map> ReadMapFromFile(string filestr = "/home/sobibence/project/evConsumptionPredictionAAU/tmpJson/map.txt")
+        {
             Stream file = File.OpenRead(filestr);
             Task jsonTask = OsmJsonParser.ParseAndProcess(file);
             jsonTask.Wait();
             file.Close();
-            return new Map { Nodes = OsmJsonParser.NodeDictionary.Values.ToList(), Edges = OsmJsonParser.Edges , EdgeInfos = OsmJsonParser.EdgeInfos};
+            return new Map { Nodes = OsmJsonParser.NodeDictionary.Values.ToList(), Edges = OsmJsonParser.Edges, EdgeInfos = OsmJsonParser.EdgeInfos };
         }
 
         static async Task<Stream> RequestMap(string query)
@@ -99,12 +128,17 @@ namespace EVCP.MapLoader
             }
         }
 
-        static async Task SaveToFile(string request){
+        static async Task SaveToFile(string request)
+        {
             Stream response = await RequestMap(request);
             FileStream file = File.Create("/home/sobibence/AAU/1_semester/project/evConsumptionPredictionAAU/tmpJson/map.txt");
             response.CopyTo(file);
             file.Close();
         }
+
+
+        private static IConfiguration GetConfiguration()
+        => new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
     }
 }
 

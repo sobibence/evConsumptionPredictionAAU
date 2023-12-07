@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
@@ -18,7 +18,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External Sources", "External Sources", "{342E6874-3D05-4D64-A38D-11E2F7CC480D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EVCP.RouteFinding", "EVCP.RouteFinding\EVCP.RouteFinding.csproj", "{FA4634F4-81BA-4380-B1BD-DB2EE2AAC7E6}"
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenWeather", "OpenWeather\OpenWeather.csproj", "{9D8AB963-BF7B-4028-8F6E-4154EFEEF772}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EVCP.DataPublisher", "EVCP.DataExtractor\EVCP.DataPublisher.csproj", "{9F65E46B-6EBE-4A37-80E2-12C5E2F93154}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -26,12 +25,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EVCP.DataPublisher", "EVCP.
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EVCP.Simulation", "EVCP.Simulation\EVCP.Simulation.csproj", "{38EC2CAE-45E0-4C2D-8995-CA8497400576}"
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EVCP.MachineLearningModelClient", "EVCP.MachineLearningModelClient\EVCP.MachineLearningModelClient.csproj", "{635E6DBD-81B2-4EF5-9075-5F85611B30A0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EVCP.Playground", "EVCP.Playground\EVCP.Playground.csproj", "{5797B3AB-7AF0-44E1-9CA2-C0732C398F67}"
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EVCP.MapLoader", "EVCP.MapLoader\EVCP.MapLoader.csproj", "{904D64F9-D7C4-4E29-8B12-B3CDAA141092}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EVCP.Controllers", "EVCP.Controllers\EVCP.Controllers.csproj", "{353D3384-2D6D-482D-A743-BF1111B79915}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EVCP.MapLoader", "EVCP.MapLoader\EVCP.MapLoader.csproj", "{BE9F523E-D363-4825-9383-8C8CF58C1A71}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,13 +70,16 @@ Global
 		{FA4634F4-81BA-4380-B1BD-DB2EE2AAC7E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA4634F4-81BA-4380-B1BD-DB2EE2AAC7E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA4634F4-81BA-4380-B1BD-DB2EE2AAC7E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE9F523E-D363-4825-9383-8C8CF58C1A71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE9F523E-D363-4825-9383-8C8CF58C1A71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE9F523E-D363-4825-9383-8C8CF58C1A71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE9F523E-D363-4825-9383-8C8CF58C1A71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2EDE3AC5-4433-4919-8779-0673694D3AE8} = {69615FBD-42F1-41A2-A968-A5DD856F9298}
-		{9D8AB963-BF7B-4028-8F6E-4154EFEEF772} = {342E6874-3D05-4D64-A38D-11E2F7CC480D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0BA3E969-E64C-45B8-A8C8-13989E63E5F6}
