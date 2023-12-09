@@ -22,4 +22,8 @@ public class FactEstimatedConsumption : BaseEntity
 
     [ColumnName("energy_consumption_wh")]
     public float EnergyConsumptionWh { get; set; }
+
+    [ColumnName("estimation_type")]
+    [EnumType]
+    public string? EstimationType { get; set; }
 }

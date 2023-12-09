@@ -24,8 +24,10 @@ public static class Bootstrapper
         var serviceProvider = new ServiceCollection()
             .AddLogging()
             .AddSingleton(provider => new DapperContext(GetConfiguration()))
+            .AddScoped<IEdgeRepository, EdgeRepository>()
             .AddScoped<IFEstConsumptionRepository, FEstConsumptionRepository>()
             .AddScoped<IFRecordedTravelRepository, FRecordedTravelRepository>()
+            .AddScoped<IVehicleModelRepository, VehicleModelRepository>()
             .AddScoped<IWeatherRepository, WeatherRepository>()
             .BuildServiceProvider();
 

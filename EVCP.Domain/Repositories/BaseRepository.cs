@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using EVCP.DataAccess;
 using EVCP.DataAccess.Repositories;
 using EVCP.Domain.Helpers;
@@ -54,6 +54,8 @@ public class BaseRepository<T> : IBaseRepository<T>
                 transaction.Rollback();
             }
         }
+        connection.Close();
+
         connection.Close();
 
         return result;

@@ -1,15 +1,15 @@
-﻿using EVCP.DataConsumer.Dtos;
-
-namespace EVCP.DataConsumer.Consumer;
+﻿namespace EVCP.DataConsumer.Consumer;
 
 public class ConsumeWorker : IWorker
 {
     private readonly IEVDataConsumer _consumer;
+    private ITripDataHandler _handler;
     private readonly string name;
 
-    public ConsumeWorker(IEVDataConsumer consumer, string name)
+    public ConsumeWorker(IEVDataConsumer consumer, ITripDataHandler handler, string name)
     {
         _consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
+        _handler = handler ?? throw new ArgumentNullException(nameof(handler));
         this.name = name ?? "n/a";
     }
 
@@ -20,11 +20,6 @@ public class ConsumeWorker : IWorker
 
     private async Task ProcessFile()
     {
-        await _consumer.Subscribe<IEVItemDto>(MessageHandler);
-    }
-
-    void MessageHandler(IEVDataDto<IEVItemDto> message)
-    {
-        message.Data.ToList().ForEach(m => Console.WriteLine($"$Consumer: {name}\tMessage: {m.Name}"));
+        await _consumer.Subscribe(_handler.Handle);
     }
 }

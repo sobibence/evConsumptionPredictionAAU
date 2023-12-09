@@ -1,12 +1,12 @@
 ﻿using EasyNetQ;
 using EasyNetQ.Topology;
-using EVCP.DataConsumer.Dtos;
+using EVCP.Dtos;
 
 namespace EVCP.DataConsumer.Consumer;
 
 public interface IEVDataConsumer
 {
-    public Task Subscribe<T>(Action<IEVDataDto<T>> handler);
+    public Task Subscribe(Action<ITripDataDto> handler);
 }
 
 public class EVDataConsumer : IEVDataConsumer
@@ -23,18 +23,19 @@ public class EVDataConsumer : IEVDataConsumer
         BindQueues(exchange, routingKey);
     }
 
-    public async Task Subscribe<T>(Action<IEVDataDto<T>> handler)
+    public async Task Subscribe(Action<ITripDataDto> handler)
     {
-        _bus.Consume<IEVDataDto<T>>(_queue, async (msg, info) =>
+        _bus.Consume<ITripDataDto>(_queue, async (msg, info) =>
         {
             _consumedMessagesCount++;
 
             // handle message
             await Task.Run(() =>
             {
-                //handler.Invoke(msg.Body);
-                Console.WriteLine($"Queue: {_queue.Name}\n" +
-                                  $"Consumed Messages Count: {_consumedMessagesCount}");
+                handler.Invoke(msg.Body);
+
+                //Console.WriteLine($"Queue: {_queue.Name}\n" +
+                //                  $"Consumed Messages Count: {_consumedMessagesCount}");
             });
         });
     }

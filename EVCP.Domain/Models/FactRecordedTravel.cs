@@ -11,6 +11,9 @@ public class FactRecordedTravel
     [ColumnName("weather_id")]
     public int WeatherId { get; set; }
 
+    [ColumnName("trip_id")]
+    public int TripId { get; set; }
+
     [ColumnName("edge_id")]
     public int EdgeId { get; set; }
 
