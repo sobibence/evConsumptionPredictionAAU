@@ -28,7 +28,6 @@ public class BaseRepository<T> : IBaseRepository<T>
 
         using var connection = _context.CreateConnection();
         connection.Open();
-
         using (var transaction = connection.BeginTransaction())
         {
             try
@@ -150,7 +149,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         connection.Open();
 
         T? result = await connection.QueryFirstOrDefaultAsync<T>(query, parameters);
-
+        connection.Close();
         return result;
     }
 

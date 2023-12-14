@@ -10,8 +10,4 @@
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\EVCP.Domain\EVCP.Domain.csproj" />
-  </ItemGroup>
-
 </Project>

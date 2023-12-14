@@ -5,15 +5,22 @@ using EVCP.Domain;
 using EVCP.Domain.Models;
 using EVCP.Domain.Repositories;
 using EVCP.RouteFinding;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Configuration;
+using BenchmarkDotNet.Running;
+using BenchmarkDotNet.Configs;
+using EVCP.Controllers.PathController;
+using EVCP.MachineLearningModelClient;
 
 class Program
 {
     private readonly IDataBaseConnector dataBase;
     private readonly ILogger<Program> _logger;
+
+    public static ServiceProvider? service;
 
     public Program(ILogger<Program> logger, IDataBaseConnector dataBaseConnector)
     {
@@ -23,47 +30,40 @@ class Program
 
     public static async Task Main(string[] args)
     {
-        HostApplicationBuilder builder = Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder(args);
-        builder.Logging.ClearProviders();
-        builder.Logging.AddConsole();
-
-
-        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-
-        builder.Services.AddSingleton<DapperContext>();
-        builder.Services.AddTransient<IEdgeRepository, EdgeRepository>();
-        builder.Services.AddTransient<IFEstConsumptionRepository, FEstConsumptionRepository>();
-        builder.Services.AddTransient<IFRecordedTravelRepository, FRecordedTravelRepository>();
-        builder.Services.AddTransient<INodeRepository, NodeRepository>();
-        builder.Services.AddTransient<IProducerRepository, ProducerRepository>();
-        builder.Services.AddTransient<IVehicleModelRepository, VehicleModelRepository>();
-        builder.Services.AddTransient<IVehicleTripStatusRepository, VehicleTripStatusRepository>();
-        builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
-        builder.Services.AddTransient<IEdgeInfoRepository, EdgeInfoRepository>();
-        builder.Services.AddSingleton<IDataBaseConnector, DataBaseConnector>();
-        builder.Services.AddSingleton<Program>();
-        
-        IHost host = builder.Build();
-
-        Program program = host.Services.GetService<Program>();
-
-        if (program is null)
-        {
-            Console.WriteLine("program is null");
-        }
-        else
-        {
-            await program.Start();
-        }
-
-        host.Run();
-
+        var summary = BenchmarkRunner.Run<Benchmarker>(ManualConfig.Create(DefaultConfig.Instance).WithOptions(ConfigOptions.DisableOptimizationsValidator));
+        //RegisterServices().GetService<IPathController>().GetBestPathAsync(0, 3112, 29653).Wait();
     }
-    async Task Start()
+
+    public static ServiceProvider RegisterServices()
     {
-        _logger.LogInformation("Starting program" + DateTime.Now.ToString() +"."+DateTime.Now.Millisecond.ToString());
-        dataBase.TestDb();
-
+        if (service is not null)
+        {
+            return service;
+        }
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+        var serviceProvider = new ServiceCollection()
+            .AddLogging(logging =>
+                {
+                    logging.AddConsole();
+                    logging.AddDebug();
+                })
+            .AddSingleton(provider => new DapperContext(GetConfiguration()))
+            .AddTransient<IFEstConsumptionRepository, FEstConsumptionRepository>()
+            .AddTransient<IEdgeInfoRepository, EdgeInfoRepository>()
+            .AddTransient<INodeRepository, NodeRepository>()
+            .AddTransient<IMapConstructionRepository, MapConstructionRepository>()
+            .AddTransient<IWeatherRepository, WeatherRepository>()
+            .AddTransient<IVehicleTripStatusRepository, VehicleTripStatusRepository>()
+            .AddTransient<IMachineLearningModelService, MachineLearningModelService>()
+            .AddTransient<IEdgeRepository, EdgeRepository>()
+            .AddTransient<IPathController, PathController>()
+            .BuildServiceProvider();
+        service = serviceProvider;
+        return serviceProvider;
     }
+
+    private static IConfiguration GetConfiguration()
+    => new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
 
 }

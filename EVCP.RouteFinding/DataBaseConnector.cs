@@ -1,5 +1,6 @@
 ﻿using System.Dynamic;
 using System.Reflection.Metadata;
+using System.Security.Cryptography.X509Certificates;
 using EVCP.DataAccess;
 using EVCP.Domain.Models;
 using EVCP.Domain.Repositories;
@@ -13,7 +14,7 @@ namespace EVCP.RouteFinding;
 
 public interface IDataBaseConnector
 {
-    void TestDb();
+    void QueryAndInsertMapToDb();
 }
 
 
@@ -30,6 +31,8 @@ public class DataBaseConnector : IDataBaseConnector
     private readonly IVehicleTripStatusRepository vehicleTripStatusRepository;
     private readonly IWeatherRepository weatherRepository;
     private readonly IEdgeInfoRepository edgeInfoRepository;
+
+    private readonly IMapConstructionRepository mapConstructionRepository;
     public DataBaseConnector(
         ILogger<DataBaseConnector> logger,
         IEdgeRepository edgeRepository,
@@ -40,7 +43,8 @@ public class DataBaseConnector : IDataBaseConnector
         IVehicleModelRepository vehicleModelRepository,
         IVehicleTripStatusRepository vehicleTripStatusRepository,
         IWeatherRepository weatherRepository,
-        IEdgeInfoRepository edgeInfoRepository
+        IEdgeInfoRepository edgeInfoRepository,
+        IMapConstructionRepository mapConstructionRepository
     )
     {
         _logger = logger;
@@ -53,33 +57,9 @@ public class DataBaseConnector : IDataBaseConnector
         this.vehicleTripStatusRepository = vehicleTripStatusRepository;
         this.weatherRepository = weatherRepository;
         this.edgeInfoRepository = edgeInfoRepository;
+        this.mapConstructionRepository = mapConstructionRepository;
     }
 
-    public async void TestDb()
-    {
-        Node node = new Node();
-        // VehicleTripStatus trip = new VehicleTripStatus
-        // {
-        //     AdditionalWeightKg = 0,
-        //     VehicleMilageMeters = 0,
-        //     VehicleId = 1
-        // };
-        List<Node> list = new()
-        {
-            node
-        };
-        QueryAndInsertMapToDb();
-        // var repo = nodeRepository;
-        // if (repo is null)
-        // {
-        //     _logger.LogError("repo is null");
-        // }
-        // else
-        // {
-        //     await repo.Create(list);
-        //     var asd = await repo.GetByIdAsync(0);
-        // }
-    }
 
 
     public async void QueryAndInsertMapToDb()
@@ -138,4 +118,9 @@ public class DataBaseConnector : IDataBaseConnector
 
 
     }
+
+    
+
+
+
 }

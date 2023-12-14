@@ -8,10 +8,7 @@ using NetTopologySuite.Geometries;
 [TableName("node")]
 public class Node : BaseEntity
 {
-    [ColumnName("osm_node_id")]
-    public long NodeIdOsm { get; set; }
-
-
+    
     private NetTopologySuite.Geometries.Point? _point;
     [ColumnName("gps_coords")]
     public NetTopologySuite.Geometries.Point Point
@@ -29,6 +26,11 @@ public class Node : BaseEntity
             _point = value;
         }
     }
+
+    [ColumnName("osm_node_id")]
+    public long NodeIdOsm { get; set; }
+
+
 
     [NotMapped]
     public double Latitude
@@ -65,12 +67,16 @@ public class Node : BaseEntity
     [NotMapped]
     public List<Node> ListOfConnectedNodes { get { return _listOfConnectedNodes; } }
 
-
+    public void copyFromNode(Node from){
+        this.Point = from.Point;
+        this.NodeIdOsm = from.NodeIdOsm;
+    }
     public override string ToString()
     {
         string connectedNodes = string.Join(", ", _listOfConnectedNodes.Select(node => node.NodeIdOsm));
 
         return $"Node Info:\n" +
+               $"Id: {Id}\n" + 
                $"NodeIdOsm: {NodeIdOsm}\n" +
                $"Latitude: {Latitude}\n" +
                $"Longitude: {Longitude}\n" +
