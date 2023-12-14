@@ -9,10 +9,10 @@ public class FactEstimatedConsumption : BaseEntity
     public int EdgeId { get; set; }
 
     [ColumnName("day_in_year")]
-    public int DayInYear { get; set; }
+    public short DayInYear { get; set; }
 
     [ColumnName("minute_in_day")]
-    public int MinuteInDay { get; set; }
+    public short MinuteInDay { get; set; }
 
     [ColumnName("vehicle_id")]
     public int VehicleId { get; set; }
@@ -20,7 +20,7 @@ public class FactEstimatedConsumption : BaseEntity
     [ColumnName("weather_id")]
     public int WeatherId { get; set; }
 
-    [ColumnName("energy_consumption_wh")]
+    [ColumnName("estimated_consumption_wh")]
     public float EnergyConsumptionWh { get; set; }
 
     [ColumnName("estimation_type")]

@@ -31,8 +31,10 @@ public class TripDataHandler : ITripDataHandler
     {
         (var recordedTravelList, var estimatedConsumptionList) = Map(tripDataDto);
 
-        await _fRecordedTravelRepository.Create(recordedTravelList.ToList());
-        await _fEstConsumptionRepository.Create(estimatedConsumptionList.ToList());
+        if (recordedTravelList.Count() > 0) await _fRecordedTravelRepository.Create(recordedTravelList.ToList());
+        if (estimatedConsumptionList.Count() > 0) await _fEstConsumptionRepository.Create(estimatedConsumptionList.ToList());
+
+        Console.WriteLine(tripDataDto.SourceTimestamp);
     }
 
     private (IEnumerable<FactRecordedTravel> recordedTravelList, IEnumerable<FactEstimatedConsumption> estimatedConsumptionList) Map(ITripDataDto dto)
@@ -40,10 +42,10 @@ public class TripDataHandler : ITripDataHandler
         var recordedTravelList = new List<FactRecordedTravel>();
         var estimatedConsumptionList = new List<FactEstimatedConsumption>();
 
-        dto.Data.ToList().ForEach(async item =>
+        dto.Data.ToList().ForEach(item =>
         {
-            var edge = await MapEdge(item.Edge);
-            var weather = await MapWeather(item.Weather);
+            var edge = MapEdge(item.Edge).Result;
+            var weather = MapWeather(item.Weather).Result;
 
             if (edge != null && weather != null)
             {
@@ -63,11 +65,11 @@ public class TripDataHandler : ITripDataHandler
 
                 var estimatedConsumption = new FactEstimatedConsumption
                 {
-                    DayInYear = item.Time.DayOfYear,
+                    DayInYear = Convert.ToInt16(item.Time.DayOfYear),
                     EdgeId = edge.Id,
                     EstimationType = "record",
                     EnergyConsumptionWh = item.EnergyConsumption,
-                    MinuteInDay = item.Time.Hour * 60 + item.Time.Minute,
+                    MinuteInDay = Convert.ToInt16(item.Time.Hour * 60 + item.Time.Minute),
                     VehicleId = item.VehicleId,
                     WeatherId = weather.Id
                 };
