@@ -4,7 +4,6 @@ namespace EVCP.Domain.Helpers;
 
 public class GpsDistanceCalculator
 {
-    //shamelessly stolen from chatgpt
     public static double CalculateDistance(Node point1, Node point2)
     {
         double earthRadius = 6371000; // Earth's radius in meters 
