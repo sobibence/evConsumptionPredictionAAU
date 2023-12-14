@@ -80,7 +80,7 @@ public class TripDataHandler : ITripDataHandler
 
     private async Task<Edge?> MapEdge(EdgeDto edgeDto)
     {
-        var edge = (await _edgeRepository.GetByAsync("OsmWayId", edgeDto.OsmWayId)).FirstOrDefault();
+        var edge = (await _edgeRepository.GetByAsync("EdgeInfoId", edgeDto.OsmWayId)).FirstOrDefault();
 
         if (edge == null)
         {

@@ -24,7 +24,6 @@ public class TripDataPublisher : ITripDataPublisher
 
     public async Task Publish(ITripDataDto data, string routingKey)
     {
-        var message = new Message<ITripDataDto>(data);
-        await _bus.PubSub.PublishAsync(message, routingKey);
+        await _bus.PubSub.PublishAsync(data, routingKey);
     }
 }

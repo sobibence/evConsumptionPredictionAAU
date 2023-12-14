@@ -33,6 +33,8 @@ namespace EVCP.DataPublisher
                 tripData.Speed,
                 tripData.Acceleration,
                 tripData.Time,
+                tripData.EnergyConsumption,
+                tripData.VehicleId,
                 Map(WeatherDataGenerator.GenerateWeatherData(tripData.Time)),
                 Map(tripData.Edge));
 

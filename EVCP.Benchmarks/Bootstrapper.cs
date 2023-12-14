@@ -1,4 +1,5 @@
 ﻿using EasyNetQ;
+using EasyNetQ.Management.Client;
 using EVCP.DataAccess;
 using EVCP.Domain.Repositories;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,9 @@ public static class Bootstrapper
 
         return RabbitHutch.CreateBus(configuration["RabbitMQConnectionString"]);
     }
+
+    public static ManagementClient RegisterManagementClient()
+        => new ManagementClient(new Uri("http://localhost:15672"), "guest", "guest");
 
     public static ServiceProvider RegisterServices()
     {

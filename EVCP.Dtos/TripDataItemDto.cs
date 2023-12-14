@@ -12,7 +12,8 @@
         public WeatherDto Weather { get; set; }
         public EdgeDto Edge { get; set; }
 
-        public TripDataItemDto(float edgePercent, int tripId, float speed, float acceleration, DateTime time, WeatherDto weather, EdgeDto edge)
+        public TripDataItemDto(float edgePercent, int tripId, float speed, float acceleration, DateTime time,
+             float energyConsumption, int vehicleId, WeatherDto weather, EdgeDto edge)
         {
             EdgePercent = edgePercent;
             TripId = tripId;
@@ -21,19 +22,6 @@
             Time = time;
             Weather = weather;
             Edge = edge;
-        }
-
-        public TripDataItemDto(
-            float edgePercent,
-            int tripId,
-            float speed,
-            float acceleration,
-            float energyConsumption,
-            int vehicleId,
-            DateTime time,
-            WeatherDto weather,
-            EdgeDto edge) : this(edgePercent, tripId, speed, acceleration, time, weather, edge)
-        {
             EnergyConsumption = energyConsumption;
             VehicleId = vehicleId;
         }

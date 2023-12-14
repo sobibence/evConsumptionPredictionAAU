@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.11" />
+    <PackageReference Include="EasyNetQ" Version="7.7.0" />
+    <PackageReference Include="EasyNetQ.Management.Client" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EVCP.DataConsumer\EVCP.DataConsumer.csproj" />
+    <ProjectReference Include="..\EVCP.DataExtractor\EVCP.DataPublisher.csproj" />
+    <ProjectReference Include="..\EVCP.Domain\EVCP.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
