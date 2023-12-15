@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>EVCP.RouteFinding.Benchmarker-20231215-113028</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.13.11, Ubuntu 20.04.6 LTS (Focal Fossa)
+AMD EPYC Processor (with IBPB), 16 CPU, 16 logical and 16 physical cores
+.NET SDK 8.0.100
+  [Host]     : .NET 8.0.0 (8.0.23.53103), X64 RyuJIT AVX2 DEBUG
+  Job-SLHVKV : .NET 8.0.0 (8.0.23.53103), X64 RyuJIT AVX2
+</code></pre>
+<pre><code>IterationCount=5  LaunchCount=2  WarmupCount=1  
+</code></pre>
+
+<table>
+<thead><tr><th>Method    </th><th>StartNodeIDs</th><th>EndNodeIDs</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Min</th><th>Max</th><th>Median</th><th>Gen0</th><th>Gen1</th><th>Gen2</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>FullRouteFinding</td><td>352924816</td><td>279727728</td><td>14.576 s</td><td>0.0418 s</td><td>0.0249 s</td><td>14.555 s</td><td>14.625 s</td><td>14.564 s</td><td>3000.0000</td><td>-</td><td>-</td><td>15.7 MB</td>
+</tr><tr><td>FullRouteFinding</td><td>352924816</td><td>338760520</td><td>30.663 s</td><td>0.0591 s</td><td>0.0391 s</td><td>30.618 s</td><td>30.737 s</td><td>30.656 s</td><td>8000.0000</td><td>2000.0000</td><td>1000.0000</td><td>33.89 MB</td>
+</tr><tr><td>FullRouteFinding</td><td>352924816</td><td>828449218</td><td>1.666 s</td><td>0.0053 s</td><td>0.0028 s</td><td>1.662 s</td><td>1.671 s</td><td>1.666 s</td><td>-</td><td>-</td><td>-</td><td>1.56 MB</td>
+</tr><tr><td>FullRouteFinding</td><td>352924816</td><td>1709787516</td><td>220.123 s</td><td>5.2568 s</td><td>3.4771 s</td><td>215.005 s</td><td>225.505 s</td><td>220.302 s</td><td>23000.0000</td><td>7000.0000</td><td>3000.0000</td><td>98.18 MB</td>
+</tr><tr><td>FullRouteFinding</td><td>352924816</td><td>5269743916</td><td>243.382 s</td><td>2.8371 s</td><td>1.8766 s</td><td>240.239 s</td><td>245.992 s</td><td>243.399 s</td><td>25000.0000</td><td>8000.0000</td><td>1000.0000</td><td>109.7 MB</td>
+</tr></tbody></table>
+</body>
+</html>

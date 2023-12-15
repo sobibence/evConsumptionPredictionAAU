@@ -10,6 +10,7 @@ namespace EVCP.Domain.Repositories;
 public interface IMapConstructionRepository
 {
    public Task<Dictionary<long, Node>> GetConstructedSubGraphASyncNodeDict(Node start, Node finish, double bufferfactor = 0.2);
+   public Task<IEnumerable<Edge>> GetAstarRouteFromNodeOsmIds(long startNodeOsmId, long endNodeOsmId);
 }
 
 public class MapConstructionRepository : IMapConstructionRepository
@@ -24,6 +25,70 @@ public class MapConstructionRepository : IMapConstructionRepository
         SqlMapper.AddTypeHandler(new PointTypeMapper());
     }
 
+    public async Task<IEnumerable<Edge>> GetAstarRouteFromNodeOsmIds(long startNodeOsmId, long endNodeOsmId)
+    {
+        using var connection = _context.CreateConnection();
+        connection.Open();
+        
+        DynamicParameters parameters = new DynamicParameters();
+        parameters.Add("@startNodeId", startNodeOsmId);
+        parameters.Add("@endNodeId", endNodeOsmId);
+        string queryString = @"
+            SELECT 
+	            e.id, e.start_node_id, e.end_node_id, e.edge_info_id, 
+                nodestart.id, nodestart.gps_coords Point, nodestart.osm_node_id NodeIdOsm,
+                nodeend.id, nodeend.gps_coords Point, nodeend.osm_node_id NodeIdOsm,
+                ei.id, ei.speed_limit_kmph SpeedLimit, ei.average_speed_kmph, ei.osm_way_id, ei.street_name, ei.surface, ei.highway
+                FROM pgr_aStar(
+                    'SELECT e.id , start_node_id as source, end_node_id as target,
+	                st_distance(startnode.gps_coords, endnode.gps_coords) as cost,
+	                st_x(startnode.gps_coords::geometry) as x1,
+	                st_y(startnode.gps_coords::geometry) y1,
+	                st_x(endnode.gps_coords::geometry) as x2,
+	                st_y(endnode.gps_coords::geometry) as y2 FROM edge e, node startnode, node endnode
+ 	                where e.end_node_id = endnode.osm_node_id and e.start_node_id = startnode.osm_node_id',
+                    @startNodeId::int4, @endNodeId::int4) as astar 
+                    inner join edge e on astar.edge = e.id
+				    INNER JOIN node nodestart
+	            	ON e.start_node_id = nodestart.osm_node_id 
+                    inner join node nodeend 
+                    on nodeend.osm_node_id = e.end_node_id 
+	            	INNER JOIN edge_info ei 
+	            	ON e.edge_info_id = ei.osm_way_id
+				;
+        ";
+        var nodeLookup = new Dictionary<long, Node>();//NodeIdOsm
+        var edgeInfoLookup = new Dictionary<long, EdgeInfo>();//OsmWayId
+        var edges = await connection.QueryAsync< Edge, Node, Node, EdgeInfo, Edge>(queryString, 
+            ( edge, node_start,node_end, edgeinfo) => {
+                Node nodeStart;
+                if(!nodeLookup.TryGetValue(node_start.NodeIdOsm, out nodeStart)){
+                    nodeLookup.Add(node_start.NodeIdOsm, nodeStart = node_start );
+                }
+                Node nodeEnd;
+                if(!nodeLookup.TryGetValue(node_end.NodeIdOsm, out nodeEnd)){
+                    nodeLookup.Add(node_end.NodeIdOsm, nodeEnd = node_end );
+                }
+                EdgeInfo edgeinfo1;
+                if(!edgeInfoLookup.TryGetValue(edgeinfo.OsmWayId, out edgeinfo1)){
+                    edgeInfoLookup.Add(edgeinfo.OsmWayId, edgeinfo1 = edgeinfo);
+                }
+                Edge edge1 = edge;
+                edge1.EdgeInfo = edgeinfo1;
+                edge1.StartNode = nodeStart;
+                edge1.EndNode = nodeEnd;
+                edge1.StartNode.ListOfConnectedNodes.Add(nodeEnd);
+                edge1.StartNode.ListOfConnectedEdges.Add(edge1);
+                return edge1;
+        },parameters,splitOn:"id,id,id");
+        
+        //adding endnodes
+        //_logger.LogInformation(edges.Count().ToString());
+        
+
+        connection.Close();
+        return edges;
+    }
 
     public async Task<Dictionary<long, Node>> GetConstructedSubGraphASyncNodeDict(Node start, Node finish, double bufferfactor = 0.2){
         

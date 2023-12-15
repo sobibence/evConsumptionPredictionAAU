@@ -34,7 +34,7 @@ public class FRecordedTravelRepository : BaseRepository<FactRecordedTravel>, IFR
         connection.Open();
 
         var result = (await connection.QueryAsync<FactRecordedTravel>(query, parameters)).ToList();
-
+        connection.Close();
         return result;
     }
 
@@ -48,7 +48,7 @@ public class FRecordedTravelRepository : BaseRepository<FactRecordedTravel>, IFR
         connection.Open();
 
         var result = (await connection.QueryAsync<FactRecordedTravel>(query, parameters)).ToList();
-
+        connection.Close();
         return result;
     }
 }

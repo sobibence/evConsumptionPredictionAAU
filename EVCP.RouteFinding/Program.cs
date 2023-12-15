@@ -31,7 +31,7 @@ class Program
     public static async Task Main(string[] args)
     {
         var summary = BenchmarkRunner.Run<Benchmarker>(ManualConfig.Create(DefaultConfig.Instance).WithOptions(ConfigOptions.DisableOptimizationsValidator));
-        //RegisterServices().GetService<IPathController>().GetBestPathAsync(0, 3112, 29653).Wait();
+        //RegisterServices().GetService<IPathController>().GetBestPathAsyncWithPgRouting(0, 352924816L, 828449218L).Wait();
     }
 
     public static ServiceProvider RegisterServices()

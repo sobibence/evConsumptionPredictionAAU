@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>EVCP.RouteFinding.Benchmarker-20231215-211233</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.13.11, Ubuntu 20.04.6 LTS (Focal Fossa)
+AMD EPYC Processor (with IBPB), 16 CPU, 16 logical and 16 physical cores
+.NET SDK 8.0.100
+  [Host]     : .NET 8.0.0 (8.0.23.53103), X64 RyuJIT AVX2 DEBUG
+  Job-XKLQTM : .NET 8.0.0 (8.0.23.53103), X64 RyuJIT AVX2
+</code></pre>
+<pre><code>IterationCount=5  LaunchCount=2  WarmupCount=1  
+</code></pre>
+
+<table>
+<thead><tr><th>Method    </th><th>StartNodeIDs</th><th>EndNodeIDs</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Min</th><th>Max</th><th>Median</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>FullRouteFinding</td><td>352924816</td><td>279727728</td><td>1.295 s</td><td>0.0285 s</td><td>0.0189 s</td><td>1.266 s</td><td>1.320 s</td><td>1.297 s</td><td>393.87 KB</td>
+</tr><tr><td>FullRouteFinding</td><td>352924816</td><td>338760520</td><td>1.301 s</td><td>0.0279 s</td><td>0.0184 s</td><td>1.271 s</td><td>1.326 s</td><td>1.297 s</td><td>474.36 KB</td>
+</tr><tr><td>FullRouteFinding</td><td>352924816</td><td>828449218</td><td>1.277 s</td><td>0.0375 s</td><td>0.0223 s</td><td>1.258 s</td><td>1.314 s</td><td>1.265 s</td><td>280.91 KB</td>
+</tr><tr><td>FullRouteFinding</td><td>352924816</td><td>1709787516</td><td>1.344 s</td><td>0.0662 s</td><td>0.0438 s</td><td>1.289 s</td><td>1.406 s</td><td>1.333 s</td><td>788.34 KB</td>
+</tr><tr><td>FullRouteFinding</td><td>352924816</td><td>5269743916</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr></tbody></table>
+</body>
+</html>
