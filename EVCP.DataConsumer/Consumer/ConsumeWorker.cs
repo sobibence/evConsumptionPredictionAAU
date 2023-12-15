@@ -2,11 +2,11 @@
 
 public class ConsumeWorker : IWorker
 {
-    private readonly IEVDataConsumer _consumer;
+    private readonly ITripDataConsumer _consumer;
     private ITripDataHandler _handler;
     private readonly string name;
 
-    public ConsumeWorker(IEVDataConsumer consumer, ITripDataHandler handler, string name)
+    public ConsumeWorker(ITripDataConsumer consumer, ITripDataHandler handler, string name)
     {
         _consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
         _handler = handler ?? throw new ArgumentNullException(nameof(handler));

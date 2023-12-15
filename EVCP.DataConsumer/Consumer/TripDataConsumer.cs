@@ -3,12 +3,12 @@ using EVCP.Dtos;
 
 namespace EVCP.DataConsumer.Consumer;
 
-public interface IEVDataConsumer
+public interface ITripDataConsumer
 {
     public Task Subscribe(Action<ITripDataDto> handler);
 }
 
-public class TripDataConsumer : IEVDataConsumer
+public class TripDataConsumer : ITripDataConsumer
 {
     private readonly IBus _bus;
     private readonly string _routingKey;

@@ -6,7 +6,6 @@ public class PublishWorker : IWorker
 {
     private readonly ITripDataPublisher _publisher;
     private readonly string _routingKey;
-
     private readonly Func<IEnumerable<ITripDataDto>> _getMessages;
 
     public PublishWorker(ITripDataPublisher publisher, string routingKey, Func<IEnumerable<ITripDataDto>> getMessages)
