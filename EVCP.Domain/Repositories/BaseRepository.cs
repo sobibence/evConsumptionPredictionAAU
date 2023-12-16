@@ -3,7 +3,9 @@ using EVCP.DataAccess;
 using EVCP.DataAccess.Repositories;
 using EVCP.Domain.Helpers;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.Reflection;
 
 namespace EVCP.Domain.Repositories;
@@ -11,15 +13,26 @@ namespace EVCP.Domain.Repositories;
 public class BaseRepository<T> : IBaseRepository<T>
 {
     private readonly ILogger<BaseRepository<T>> _logger;
-    private readonly DapperContext _context;
 
+    public readonly NpgsqlConnection Connection;
     public readonly string Table;
 
     public BaseRepository(ILogger<BaseRepository<T>> logger, DapperContext context)
     {
         _logger = logger;
-        _context = context;
+        Connection = context.CreateConnection() ?? throw new ArgumentNullException(nameof(Connection));
         Table = GetTableName();
+    }
+
+    ~BaseRepository()
+    {
+        if (Connection.State != ConnectionState.Closed)
+        {
+            Connection.Close();
+        }
+
+        // Explicitly call Dispose to release resources
+        Connection.Dispose();
     }
 
     public virtual async Task<bool> Create(List<T> entities)
@@ -42,7 +55,7 @@ public class BaseRepository<T> : IBaseRepository<T>
                     string values = string.Join(",", valueArr);
                     var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
 
-                    await connection.ExecuteAsync(query, parameters);
+                    await Connection.ExecuteAsync(query, parameters);
                 }
 
                 transaction.Commit();
@@ -56,7 +69,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         }
         connection.Close();
 
-        connection.Close();
+        Connection.Close();
 
         return result;
     }
@@ -72,9 +85,8 @@ public class BaseRepository<T> : IBaseRepository<T>
         string values = string.Join(",", valueArr);
         var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
 
-        // create and open database connection
-        using var connection = _context.CreateConnection();
-        connection.Open();
+        // open database connection
+        Connection.Open();
 
         // execute query
         var result = await connection.ExecuteAsync(query, parameters);
@@ -89,8 +101,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         var columns = string.Join(", ", columnArr);
         var query = $"SELECT {columns} FROM {Table}";
 
-        using var connection = _context.CreateConnection();
-        connection.Open();
+        Connection.Open();
 
         List<T> result = (await connection.QueryAsync<T>(query)).ToList();
         connection.Close();
@@ -130,8 +141,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         var query = $"SELECT {columns} FROM {Table} " +
                     $"WHERE {columnName}={queryValue}";
 
-        using var connection = _context.CreateConnection();
-        connection.Open();
+        Connection.Open();
 
         var result = await connection.QueryAsync<T>(query, parameters);
         connection.Close();
@@ -148,8 +158,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         var query = $"SELECT {columns} FROM {Table} " +
                     $"WHERE id=@Id";
 
-        using var connection = _context.CreateConnection();
-        connection.Open();
+        Connection.Open();
 
         T? result = await connection.QueryFirstOrDefaultAsync<T>(query, parameters);
         connection.Close();
@@ -157,7 +166,7 @@ public class BaseRepository<T> : IBaseRepository<T>
     }
 
     #region Private methods
-    private (string[] columns, string[] values, DynamicParameters parameters) GetForInsert(T entity)
+    protected (string[] columns, string[] values, DynamicParameters parameters) GetForInsert(T entity)
     {
         var columnNames = new List<string>();
         var propertyNames = new List<string>();
@@ -225,7 +234,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         return result;
     }
 
-    private string GetColumnNameByProperty(PropertyInfo property)
+    protected string GetColumnNameByProperty(PropertyInfo property)
     {
         var attribute = (ColumnName)property.GetCustomAttribute(typeof(ColumnName), false);
         var columnName = attribute != null ? attribute.Name : "";

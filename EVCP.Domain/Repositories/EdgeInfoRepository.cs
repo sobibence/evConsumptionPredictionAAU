@@ -14,11 +14,9 @@ public interface IEdgeInfoRepository : IBaseRepository<EdgeInfo>
 public class EdgeInfoRepository : BaseRepository<EdgeInfo>, IEdgeInfoRepository
 {
     private readonly ILogger<EdgeInfoRepository> _logger;
-    private readonly DapperContext _context;
 
     public EdgeInfoRepository(ILogger<EdgeInfoRepository> logger, DapperContext context) : base(logger, context)
     {
         _logger = logger;
-        _context = context;
     }
 }

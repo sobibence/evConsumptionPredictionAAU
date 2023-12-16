@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using EVCP.DataAccess;
 using EVCP.DataAccess.Repositories;
 using EVCP.Domain.Models;
@@ -14,12 +14,10 @@ public interface IFEstConsumptionRepository : IBaseRepository<FactEstimatedConsu
 public class FEstConsumptionRepository : BaseRepository<FactEstimatedConsumption>, IFEstConsumptionRepository
 {
     private readonly ILogger<FEstConsumptionRepository> _logger;
-    private readonly DapperContext _context;
 
     public FEstConsumptionRepository(ILogger<FEstConsumptionRepository> logger, DapperContext context) : base(logger, context)
     {
         _logger = logger;
-        _context = context;
     }
 
     public async Task<IEnumerable<FactEstimatedConsumption>> GetByEdge(int edgeId)
@@ -28,8 +26,7 @@ public class FEstConsumptionRepository : BaseRepository<FactEstimatedConsumption
         var query = $"SELECT * FROM {Table} " +
                     $"WHERE edge_id=@EdgeId;";
 
-        using var connection = _context.CreateConnection();
-        connection.Open();
+        Connection.Open();
 
         var result = (await connection.QueryAsync<FactEstimatedConsumption>(query, parameters)).ToList();
         connection.Close();

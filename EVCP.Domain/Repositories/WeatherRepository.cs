@@ -14,12 +14,10 @@ public interface IWeatherRepository : IBaseRepository<Weather>
 public class WeatherRepository : BaseRepository<Weather>, IWeatherRepository
 {
     private readonly ILogger<WeatherRepository> _logger;
-    private readonly DapperContext _context;
 
     public WeatherRepository(ILogger<WeatherRepository> logger, DapperContext context) : base(logger, context)
     {
         _logger = logger;
-        _context = context;
     }
 
     public async Task<Weather?> GetByMatchingAttributes(float temperature, float windSpeed, int windDirection, float fogPercent, int rainMm)
@@ -39,10 +37,11 @@ public class WeatherRepository : BaseRepository<Weather>, IWeatherRepository
                             $"fog_percent=@FogPercent AND " +
                             $"rain_mm=@RainMm;";
 
-        using var connection = _context.CreateConnection();
-        connection.Open();
+        Connection.Open();
 
-        var result = await connection.QueryFirstOrDefaultAsync<Weather>(query, parameters);
+        var result = await Connection.QueryFirstOrDefaultAsync<Weather>(query, parameters);
+
+        Connection.Close();
 
         return result;
     }
