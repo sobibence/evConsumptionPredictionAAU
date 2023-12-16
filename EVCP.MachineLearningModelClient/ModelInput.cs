@@ -8,13 +8,7 @@ namespace EVCP.MachineLearningModelClient
 {
     public class ModelInput
     {
-        //TODO Bence check if types are correct
-        public float speed;
         public int speed_limit;
-        public float speed_avg_week;
-        public float speed_avg_time;
-        public float speed_avg_week_time;
-        public float speed_avg;
         public float seconds;
         public float air_temperature;
         public int wind_direction;
