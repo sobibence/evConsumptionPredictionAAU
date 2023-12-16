@@ -19,8 +19,6 @@ namespace EVCP.MachineLearningModelClient
             this.httpClient = new HttpClient();
         }
 
-        // TODO choose precision. If this is to be used as weights for the edges, we would like a very precise value (decimal)
-        // or should it still be float
         public async Task<List<double>> Predict(List<ModelInput> inputs)
         {
             string url = API_URL + "/" + PREDICT_ENDPOINT;
