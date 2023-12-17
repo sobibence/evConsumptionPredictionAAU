@@ -128,12 +128,7 @@ namespace EVCP.Controllers.PathController
                 var weatherAtEdge = WeatherDataGenerator.GenerateWeatherData(DateTime.Now); 
                 modelInputs.Add(new ModelInput
                 {
-                    speed = 50,
                     speed_limit = currEdge.EdgeInfo.SpeedLimit,
-                    speed_avg_week = 45,
-                    speed_avg_time = 45,
-                    speed_avg_week_time = 45,
-                    speed_avg = 45,
                     seconds = 10,
                     air_temperature = (float)weatherAtEdge.Temperature,
                     wind_direction = weatherAtEdge.WindDirection,
