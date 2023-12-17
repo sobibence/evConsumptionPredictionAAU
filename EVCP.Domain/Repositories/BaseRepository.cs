@@ -3,7 +3,6 @@ using EVCP.DataAccess;
 using EVCP.DataAccess.Repositories;
 using EVCP.Domain.Helpers;
 using Microsoft.Extensions.Logging;
-using Npgsql;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Reflection;
@@ -14,25 +13,14 @@ public class BaseRepository<T> : IBaseRepository<T>
 {
     private readonly ILogger<BaseRepository<T>> _logger;
 
-    public readonly NpgsqlConnection Connection;
+    public readonly DapperContext _context;
     public readonly string Table;
 
     public BaseRepository(ILogger<BaseRepository<T>> logger, DapperContext context)
     {
         _logger = logger;
-        Connection = context.CreateConnection() ?? throw new ArgumentNullException(nameof(Connection));
+        _context = context;
         Table = GetTableName();
-    }
-
-    ~BaseRepository()
-    {
-        if (Connection.State != ConnectionState.Closed)
-        {
-            Connection.Close();
-        }
-
-        // Explicitly call Dispose to release resources
-        Connection.Dispose();
     }
 
     public virtual async Task<bool> Create(List<T> entities)
@@ -55,7 +43,7 @@ public class BaseRepository<T> : IBaseRepository<T>
                     string values = string.Join(",", valueArr);
                     var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
 
-                    await Connection.ExecuteAsync(query, parameters);
+                    await connection.ExecuteAsync(query, parameters);
                 }
 
                 transaction.Commit();
@@ -69,7 +57,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         }
         connection.Close();
 
-        Connection.Close();
+        connection.Close();
 
         return result;
     }
@@ -86,7 +74,8 @@ public class BaseRepository<T> : IBaseRepository<T>
         var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
 
         // open database connection
-        Connection.Open();
+        using var connection = _context.CreateConnection();
+        connection.Open();
 
         // execute query
         var result = await connection.ExecuteAsync(query, parameters);
@@ -101,7 +90,8 @@ public class BaseRepository<T> : IBaseRepository<T>
         var columns = string.Join(", ", columnArr);
         var query = $"SELECT {columns} FROM {Table}";
 
-        Connection.Open();
+        using var connection = _context.CreateConnection();
+        connection.Open();
 
         List<T> result = (await connection.QueryAsync<T>(query)).ToList();
         connection.Close();
@@ -141,7 +131,8 @@ public class BaseRepository<T> : IBaseRepository<T>
         var query = $"SELECT {columns} FROM {Table} " +
                     $"WHERE {columnName}={queryValue}";
 
-        Connection.Open();
+        using var connection = _context.CreateConnection();
+        connection.Open();
 
         var result = await connection.QueryAsync<T>(query, parameters);
         connection.Close();
@@ -158,7 +149,8 @@ public class BaseRepository<T> : IBaseRepository<T>
         var query = $"SELECT {columns} FROM {Table} " +
                     $"WHERE id=@Id";
 
-        Connection.Open();
+        using var connection = _context.CreateConnection();
+        connection.Open();
 
         T? result = await connection.QueryFirstOrDefaultAsync<T>(query, parameters);
         connection.Close();

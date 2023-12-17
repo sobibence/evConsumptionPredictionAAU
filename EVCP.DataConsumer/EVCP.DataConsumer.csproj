@@ -38,8 +38,4 @@
     <ProjectReference Include="..\EVCP.Domain\EVCP.Domain.csproj" />
     <ProjectReference Include="..\EVCP.Dtos\EVCP.Dtos.csproj" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Scripts\" />
-  </ItemGroup>
 </Project>

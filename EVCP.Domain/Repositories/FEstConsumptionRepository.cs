@@ -26,7 +26,8 @@ public class FEstConsumptionRepository : BaseRepository<FactEstimatedConsumption
         var query = $"SELECT * FROM {Table} " +
                     $"WHERE edge_id=@EdgeId;";
 
-        Connection.Open();
+        using var connection = _context.CreateConnection();
+        connection.Open();
 
         var result = (await connection.QueryAsync<FactEstimatedConsumption>(query, parameters)).ToList();
         connection.Close();

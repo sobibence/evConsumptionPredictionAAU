@@ -94,12 +94,12 @@ public class TripDataHandler : ITripDataHandler
 
     private async Task<Weather?> MapWeather(WeatherDto weatherDto)
     {
-        var weather = await _weatherRepository.GetByMatchingAttributes(weatherDto.TemperatureCelsius,
-            weatherDto.WindKph, weatherDto.WindDirection, weatherDto.FogPercent, weatherDto.RainMm);
+        var weather = _weatherRepository.GetByMatchingAttributes(weatherDto.TemperatureCelsius,
+            weatherDto.WindKph, weatherDto.WindDirection, weatherDto.FogPercent, weatherDto.RainMm).Result;
 
         if (weather == null)
         {
-            var created = await _weatherRepository.Create(new Weather
+            var created = _weatherRepository.Create(new Weather
             {
                 FogPercent = weatherDto.FogPercent,
                 RainMm = weatherDto.RainMm,
@@ -107,7 +107,7 @@ public class TripDataHandler : ITripDataHandler
                 TemperatureCelsius = weatherDto.TemperatureCelsius,
                 WindDirection = weatherDto.WindDirection,
                 WindSpeed = weatherDto.WindKph
-            });
+            }).Result;
 
             if (created)
                 weather = await _weatherRepository.GetByMatchingAttributes(weatherDto.TemperatureCelsius,

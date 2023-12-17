@@ -1,11 +1,13 @@
 ﻿using EasyNetQ;
 using EasyNetQ.Management.Client;
 using EVCP.DataAccess;
+using EVCP.DataConsumer.Consumer;
+using EVCP.DataConsumer.Publisher;
 using EVCP.Domain.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EVCP.DataConsumer;
+namespace EVCP.Benchmarks;
 
 public static class Bootstrapper
 {
@@ -29,6 +31,11 @@ public static class Bootstrapper
             .AddScoped<IFRecordedTravelRepository, FRecordedTravelRepository>()
             .AddScoped<IVehicleModelRepository, VehicleModelRepository>()
             .AddScoped<IWeatherRepository, WeatherRepository>()
+            .AddScoped<ITripDataPublisher, TripDataPublisher>()
+            .AddScoped<ITripDataConsumer, TripDataConsumer>()
+            .AddScoped<ITripDataHandler, TripDataHandler>()
+            //.AddScoped<IWorker, PublishWorker>()
+            //.AddScoped<IWorker, ConsumeWorker>()
             .BuildServiceProvider();
 
         return serviceProvider;

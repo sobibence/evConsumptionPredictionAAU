@@ -37,11 +37,12 @@ public class WeatherRepository : BaseRepository<Weather>, IWeatherRepository
                             $"fog_percent=@FogPercent AND " +
                             $"rain_mm=@RainMm;";
 
-        Connection.Open();
+        using var connection = _context.CreateConnection();
+        connection.Open();
 
-        var result = await Connection.QueryFirstOrDefaultAsync<Weather>(query, parameters);
+        var result = await connection.QueryFirstOrDefaultAsync<Weather>(query, parameters);
 
-        Connection.Close();
+        connection.Close();
 
         return result;
     }

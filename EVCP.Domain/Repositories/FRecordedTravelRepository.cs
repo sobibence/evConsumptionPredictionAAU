@@ -28,7 +28,8 @@ public class FRecordedTravelRepository : BaseRepository<FactRecordedTravel>, IFR
         var query = $"SELECT * FROM {Table} " +
                     $"WHERE time_epoch BETWEEN @From AND @TO;";
 
-        Connection.Open();
+        using var connection = _context.CreateConnection();
+        connection.Open();
 
         var result = (await connection.QueryAsync<FactRecordedTravel>(query, parameters)).ToList();
         connection.Close();
@@ -41,7 +42,8 @@ public class FRecordedTravelRepository : BaseRepository<FactRecordedTravel>, IFR
         var query = $"SELECT * FROM {Table} " +
                     $"WHERE vehicle_id=@VehicleId;";
 
-        Connection.Open();
+        using var connection = _context.CreateConnection();
+        connection.Open();
 
         var result = (await connection.QueryAsync<FactRecordedTravel>(query, parameters)).ToList();
         connection.Close();
