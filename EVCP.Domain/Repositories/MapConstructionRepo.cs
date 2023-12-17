@@ -47,7 +47,7 @@ public class MapConstructionRepository : IMapConstructionRepository
 	                st_x(endnode.gps_coords::geometry) as x2,
 	                st_y(endnode.gps_coords::geometry) as y2 FROM edge e, node startnode, node endnode
  	                where e.end_node_id = endnode.osm_node_id and e.start_node_id = startnode.osm_node_id',
-                    @startNodeId::int4, @endNodeId::int4) as astar 
+                    @startNodeId, @endNodeId) as astar 
                     inner join edge e on astar.edge = e.id
 				    INNER JOIN node nodestart
 	            	ON e.start_node_id = nodestart.osm_node_id 
