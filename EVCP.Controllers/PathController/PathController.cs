@@ -62,16 +62,11 @@ namespace EVCP.Controllers.PathController
 
             foreach (var currEdge in pathToTravel)
             {
-                var weatherAtEdge = WeatherDataGenerator.GenerateWeatherData(DateTime.Now); 
+                var weatherAtEdge = WeatherDataGenerator.GenerateWeatherData(DateTime.Now); // TODO get proper weather fetching for the current edge
                 modelInputs.Add(new ModelInput
                 {
-                    speed = 50,
                     speed_limit = currEdge.EdgeInfo.SpeedLimit,
-                    speed_avg_week = 45,
-                    speed_avg_time = 45,
-                    speed_avg_week_time = 45,
-                    speed_avg = 45,
-                    seconds = 10,
+                    seconds = 50, // TODO find proper value. Unable to extract the meaning of this property from EVDPEP. Using what seems to be an average value here
                     air_temperature = (float)weatherAtEdge.Temperature,
                     wind_direction = weatherAtEdge.WindDirection,
                     wind_speed_ms = (int)Math.Round(weatherAtEdge.WindSpeed),
@@ -79,13 +74,13 @@ namespace EVCP.Controllers.PathController
                     time = weatherAtEdge.At.Minute, // dunno exactly what we need here TODO
                     weekend = weatherAtEdge.At.DayOfWeek == DayOfWeek.Sunday || weatherAtEdge.At.DayOfWeek == DayOfWeek.Saturday,
                     drifting = false,
-                    dry = !weatherAtEdge.IsRaining, //not exactly the same, but its what we have
-                    fog = weatherAtEdge.Fog > 0.01, // I am just making stuff up here TODO
+                    dry = !weatherAtEdge.IsRaining, // not exactly the same, but its what we have
+                    fog = weatherAtEdge.Fog > 15, // Just a decision that more than 15 % fog count as fog being true. Since ML model only takes a boolean 
                     freezing = weatherAtEdge.Temperature <= 0,
                     none = false,
                     snow = weatherAtEdge.IsSnowing,
                     thunder = false,
-                    wet = weatherAtEdge.IsRaining, //not exactly the same, but its what we have
+                    wet = weatherAtEdge.IsRaining, // not exactly the same, but its what we have
                     living_street = currEdge.EdgeInfo.Highway.Equals("living_street"),
                     motorway = currEdge.EdgeInfo.Highway.Equals("motorway"),
                     motorway_link = currEdge.EdgeInfo.Highway.Equals("motorway_link"),
