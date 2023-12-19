@@ -31,29 +31,22 @@ public class BaseRepository<T> : IBaseRepository<T>
         connection.Open();
         using (var transaction = connection.BeginTransaction())
         {
-            try
+            foreach (var entity in entities)
             {
-                foreach (var entity in entities)
-                {
-                    if (entity == null) return false;
+                //if (entity == null) return false;
+                if (entity == null) continue;
 
-                    (var columnArr, var valueArr, var parameters) = GetForInsert(entity);
+                (var columnArr, var valueArr, var parameters) = GetForInsert(entity);
 
-                    string columns = string.Join(", ", columnArr);
-                    string values = string.Join(",", valueArr);
-                    var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
+                string columns = string.Join(", ", columnArr);
+                string values = string.Join(",", valueArr);
+                var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
 
-                    await connection.ExecuteAsync(query, parameters);
-                }
-
-                transaction.Commit();
-                result = true;
+                await connection.ExecuteAsync(query, parameters);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error: {ex}");
-                transaction.Rollback();
-            }
+
+            //transaction.Commit();
+            result = true;
         }
         connection.Close();
 
@@ -62,16 +55,16 @@ public class BaseRepository<T> : IBaseRepository<T>
         return result;
     }
 
-    public virtual async Task<bool> Create(T entity)
+    public virtual async Task<int?> Create(T entity)
     {
-        if (entity == null) return false;
+        if (entity == null) return null;
 
         // generate insert sql query and dynamic parameters
         (var columnArr, var valueArr, var parameters) = GetForInsert(entity);
 
         string columns = string.Join(", ", columnArr);
         string values = string.Join(",", valueArr);
-        var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
+        var query = $"INSERT INTO {Table} ({columns}) VALUES ({values}) RETURNING id;";
 
         // open database connection
         using var connection = _context.CreateConnection();

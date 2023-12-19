@@ -24,7 +24,7 @@ public class FEstConsumptionController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<bool> Create()
+    public async Task<int?> Create()
     {
         var random = new Random();
 
@@ -34,7 +34,7 @@ public class FEstConsumptionController : ControllerBase
             MinuteInDay = Convert.ToInt16(random.Next(60)),
             EdgeId = random.Next(1, 5),
             VehicleId = 1,
-            WeatherId = 130,
+            WeatherId = 5868,
             EnergyConsumptionWh = random.Next(100),
             EstimationType = "record",
         });

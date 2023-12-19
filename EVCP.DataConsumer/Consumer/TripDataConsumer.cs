@@ -23,6 +23,6 @@ public class TripDataConsumer : ITripDataConsumer
 
     public async Task Subscribe(Action<ITripDataDto> handler)
     {
-        await _bus.PubSub.SubscribeAsync<ITripDataDto>(_subscriptionId, handler.Invoke, x => x.WithTopic(_routingKey));
+        await _bus.PubSub.SubscribeAsync<ITripDataDto>(_subscriptionId, handler, x => x.WithTopic(_routingKey));
     }
 }

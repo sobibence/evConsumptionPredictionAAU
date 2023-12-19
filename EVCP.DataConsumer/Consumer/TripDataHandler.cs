@@ -33,8 +33,6 @@ public class TripDataHandler : ITripDataHandler
 
         if (recordedTravelList.Count() > 0) await _fRecordedTravelRepository.Create(recordedTravelList.ToList());
         if (estimatedConsumptionList.Count() > 0) await _fEstConsumptionRepository.Create(estimatedConsumptionList.ToList());
-
-        //Console.WriteLine(tripDataDto.SourceTimestamp);
     }
 
     private (IEnumerable<FactRecordedTravel> recordedTravelList, IEnumerable<FactEstimatedConsumption> estimatedConsumptionList) Map(ITripDataDto dto)
@@ -45,9 +43,9 @@ public class TripDataHandler : ITripDataHandler
         dto.Data.ToList().ForEach(item =>
         {
             var edge = MapEdge(item.Edge).Result;
-            var weather = MapWeather(item.Weather).Result;
+            var weatherId = MapWeather(item.Weather).Result;
 
-            if (edge != null && weather != null)
+            if (edge != null && weatherId != null)
             {
                 var recordedTravel = new FactRecordedTravel
                 {
@@ -59,7 +57,7 @@ public class TripDataHandler : ITripDataHandler
                     TimeEpoch = item.Time,
                     TripId = item.TripId,
                     VehicleId = item.VehicleId,
-                    WeatherId = weather.Id
+                    WeatherId = weatherId.Value
                 };
                 recordedTravelList.Add(recordedTravel);
 
@@ -71,7 +69,7 @@ public class TripDataHandler : ITripDataHandler
                     EnergyConsumptionWh = item.EnergyConsumption,
                     MinuteInDay = Convert.ToInt16(item.Time.Hour * 60 + item.Time.Minute),
                     VehicleId = item.VehicleId,
-                    WeatherId = weather.Id
+                    WeatherId = weatherId.Value
                 };
                 estimatedConsumptionList.Add(estimatedConsumption);
             }
@@ -92,28 +90,31 @@ public class TripDataHandler : ITripDataHandler
         return edge;
     }
 
-    private async Task<Weather?> MapWeather(WeatherDto weatherDto)
+    private async Task<int?> MapWeather(WeatherDto weatherDto)
     {
-        var weather = _weatherRepository.GetByMatchingAttributes(weatherDto.TemperatureCelsius,
-            weatherDto.WindKph, weatherDto.WindDirection, weatherDto.FogPercent, weatherDto.RainMm).Result;
+        //var weather = _weatherRepository.GetByMatchingAttributes(weatherDto.TemperatureCelsius,
+        //    weatherDto.WindKph, weatherDto.WindDirection, weatherDto.FogPercent, weatherDto.RainMm).Result;
 
-        if (weather == null)
+        //if (weather == null)
+        //{
+
+        //Weather? weather = null;
+
+        var id = await _weatherRepository.Create(new Weather
         {
-            var created = _weatherRepository.Create(new Weather
-            {
-                FogPercent = weatherDto.FogPercent,
-                RainMm = weatherDto.RainMm,
-                Sunshine = 0,
-                TemperatureCelsius = weatherDto.TemperatureCelsius,
-                WindDirection = weatherDto.WindDirection,
-                WindSpeed = weatherDto.WindKph
-            }).Result;
+            FogPercent = weatherDto.FogPercent,
+            RainMm = weatherDto.RainMm,
+            Sunshine = 0,
+            TemperatureCelsius = weatherDto.TemperatureCelsius,
+            WindDirection = weatherDto.WindDirection,
+            WindSpeed = weatherDto.WindKph
+        });
 
-            if (created)
-                weather = await _weatherRepository.GetByMatchingAttributes(weatherDto.TemperatureCelsius,
-            weatherDto.WindKph, weatherDto.WindDirection, weatherDto.FogPercent, weatherDto.RainMm);
-        }
+        //if (created)
+        //    weather = await _weatherRepository.GetByMatchingAttributes(weatherDto.TemperatureCelsius,
+        //weatherDto.WindKph, weatherDto.WindDirection, weatherDto.FogPercent, weatherDto.RainMm);
+        //}
 
-        return weather;
+        return id;
     }
 }

@@ -27,7 +27,8 @@ public class SqlScriptRunner
             if (!string.IsNullOrWhiteSpace(command))
             {
                 Console.WriteLine($"Running '{command}' ...");
-                connection.Execute(command);
+                var rowsAffected = connection.Execute(command);
+                Console.WriteLine($"DB rows affected: {rowsAffected}");
             }
         }
 

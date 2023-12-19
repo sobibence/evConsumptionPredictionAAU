@@ -2,7 +2,6 @@
 using EasyNetQ;
 using EasyNetQ.Management.Client;
 using EVCP.DataAccess;
-using EVCP.DataConsumer;
 using EVCP.DataConsumer.Consumer;
 using EVCP.DataConsumer.Publisher;
 using EVCP.Domain.Helpers;
@@ -13,15 +12,13 @@ using Microsoft.Extensions.DependencyInjection;
 namespace EVCP.Benchmarks;
 
 [SimpleJob(iterationCount: 3, warmupCount: 0)]
-[MemoryDiagnoser]
 [MinColumn, MaxColumn, MeanColumn, MedianColumn]
 public class ConsumerBenchmarks
 {
     //[Params(10, 100, 1000, 10000)]
-    [Params(5, 10)]
+    [Params(10)]
     public int NoOfMessages { get; set; }
 
-    //[Params(60)]
     [Params(5)]
     public int NoOfElementsInMessage { get; set; }
 
@@ -32,8 +29,8 @@ public class ConsumerBenchmarks
     private ManagementClient _managementClient = Bootstrapper.RegisterManagementClient();
     private ServiceProvider _serviceProvider = Bootstrapper.RegisterServices();
     private SqlScriptRunner _sqlRunner;
-    private ITripDataHandler _handler;
-    private IWorker _consumeWorker;
+    //private ITripDataHandler _handler;
+    //private IWorker _consumeWorker;
     private MessageGenerator _generator;
 
     private int iterationCounter = 0;
@@ -48,13 +45,12 @@ public class ConsumerBenchmarks
         { "index+partition", new string[] { $"{dir}/Scripts/create_index.sql" } },
     };
 
-    [GlobalSetup]
+    [GlobalSetup(Target = nameof(Initial))]
     public void GlobalSetup()
     {
-        Console.WriteLine($"GlobalSetup");
+        Console.WriteLine($"Running setup for {nameof(Initial)} benchmark...");
 
-        Setup();
-        //ExecuteScriptsForBenchmark("initial");
+        Setup("initial");
     }
 
     [IterationSetup]
@@ -63,12 +59,10 @@ public class ConsumerBenchmarks
         iterationCounter++;
         Console.WriteLine($"IterationSetup ({iterationCounter})");
 
+        //DeleteQueues();
         Thread.Sleep(3000);
-        //CleanDB();
-        DeleteQueues();
-        Thread.Sleep(2000);
 
-        _handler = new TripDataHandler(
+        var handler = new TripDataHandler(
             _serviceProvider.GetService<IEdgeRepository>(),
             _serviceProvider.GetService<IFEstConsumptionRepository>(),
             _serviceProvider.GetService<IFRecordedTravelRepository>(),
@@ -80,20 +74,20 @@ public class ConsumerBenchmarks
         var subscribeRoutingKey = $"{routingKey}.#";
 
         var consumer = new TripDataConsumer(_bus, $"test_{routingKey}", subscribeRoutingKey);
-        _consumeWorker = new ConsumeWorker(consumer, _handler, $"consumer");
+        var consumeWorker = new ConsumeWorker(consumer, handler, $"consumer");
 
         // publish and consume one message to ensure queue is created
         var publisher1 = new TripDataPublisher(_bus);
         var publishWorker = new PublishWorker(publisher1, publishRoutingKey, () => new List<TripDataDto> { new TripDataDto(DateTime.Now, new List<TripDataItemDto>()) });
         publishWorker.Run().Wait();
-        _consumeWorker.Run().Wait();
+        consumeWorker.Run().Wait();
 
         // create publish worker and publish no. of messages to specified queue
         var publisher2 = new TripDataPublisher(_bus);
         publishWorker = new PublishWorker(publisher2, publishRoutingKey, _generator.GenerateTripMessage);
         publishWorker.Run().Wait();
 
-        Thread.Sleep(2000);
+        Thread.Sleep(5000);
 
         // print status information
         Console.WriteLine(new string('-', 30));
@@ -102,37 +96,55 @@ public class ConsumerBenchmarks
         Console.WriteLine(new string('-', 30));
     }
 
+    [IterationCleanup]
+    public void IterationCleanup()
+    {
+        Console.WriteLine($"IterationCleanup ({iterationCounter})");
+
+        Thread.Sleep(10000);
+    }
+
     [Benchmark]
-    public void Initial()
+    public async Task Initial()
     {
         Console.WriteLine($"Running {nameof(Initial)} benchmarks({iterationCounter})...");
 
-        // consume all messages from queue
-        _consumeWorker.Run().Wait();
-    }
+        var routingKey = $"{iterationCounter}";
+        var subscribeRoutingKey = $"{routingKey}.#";
 
-    [GlobalSetup(Target = nameof(WithEdgeIndex))]
-    public void SetupIndex()
-    {
-        Console.WriteLine($"Running scripts for {nameof(WithEdgeIndex)} benchmark...");
-
-        Setup();
-        //ExecuteScriptsForBenchmark("index");
-    }
-
-    [Benchmark]
-    public void WithEdgeIndex()
-    {
-        Console.WriteLine($"Running {nameof(WithEdgeIndex)} benchmarks({iterationCounter})...");
+        var handler = new TripDataHandler(
+            _serviceProvider.GetService<IEdgeRepository>(),
+            _serviceProvider.GetService<IFEstConsumptionRepository>(),
+            _serviceProvider.GetService<IFRecordedTravelRepository>(),
+            _serviceProvider.GetService<IWeatherRepository>());
 
         // consume all messages from queue
-        _consumeWorker.Run().Wait();
+        var consumer = new TripDataConsumer(_bus, $"test_{routingKey}", subscribeRoutingKey);
+        var consumeWorker = new ConsumeWorker(consumer, handler, $"consumer");
+        await consumeWorker.Run();
     }
+
+    //[GlobalSetup(Target = nameof(WithEdgeIndex))]
+    //public void SetupIndex()
+    //{
+    //    Console.WriteLine($"Running setup for {nameof(WithEdgeIndex)} benchmark...");
+
+    //    Setup("index");
+    //}
+
+    //[Benchmark]
+    //public void WithEdgeIndex()
+    //{
+    //    Console.WriteLine($"Running {nameof(WithEdgeIndex)} benchmarks({iterationCounter})...");
+
+    //    // consume all messages from queue
+    //    _consumeWorker.Run().Wait();
+    //}
 
     //[GlobalSetup(Target = nameof(WithFactPartitions))]
     //public void SetupPartitions()
     //{
-    //    Console.WriteLine($"Running scripts for {nameof(WithFactPartitions)} benchmark...");
+    //    Console.WriteLine($"Running setup for {nameof(WithFactPartitions)} benchmark...");
 
     //    Setup();
     //    ExecuteScriptsForBenchmark("partition");
@@ -150,7 +162,7 @@ public class ConsumerBenchmarks
     //[GlobalSetup(Target = nameof(WithEdgeIndexAndFactPartitions))]
     //public void SetupIndexAndParition()
     //{
-    //    Console.WriteLine($"Running scripts for {nameof(WithEdgeIndexAndFactPartitions)} benchmark...");
+    //    Console.WriteLine($"Running setup for {nameof(WithEdgeIndexAndFactPartitions)} benchmark...");
 
     //    Setup();
     //    ExecuteScriptsForBenchmark("index+partition");
@@ -181,7 +193,7 @@ public class ConsumerBenchmarks
         _sqlRunner.Run(cleanupScript);
     }
 
-    private void Setup()
+    private void Setup(string key)
     {
         _sqlRunner = new SqlScriptRunner(_serviceProvider.GetService<DapperContext>());
 
@@ -191,7 +203,9 @@ public class ConsumerBenchmarks
             NoOfMessages,
             NoOfElementsInMessage);
 
-        //CleanDB();
+        CleanDB();
+        ExecuteScriptsForBenchmark(key);
+        DeleteQueues();
     }
 
     private void ExecuteScriptsForBenchmark(string key)

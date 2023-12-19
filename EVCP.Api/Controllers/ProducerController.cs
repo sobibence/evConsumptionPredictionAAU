@@ -24,7 +24,7 @@ public class ProducerController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<bool> Create()
+    public async Task<int?> Create()
     {
         var random = new Random();
 
