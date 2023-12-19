@@ -28,7 +28,7 @@ public class TripData : BaseEntity
                $"TripId: {TripId}\n" +
                $"Speed: {Speed}\n" +
                $"Time: {Time}\n" +
-               $"Acceleration: {Acceleration}\n" +
-               $"Edge: {Edge.EdgeInfo.OsmWayId}";
+               $"Acceleration: {Acceleration}\n";
+        //$"Edge: {Edge.EdgeInfo.OsmWayId}";
     }
 }

@@ -34,7 +34,7 @@ public class TripDataHandler : ITripDataHandler
         if (recordedTravelList.Count() > 0) await _fRecordedTravelRepository.Create(recordedTravelList.ToList());
         if (estimatedConsumptionList.Count() > 0) await _fEstConsumptionRepository.Create(estimatedConsumptionList.ToList());
 
-        Console.WriteLine(tripDataDto.SourceTimestamp);
+        //Console.WriteLine(tripDataDto.SourceTimestamp);
     }
 
     private (IEnumerable<FactRecordedTravel> recordedTravelList, IEnumerable<FactEstimatedConsumption> estimatedConsumptionList) Map(ITripDataDto dto)
@@ -82,7 +82,7 @@ public class TripDataHandler : ITripDataHandler
 
     private async Task<Edge?> MapEdge(EdgeDto edgeDto)
     {
-        var edge = (await _edgeRepository.GetByAsync("EdgeInfoId", edgeDto.OsmWayId)).FirstOrDefault();
+        var edge = await _edgeRepository.GetByAttributesAsync(edgeDto.StartNodeId, edgeDto.EndNodeId, edgeDto.OsmWayId);
 
         if (edge == null)
         {

@@ -1,9 +1,11 @@
 ﻿using BenchmarkDotNet.Attributes;
 using EasyNetQ;
 using EasyNetQ.Management.Client;
+using EVCP.DataAccess;
 using EVCP.DataConsumer;
 using EVCP.DataConsumer.Consumer;
 using EVCP.DataConsumer.Publisher;
+using EVCP.Domain.Helpers;
 using EVCP.Domain.Repositories;
 using EVCP.Dtos;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,40 +18,43 @@ namespace EVCP.Benchmarks;
 public class ConsumerBenchmarks
 {
     //[Params(10, 100, 1000, 10000)]
-    [Params(1)]
+    [Params(5, 10)]
     public int NoOfMessages { get; set; }
 
     //[Params(60)]
-    [Params(2)]
+    [Params(5)]
     public int NoOfElementsInMessage { get; set; }
 
     //[Params(1, 2, 3)]
     //public int ConsumerCount { get; set; }
 
     private IBus _bus = Bootstrapper.RegisterBus();
+    private ManagementClient _managementClient = Bootstrapper.RegisterManagementClient();
     private ServiceProvider _serviceProvider = Bootstrapper.RegisterServices();
-    //private ITripDataPublisher _publisher;
-    private ITripDataConsumer _consumer;
-    private IWorker _consumeWorker;
+    private SqlScriptRunner _sqlRunner;
     private ITripDataHandler _handler;
+    private IWorker _consumeWorker;
+    private MessageGenerator _generator;
 
-    private static int launchCounter = 0;
     private int iterationCounter = 0;
+
+    private static string dir = "C:\\Users\\samue\\Desktop\\repos\\evConsumptionPredictionAAU\\EVCP.Benchmarks";
+
+    private Dictionary<string, string[]> _scripts = new Dictionary<string, string[]>
+    {
+        { "initial", new string[] { $"{dir}/Scripts/drop_index.sql", $"{dir}/Scripts/drop_partitions.sql" } },
+        { "index", new string[] { $"{dir}/Scripts/create_index.sql" } },
+        { "partition", new string[] { $"{dir}/Scripts/drop_index.sql", $"{dir}/Scripts/create_partitions" } },
+        { "index+partition", new string[] { $"{dir}/Scripts/create_index.sql" } },
+    };
 
     [GlobalSetup]
     public void GlobalSetup()
     {
-        launchCounter++;
-        Console.WriteLine($"GlobalSetup ({launchCounter})");
+        Console.WriteLine($"GlobalSetup");
 
-        var client = Bootstrapper.RegisterManagementClient();
-        //var serviceProvider = Bootstrapper.RegisterServices();
-        // delete all queues
-        var queues = client.GetQueues();
-        foreach (var queue in queues)
-        {
-            client.DeleteQueue(queue);
-        }
+        Setup();
+        //ExecuteScriptsForBenchmark("initial");
     }
 
     [IterationSetup]
@@ -58,31 +63,34 @@ public class ConsumerBenchmarks
         iterationCounter++;
         Console.WriteLine($"IterationSetup ({iterationCounter})");
 
-        // create message generator
-        var generator = new MessageGenerator(NoOfMessages, NoOfElementsInMessage);
+        Thread.Sleep(3000);
+        //CleanDB();
+        DeleteQueues();
+        Thread.Sleep(2000);
 
-        var publisher = new TripDataPublisher(_bus);
         _handler = new TripDataHandler(
             _serviceProvider.GetService<IEdgeRepository>(),
             _serviceProvider.GetService<IFEstConsumptionRepository>(),
             _serviceProvider.GetService<IFRecordedTravelRepository>(),
             _serviceProvider.GetService<IWeatherRepository>());
 
-        // create consumer
+        // create keys
         var routingKey = $"{iterationCounter}";
         var publishRoutingKey = $"{routingKey}.data";
         var subscribeRoutingKey = $"{routingKey}.#";
 
-        _consumer = new TripDataConsumer(_bus, $"test_{routingKey}", subscribeRoutingKey);
-        _consumeWorker = new ConsumeWorker(_consumer, _handler, $"consumer");
+        var consumer = new TripDataConsumer(_bus, $"test_{routingKey}", subscribeRoutingKey);
+        _consumeWorker = new ConsumeWorker(consumer, _handler, $"consumer");
 
-        // publish one message to ensure queue is created
-        var publishWorker = new PublishWorker(publisher, publishRoutingKey, () => new List<TripDataDto> { new TripDataDto(DateTime.Now, new List<TripDataItemDto>()) });
+        // publish and consume one message to ensure queue is created
+        var publisher1 = new TripDataPublisher(_bus);
+        var publishWorker = new PublishWorker(publisher1, publishRoutingKey, () => new List<TripDataDto> { new TripDataDto(DateTime.Now, new List<TripDataItemDto>()) });
         publishWorker.Run().Wait();
         _consumeWorker.Run().Wait();
 
-        // create publish worker & publish no. of messages to specified queue
-        publishWorker = new PublishWorker(publisher, publishRoutingKey, generator.GenerateTripMessage);
+        // create publish worker and publish no. of messages to specified queue
+        var publisher2 = new TripDataPublisher(_bus);
+        publishWorker = new PublishWorker(publisher2, publishRoutingKey, _generator.GenerateTripMessage);
         publishWorker.Run().Wait();
 
         Thread.Sleep(2000);
@@ -91,16 +99,110 @@ public class ConsumerBenchmarks
         Console.WriteLine(new string('-', 30));
         Console.WriteLine($"Message Count (setup): {NoOfMessages}");
         Console.WriteLine($"Routing Key: {routingKey}");
-        Console.WriteLine($"Publish Key: {publishRoutingKey}");
-        Console.WriteLine($"Subscribe Key: {subscribeRoutingKey}");
         Console.WriteLine(new string('-', 30));
     }
 
     [Benchmark]
-    public void Benchmark()
+    public void Initial()
     {
-        Console.WriteLine("Running benchmarks...");
+        Console.WriteLine($"Running {nameof(Initial)} benchmarks({iterationCounter})...");
+
         // consume all messages from queue
         _consumeWorker.Run().Wait();
+    }
+
+    [GlobalSetup(Target = nameof(WithEdgeIndex))]
+    public void SetupIndex()
+    {
+        Console.WriteLine($"Running scripts for {nameof(WithEdgeIndex)} benchmark...");
+
+        Setup();
+        //ExecuteScriptsForBenchmark("index");
+    }
+
+    [Benchmark]
+    public void WithEdgeIndex()
+    {
+        Console.WriteLine($"Running {nameof(WithEdgeIndex)} benchmarks({iterationCounter})...");
+
+        // consume all messages from queue
+        _consumeWorker.Run().Wait();
+    }
+
+    //[GlobalSetup(Target = nameof(WithFactPartitions))]
+    //public void SetupPartitions()
+    //{
+    //    Console.WriteLine($"Running scripts for {nameof(WithFactPartitions)} benchmark...");
+
+    //    Setup();
+    //    ExecuteScriptsForBenchmark("partition");
+    //}
+
+    //[Benchmark]
+    //public void WithFactPartitions()
+    //{
+    //    Console.WriteLine($"Running {nameof(WithFactPartitions)} benchmarks({iterationCounter})...");
+
+    //    // consume all messages from queue
+    //    _consumeWorker.Run().Wait();
+    //}
+
+    //[GlobalSetup(Target = nameof(WithEdgeIndexAndFactPartitions))]
+    //public void SetupIndexAndParition()
+    //{
+    //    Console.WriteLine($"Running scripts for {nameof(WithEdgeIndexAndFactPartitions)} benchmark...");
+
+    //    Setup();
+    //    ExecuteScriptsForBenchmark("index+partition");
+    //}
+
+    //[Benchmark]
+    //public void WithEdgeIndexAndFactPartitions()
+    //{
+    //    Console.WriteLine($"Running {nameof(WithEdgeIndexAndFactPartitions)} benchmarks({iterationCounter})...");
+
+    //    // consume all messages from queue
+    //    _consumeWorker.Run().Wait();
+    //}
+
+    private void DeleteQueues()
+    {
+        // delete all queues
+        var queues = _managementClient.GetQueues();
+        foreach (var queue in queues)
+        {
+            _managementClient.DeleteQueue(queue);
+        }
+    }
+
+    private void CleanDB()
+    {
+        var cleanupScript = $"{dir}/Scripts/cleanup_fact_tables.sql";
+        _sqlRunner.Run(cleanupScript);
+    }
+
+    private void Setup()
+    {
+        _sqlRunner = new SqlScriptRunner(_serviceProvider.GetService<DapperContext>());
+
+        // create message generator
+        _generator = new MessageGenerator(
+            _serviceProvider.GetService<IEdgeRepository>(),
+            NoOfMessages,
+            NoOfElementsInMessage);
+
+        //CleanDB();
+    }
+
+    private void ExecuteScriptsForBenchmark(string key)
+    {
+        var scriptsToExecute = _scripts.GetValueOrDefault(key);
+        if (scriptsToExecute != null && scriptsToExecute.Length > 0)
+        {
+            foreach (var script in scriptsToExecute)
+            {
+                _sqlRunner.Run(script);
+            }
+        }
     }
 }

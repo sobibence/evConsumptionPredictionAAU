@@ -8,7 +8,8 @@ var bus = Bootstrapper.RegisterBus();
 var serviceProvider = Bootstrapper.RegisterServices();
 
 var publisher = new TripDataPublisher(bus);
-var publishWorker = new PublishWorker(publisher, "1.A", new MessageGenerator(2, 3).GenerateTripMessage);
+var publishWorker = new PublishWorker(publisher, "1.A", new MessageGenerator(
+    serviceProvider.GetService<IEdgeRepository>(), 2, 3).GenerateTripMessage);
 
 var handler = new TripDataHandler(
     serviceProvider.GetService<IEdgeRepository>(),

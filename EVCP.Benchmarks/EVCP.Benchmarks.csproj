@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EVCP.DataConsumer\EVCP.DataConsumer.csproj" />
-    <ProjectReference Include="..\EVCP.DataExtractor\EVCP.DataPublisher.csproj" />
     <ProjectReference Include="..\EVCP.Domain\EVCP.Domain.csproj" />
   </ItemGroup>
 
