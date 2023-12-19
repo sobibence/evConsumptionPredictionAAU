@@ -7,6 +7,8 @@ public interface IBaseRepository<T>
 
     public Task<int?> Create(T entity);
 
+    public Task<bool> CreateSingle(T entity);
+
     public Task<IEnumerable<T>> GetAsync();
 
     public Task<IEnumerable<T>> GetByAsync<S>(string propertyName, S value);

@@ -11,12 +11,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EVCP.Benchmarks;
 
-[SimpleJob(iterationCount: 3, warmupCount: 0)]
+[SimpleJob(iterationCount: 2, warmupCount: 0)]
 [MinColumn, MaxColumn, MeanColumn, MedianColumn]
 public class ConsumerBenchmarks
 {
     //[Params(10, 100, 1000, 10000)]
-    [Params(10)]
+    [Params(10, 100)]
     public int NoOfMessages { get; set; }
 
     [Params(5)]
@@ -101,7 +101,7 @@ public class ConsumerBenchmarks
     {
         Console.WriteLine($"IterationCleanup ({iterationCounter})");
 
-        Thread.Sleep(10000);
+        Thread.Sleep(20000);
     }
 
     [Benchmark]
@@ -124,22 +124,33 @@ public class ConsumerBenchmarks
         await consumeWorker.Run();
     }
 
-    //[GlobalSetup(Target = nameof(WithEdgeIndex))]
-    //public void SetupIndex()
-    //{
-    //    Console.WriteLine($"Running setup for {nameof(WithEdgeIndex)} benchmark...");
+    [GlobalSetup(Target = nameof(WithEdgeIndex))]
+    public void SetupIndex()
+    {
+        Console.WriteLine($"Running setup for {nameof(WithEdgeIndex)} benchmark...");
 
-    //    Setup("index");
-    //}
+        Setup("index");
+    }
 
-    //[Benchmark]
-    //public void WithEdgeIndex()
-    //{
-    //    Console.WriteLine($"Running {nameof(WithEdgeIndex)} benchmarks({iterationCounter})...");
+    [Benchmark]
+    public async Task WithEdgeIndex()
+    {
+        Console.WriteLine($"Running {nameof(WithEdgeIndex)} benchmarks({iterationCounter})...");
 
-    //    // consume all messages from queue
-    //    _consumeWorker.Run().Wait();
-    //}
+        var routingKey = $"{iterationCounter}";
+        var subscribeRoutingKey = $"{routingKey}.#";
+
+        var handler = new TripDataHandler(
+            _serviceProvider.GetService<IEdgeRepository>(),
+            _serviceProvider.GetService<IFEstConsumptionRepository>(),
+            _serviceProvider.GetService<IFRecordedTravelRepository>(),
+            _serviceProvider.GetService<IWeatherRepository>());
+
+        // consume all messages from queue
+        var consumer = new TripDataConsumer(_bus, $"test_{routingKey}", subscribeRoutingKey);
+        var consumeWorker = new ConsumeWorker(consumer, handler, $"consumer");
+        await consumeWorker.Run();
+    }
 
     //[GlobalSetup(Target = nameof(WithFactPartitions))]
     //public void SetupPartitions()

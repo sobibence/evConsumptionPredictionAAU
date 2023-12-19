@@ -3,6 +3,7 @@ using EVCP.DataAccess;
 using EVCP.DataAccess.Repositories;
 using EVCP.Domain.Helpers;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Reflection;
@@ -15,6 +16,8 @@ public class BaseRepository<T> : IBaseRepository<T>
 
     public readonly DapperContext _context;
     public readonly string Table;
+
+    public readonly NpgsqlConnection Connection;
 
     public BaseRepository(ILogger<BaseRepository<T>> logger, DapperContext context)
     {
@@ -53,6 +56,29 @@ public class BaseRepository<T> : IBaseRepository<T>
         connection.Close();
 
         return result;
+    }
+    public virtual async Task<bool> CreateSingle(T entity)
+    {
+        if (entity == null) return false;
+
+        // generate insert sql query and dynamic parameters
+        (var columnArr, var valueArr, var parameters) = GetForInsert(entity);
+
+        string columns = string.Join(", ", columnArr);
+        string values = string.Join(",", valueArr);
+        var query = $"INSERT INTO {Table} ({columns}) VALUES ({values});";
+
+        // open database connection
+        using var connection = _context.CreateConnection();
+        connection.Open();
+
+        // execute query
+        var result = await connection.ExecuteAsync(query, parameters);
+
+        connection.Close();
+
+        // rows affected
+        return result > 0;
     }
 
     public virtual async Task<int?> Create(T entity)

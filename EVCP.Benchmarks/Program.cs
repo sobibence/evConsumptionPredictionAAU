@@ -3,4 +3,4 @@ using EVCP.Benchmarks;
 
 Console.WriteLine("Welcome to Benchmarking!");
 
-var summary = BenchmarkRunner.Run<ConsumerBenchmarks>();
+var summary = BenchmarkRunner.Run<TripDataHandlerBenchmarks>();

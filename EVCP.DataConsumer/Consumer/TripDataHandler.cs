@@ -27,12 +27,12 @@ public class TripDataHandler : ITripDataHandler
         _weatherRepository = weatherRepository ?? throw new ArgumentNullException(nameof(weatherRepository));
     }
 
-    public async void Handle(ITripDataDto tripDataDto)
+    public void Handle(ITripDataDto tripDataDto)
     {
         (var recordedTravelList, var estimatedConsumptionList) = Map(tripDataDto);
 
-        if (recordedTravelList.Count() > 0) await _fRecordedTravelRepository.Create(recordedTravelList.ToList());
-        if (estimatedConsumptionList.Count() > 0) await _fEstConsumptionRepository.Create(estimatedConsumptionList.ToList());
+        if (recordedTravelList.Count() > 0) _fRecordedTravelRepository.Create(recordedTravelList.ToList()).Wait();
+        if (estimatedConsumptionList.Count() > 0) _fEstConsumptionRepository.Create(estimatedConsumptionList.ToList()).Wait();
     }
 
     private (IEnumerable<FactRecordedTravel> recordedTravelList, IEnumerable<FactEstimatedConsumption> estimatedConsumptionList) Map(ITripDataDto dto)
@@ -40,17 +40,19 @@ public class TripDataHandler : ITripDataHandler
         var recordedTravelList = new List<FactRecordedTravel>();
         var estimatedConsumptionList = new List<FactEstimatedConsumption>();
 
-        dto.Data.ToList().ForEach(item =>
+        dto.Data.ToList().ForEach(async item =>
         {
             var edge = MapEdge(item.Edge).Result;
             var weatherId = MapWeather(item.Weather).Result;
 
             if (edge != null && weatherId != null)
+            //if (weatherId != null)
             {
                 var recordedTravel = new FactRecordedTravel
                 {
                     AccelerationMeterPerSecondSquared = item.Acceleration,
                     EdgeId = edge.Id,
+                    //EdgeId = 1,
                     EdgePercent = item.EdgePercent,
                     EnergyConsumptionWh = item.EnergyConsumption,
                     SpeedKmph = item.Speed,
@@ -60,11 +62,13 @@ public class TripDataHandler : ITripDataHandler
                     WeatherId = weatherId.Value
                 };
                 recordedTravelList.Add(recordedTravel);
+                //await _fRecordedTravelRepository.CreateSingle(recordedTravel);
 
                 var estimatedConsumption = new FactEstimatedConsumption
                 {
                     DayInYear = Convert.ToInt16(item.Time.DayOfYear),
                     EdgeId = edge.Id,
+                    //EdgeId = 1,
                     EstimationType = "record",
                     EnergyConsumptionWh = item.EnergyConsumption,
                     MinuteInDay = Convert.ToInt16(item.Time.Hour * 60 + item.Time.Minute),
@@ -72,6 +76,7 @@ public class TripDataHandler : ITripDataHandler
                     WeatherId = weatherId.Value
                 };
                 estimatedConsumptionList.Add(estimatedConsumption);
+                //await _fEstConsumptionRepository.CreateSingle(estimatedConsumption);
             }
         });
 
