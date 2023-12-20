@@ -32,7 +32,7 @@ public class FEstConsumptionRepository : BaseRepository<FactEstimatedConsumption
         connection.Open();
 
         var result = (await connection.QueryAsync<FactEstimatedConsumption>(query, parameters)).ToList();
-
+        connection.Close();
         return result;
     }
 }

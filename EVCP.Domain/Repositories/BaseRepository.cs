@@ -54,6 +54,7 @@ public class BaseRepository<T> : IBaseRepository<T>
                 transaction.Rollback();
             }
         }
+        connection.Close();
 
         return result;
     }
@@ -75,7 +76,7 @@ public class BaseRepository<T> : IBaseRepository<T>
 
         // execute query
         var result = await connection.ExecuteAsync(query, parameters);
-
+        connection.Close();
         // return number of rows affected
         return result > 0;
     }
@@ -90,7 +91,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         connection.Open();
 
         List<T> result = (await connection.QueryAsync<T>(query)).ToList();
-
+        connection.Close();
         return result;
     }
 
@@ -131,7 +132,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         connection.Open();
 
         var result = await connection.QueryAsync<T>(query, parameters);
-
+        connection.Close();
         return result;
     }
 
