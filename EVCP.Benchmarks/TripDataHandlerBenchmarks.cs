@@ -9,15 +9,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EVCP.Benchmarks;
 
-[SimpleJob(iterationCount: 2, warmupCount: 0)]
+[RPlotExporter]
 [MinColumn, MaxColumn, MeanColumn, MedianColumn]
 public class TripDataHandlerBenchmarks
 {
-    //[Params(10, 100, 1000, 10000)]
-    [Params(10, 30)]
+    [Params(10)]
     public int NoOfMessages { get; set; }
 
-    [Params(5)]
+    [Params(60)]
     public int NoOfElementsInMessage { get; set; }
 
     private ServiceProvider _serviceProvider = Bootstrapper.RegisterServices();
@@ -144,12 +143,6 @@ public class TripDataHandlerBenchmarks
             handler.Handle(tripData);
     }
 
-    private void CleanDB()
-    {
-        var cleanupScript = $"{dir}/Scripts/cleanup_fact_tables.sql";
-        _sqlRunner.Run(cleanupScript);
-    }
-
     private void Setup(string key)
     {
         _sqlRunner = new SqlScriptRunner(_serviceProvider.GetService<DapperContext>());
@@ -162,6 +155,12 @@ public class TripDataHandlerBenchmarks
 
         CleanDB();
         ExecuteScriptsForBenchmark(key);
+    }
+
+    private void CleanDB()
+    {
+        var cleanupScript = $"{dir}/Scripts/cleanup_fact_tables.sql";
+        _sqlRunner.Run(cleanupScript);
     }
 
     private void ExecuteScriptsForBenchmark(string key)

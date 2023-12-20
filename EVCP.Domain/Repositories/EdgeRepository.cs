@@ -32,13 +32,13 @@ public interface IEdgeRepository : IBaseRepository<Edge>
                     $"FROM {Table} " +
                     $"WHERE start_node_id=@StartNodeId AND end_node_id=@EndNodeId AND edge_info_id=@EdgeInfoId;";
 
-        using var connection = _context.CreateConnection();
+        //using var connection = _context.CreateConnection();
 
-        connection.Open();
+        Connection.Open();
 
-        var result = await connection.QueryFirstOrDefaultAsync<Edge>(query, parameters);
+        var result = await Connection.QueryFirstOrDefaultAsync<Edge>(query, parameters);
 
-        connection.Close();
+        Connection.Close();
 
         return result;
     }

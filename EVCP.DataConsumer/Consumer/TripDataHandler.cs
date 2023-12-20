@@ -46,13 +46,11 @@ public class TripDataHandler : ITripDataHandler
             var weatherId = MapWeather(item.Weather).Result;
 
             if (edge != null && weatherId != null)
-            //if (weatherId != null)
             {
                 var recordedTravel = new FactRecordedTravel
                 {
                     AccelerationMeterPerSecondSquared = item.Acceleration,
                     EdgeId = edge.Id,
-                    //EdgeId = 1,
                     EdgePercent = item.EdgePercent,
                     EnergyConsumptionWh = item.EnergyConsumption,
                     SpeedKmph = item.Speed,
@@ -62,13 +60,11 @@ public class TripDataHandler : ITripDataHandler
                     WeatherId = weatherId.Value
                 };
                 recordedTravelList.Add(recordedTravel);
-                //await _fRecordedTravelRepository.CreateSingle(recordedTravel);
 
                 var estimatedConsumption = new FactEstimatedConsumption
                 {
                     DayInYear = Convert.ToInt16(item.Time.DayOfYear),
                     EdgeId = edge.Id,
-                    //EdgeId = 1,
                     EstimationType = "record",
                     EnergyConsumptionWh = item.EnergyConsumption,
                     MinuteInDay = Convert.ToInt16(item.Time.Hour * 60 + item.Time.Minute),
@@ -76,7 +72,6 @@ public class TripDataHandler : ITripDataHandler
                     WeatherId = weatherId.Value
                 };
                 estimatedConsumptionList.Add(estimatedConsumption);
-                //await _fEstConsumptionRepository.CreateSingle(estimatedConsumption);
             }
         });
 
@@ -102,8 +97,6 @@ public class TripDataHandler : ITripDataHandler
 
         //if (weather == null)
         //{
-
-        //Weather? weather = null;
 
         var id = await _weatherRepository.Create(new Weather
         {

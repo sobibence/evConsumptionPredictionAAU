@@ -24,6 +24,12 @@ public class BaseRepository<T> : IBaseRepository<T>
         _logger = logger;
         _context = context;
         Table = GetTableName();
+        Connection = context.CreateConnection();
+    }
+
+    ~BaseRepository()
+    {
+        Connection.Dispose();
     }
 
     public virtual async Task<bool> Create(List<T> entities)
@@ -36,7 +42,6 @@ public class BaseRepository<T> : IBaseRepository<T>
         {
             foreach (var entity in entities)
             {
-                //if (entity == null) return false;
                 if (entity == null) continue;
 
                 (var columnArr, var valueArr, var parameters) = GetForInsert(entity);
@@ -45,7 +50,7 @@ public class BaseRepository<T> : IBaseRepository<T>
                 string values = string.Join(",", valueArr);
                 var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
 
-                await connection.ExecuteAsync(query, parameters);
+                await Connection.ExecuteAsync(query, parameters);
             }
 
             //transaction.Commit();
@@ -53,7 +58,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         }
         connection.Close();
 
-        connection.Close();
+        Connection.Close();
 
         return result;
     }
@@ -93,8 +98,8 @@ public class BaseRepository<T> : IBaseRepository<T>
         var query = $"INSERT INTO {Table} ({columns}) VALUES ({values}) RETURNING id;";
 
         // open database connection
-        using var connection = _context.CreateConnection();
-        connection.Open();
+        //using var connection = _context.CreateConnection();
+        Connection.Open();
 
         // execute query
         var result = await connection.ExecuteAsync(query, parameters);
