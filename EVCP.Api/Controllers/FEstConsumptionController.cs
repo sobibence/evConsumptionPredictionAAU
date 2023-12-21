@@ -24,18 +24,19 @@ public class FEstConsumptionController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<bool> Create()
+    public async Task<int?> Create()
     {
         var random = new Random();
 
         var result = await _fEstConsumptionRepository.Create(new FactEstimatedConsumption
         {
-            DayInYear = random.Next(365),
-            MinuteInDay = random.Next(60),
+            DayInYear = Convert.ToInt16(random.Next(365)),
+            MinuteInDay = Convert.ToInt16(random.Next(60)),
             EdgeId = random.Next(1, 5),
-            VehicleId = random.Next(1, 5),
-            WeatherId = random.Next(1, 5),
-            EnergyConsumptionWh = random.Next(100)
+            VehicleId = 1,
+            WeatherId = 5868,
+            EnergyConsumptionWh = random.Next(100),
+            EstimationType = "record",
         });
 
         return result;

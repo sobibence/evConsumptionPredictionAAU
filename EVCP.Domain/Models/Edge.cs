@@ -1,11 +1,20 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using EVCP.Domain.Helpers;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EVCP.Domain.Models;
 
 [TableName("edge")]
 public class Edge : BaseEntity
 {
+    //[ColumnName("start_node_id")]
+    //public long StartNodeId { get; set; }
+
+    //[ColumnName("end_node_id")]
+    //public long EndNodeId { get; set; }
+
+    //[ColumnName("edge_info_id")]
+    //public long EdgeInfoId { get; set; }
+
     [ColumnName("start_node_id")]
     public long StartNodeId { get; set; }
     [ColumnName("end_node_id")]
@@ -82,17 +91,24 @@ public class Edge : BaseEntity
         }
     }
 
-    private long _edgeInfoId; 
+    private long _edgeInfoId;
     [ColumnName("edge_info_id")]
-    public long EdgeInfoId { get{
-        if(_edgeInfoId == 0 && _edgeInfo is not null){
-            _edgeInfoId = EdgeInfo.OsmWayId;
+    public long EdgeInfoId
+    {
+        get
+        {
+            if (_edgeInfoId == 0 && _edgeInfo is not null)
+            {
+                _edgeInfoId = EdgeInfo.OsmWayId;
+            }
+            return _edgeInfoId;
         }
-        return _edgeInfoId;
-    } set{
-        _edgeInfoId = value;
+        set
+        {
+            _edgeInfoId = value;
 
-    } }
+        }
+    }
 
     private EdgeInfo? _edgeInfo;
     [NotMapped]
@@ -109,7 +125,8 @@ public class Edge : BaseEntity
         }
         set
         {
-            if(EdgeInfoId == 0){
+            if (EdgeInfoId == 0)
+            {
                 EdgeInfoId = value.OsmWayId;
             }
             _edgeInfo = value;

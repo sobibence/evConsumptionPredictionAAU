@@ -23,7 +23,7 @@ public class VehicleTripStatusController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<bool> Create()
+    public async Task<int?> Create()
     {
         var random = new Random();
 

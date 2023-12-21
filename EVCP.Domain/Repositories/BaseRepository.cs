@@ -1,9 +1,11 @@
-﻿using Dapper;
+using Dapper;
 using EVCP.DataAccess;
 using EVCP.DataAccess.Repositories;
 using EVCP.Domain.Helpers;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.Reflection;
 
 namespace EVCP.Domain.Repositories;
@@ -11,15 +13,23 @@ namespace EVCP.Domain.Repositories;
 public class BaseRepository<T> : IBaseRepository<T>
 {
     private readonly ILogger<BaseRepository<T>> _logger;
-    private readonly DapperContext _context;
 
+    public readonly DapperContext _context;
     public readonly string Table;
+
+    public readonly NpgsqlConnection Connection;
 
     public BaseRepository(ILogger<BaseRepository<T>> logger, DapperContext context)
     {
         _logger = logger;
         _context = context;
         Table = GetTableName();
+        Connection = context.CreateConnection();
+    }
+
+    ~BaseRepository()
+    {
+        Connection.Dispose();
     }
 
     public virtual async Task<bool> Create(List<T> entities)
@@ -30,36 +40,29 @@ public class BaseRepository<T> : IBaseRepository<T>
         connection.Open();
         using (var transaction = connection.BeginTransaction())
         {
-            try
+            foreach (var entity in entities)
             {
-                foreach (var entity in entities)
-                {
-                    if (entity == null) return false;
+                if (entity == null) continue;
 
-                    (var columnArr, var valueArr, var parameters) = GetForInsert(entity);
+                (var columnArr, var valueArr, var parameters) = GetForInsert(entity);
 
-                    string columns = string.Join(", ", columnArr);
-                    string values = string.Join(",", valueArr);
-                    var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
+                string columns = string.Join(", ", columnArr);
+                string values = string.Join(",", valueArr);
+                var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
 
-                    await connection.ExecuteAsync(query, parameters);
-                }
-
-                transaction.Commit();
-                result = true;
+                await Connection.ExecuteAsync(query, parameters);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error: {ex}");
-                transaction.Rollback();
-            }
+
+            //transaction.Commit();
+            result = true;
         }
         connection.Close();
 
+        Connection.Close();
+
         return result;
     }
-
-    public virtual async Task<bool> Create(T entity)
+    public virtual async Task<bool> CreateSingle(T entity)
     {
         if (entity == null) return false;
 
@@ -68,17 +71,41 @@ public class BaseRepository<T> : IBaseRepository<T>
 
         string columns = string.Join(", ", columnArr);
         string values = string.Join(",", valueArr);
-        var query = $"INSERT INTO {Table} ({columns}) VALUES ({values})";
+        var query = $"INSERT INTO {Table} ({columns}) VALUES ({values});";
 
-        // create and open database connection
+        // open database connection
         using var connection = _context.CreateConnection();
         connection.Open();
 
         // execute query
         var result = await connection.ExecuteAsync(query, parameters);
+
         connection.Close();
-        // return number of rows affected
+
+        // rows affected
         return result > 0;
+    }
+
+    public virtual async Task<int?> Create(T entity)
+    {
+        if (entity == null) return null;
+
+        // generate insert sql query and dynamic parameters
+        (var columnArr, var valueArr, var parameters) = GetForInsert(entity);
+
+        string columns = string.Join(", ", columnArr);
+        string values = string.Join(",", valueArr);
+        var query = $"INSERT INTO {Table} ({columns}) VALUES ({values}) RETURNING id;";
+
+        // open database connection
+        //using var connection = _context.CreateConnection();
+        Connection.Open();
+
+        // execute query
+        var result = await Connection.ExecuteScalarAsync<int>(query, parameters);
+        Connection.Close();
+        // return number of rows affected
+        return result;
     }
 
     public virtual async Task<IEnumerable<T>> GetAsync()
@@ -155,7 +182,7 @@ public class BaseRepository<T> : IBaseRepository<T>
     }
 
     #region Private methods
-    private (string[] columns, string[] values, DynamicParameters parameters) GetForInsert(T entity)
+    protected (string[] columns, string[] values, DynamicParameters parameters) GetForInsert(T entity)
     {
         var columnNames = new List<string>();
         var propertyNames = new List<string>();
@@ -223,7 +250,7 @@ public class BaseRepository<T> : IBaseRepository<T>
         return result;
     }
 
-    private string GetColumnNameByProperty(PropertyInfo property)
+    protected string GetColumnNameByProperty(PropertyInfo property)
     {
         var attribute = (ColumnName)property.GetCustomAttribute(typeof(ColumnName), false);
         var columnName = attribute != null ? attribute.Name : "";

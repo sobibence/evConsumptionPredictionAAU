@@ -13,11 +13,9 @@ public interface IVehicleModelRepository : IBaseRepository<VehicleModel>
 public class VehicleModelRepository : BaseRepository<VehicleModel>, IVehicleModelRepository
 {
     private readonly ILogger<VehicleModelRepository> _logger;
-    private readonly DapperContext _context;
 
     public VehicleModelRepository(ILogger<VehicleModelRepository> logger, DapperContext context) : base(logger, context)
     {
         _logger = logger;
-        _context = context;
     }
 }

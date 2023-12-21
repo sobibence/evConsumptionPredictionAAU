@@ -6,11 +6,14 @@
         public int TripId { get; set; }
         public float Speed { get; set; }
         public float Acceleration { get; set; }
+        public float EnergyConsumption { get; set; }
+        public int VehicleId { get; set; }
         public DateTime Time { get; set; }
         public WeatherDto Weather { get; set; }
         public EdgeDto Edge { get; set; }
 
-        public TripDataItemDto(float edgePercent, int tripId, float speed, float acceleration, DateTime time, WeatherDto weather, EdgeDto edge)
+        public TripDataItemDto(float edgePercent, int tripId, float speed, float acceleration, DateTime time,
+             float energyConsumption, int vehicleId, WeatherDto weather, EdgeDto edge)
         {
             EdgePercent = edgePercent;
             TripId = tripId;
@@ -19,6 +22,8 @@
             Time = time;
             Weather = weather;
             Edge = edge;
+            EnergyConsumption = energyConsumption;
+            VehicleId = vehicleId;
         }
     }
 
@@ -28,6 +33,8 @@
         public int TripId { get; set; }
         public float Speed { get; set; }
         public float Acceleration { get; set; }
+        public float EnergyConsumption { get; set; }
+        public int VehicleId { get; set; }
         public DateTime Time { get; set; }
         public WeatherDto Weather { get; set; }
         public EdgeDto Edge { get; set; }

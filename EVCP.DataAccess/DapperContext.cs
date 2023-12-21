@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Npgsql;
-using NetTopologySuite.Geometries;
 
 namespace EVCP.DataAccess;
 
@@ -12,10 +11,11 @@ public class DapperContext
     public DapperContext(IConfiguration configuration)
     {
         _configuration = configuration;
-        _connectionString = _configuration.GetSection("ConnectionStrings")[ConnectionStrings.EVDataWarehouse] ?? "";
+        _connectionString = _configuration.GetSection("ConnectionStrings")[ConnectionStrings.EVDataWarehouse] ?? "Server=127.0.0.1;Port=5432;Database=EVDataWarehouse;User Id=postgres;Password=server5720;";
     }
 
-    public NpgsqlConnection CreateConnection(){
+    public NpgsqlConnection CreateConnection()
+    {
         var dataSourceBuilder = new NpgsqlDataSourceBuilder(_connectionString);
         dataSourceBuilder.UseNetTopologySuite();
         return dataSourceBuilder.Build().CreateConnection();

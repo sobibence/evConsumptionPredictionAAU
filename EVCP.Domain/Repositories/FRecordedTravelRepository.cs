@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using EVCP.DataAccess;
 using EVCP.DataAccess.Repositories;
 using EVCP.Domain.Models;
@@ -16,12 +16,10 @@ public interface IFRecordedTravelRepository : IBaseRepository<FactRecordedTravel
 public class FRecordedTravelRepository : BaseRepository<FactRecordedTravel>, IFRecordedTravelRepository
 {
     private readonly ILogger<FRecordedTravelRepository> _logger;
-    private readonly DapperContext _context;
 
     public FRecordedTravelRepository(ILogger<FRecordedTravelRepository> logger, DapperContext context) : base(logger, context)
     {
         _logger = logger;
-        _context = context;
     }
 
     public async Task<IEnumerable<FactRecordedTravel>> GetByTimestamp(DateTimeOffset from, DateTimeOffset to)
