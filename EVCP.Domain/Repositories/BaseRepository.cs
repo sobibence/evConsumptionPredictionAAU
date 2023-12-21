@@ -102,10 +102,10 @@ public class BaseRepository<T> : IBaseRepository<T>
         Connection.Open();
 
         // execute query
-        var result = await connection.ExecuteAsync(query, parameters);
-        connection.Close();
+        var result = await Connection.ExecuteScalarAsync<int>(query, parameters);
+        Connection.Close();
         // return number of rows affected
-        return result > 0;
+        return result;
     }
 
     public virtual async Task<IEnumerable<T>> GetAsync()

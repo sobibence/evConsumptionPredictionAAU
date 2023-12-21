@@ -1,4 +1,4 @@
-using EnumType = EVCP.Domain.Helpers.EnumType;
+using EVCP.Domain.Helpers;
 
 namespace EVCP.Domain.Models;
 
